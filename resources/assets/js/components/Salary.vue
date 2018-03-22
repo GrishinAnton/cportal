@@ -1,0 +1,341 @@
+<template>
+    <!--\ Block Salary  \-->
+    <div>
+        <div class="box">
+            <div class="box-header with-border">
+                <h3 class="box-title">
+                    Зарплата
+                </h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+                <div class="form-group">
+                    <label for="coef">Коэффициент</label>
+                    <input type="text" v-model="form.coef" class="form-control" placeholder="Коэффициент">
+                </div>
+
+                <div class="form-group">
+                    <p>
+                        <label for="">Фикс ЗП</label>
+                    </p>
+                    <button type="button"  class = "btn" v-bind:class="{'btn-success': form.fix}" @click="form.fix = true">Да</button>
+                    
+                    <button type="button" class = "btn" v-bind:class="{'btn-success': form.fix == false}" @click="form.fix = false">Нет</button> 
+                    
+                </div>
+                <div v-if="isSalaryFixed == false" class = "form-group">
+                    <label for="hour">Стоимость часа</label>
+                    <input type="text" v-model="form.salaryHours" name="hours" class="form-control" placeholder="Стоимость часа">
+
+                    <br>
+
+                    <label for="close_hours">Закрыто часов</label>
+                    <input type="text" name = "close_hours" v-bind:value = "closeHours" class="form-control" placeholder="Закрыто часов" disabled>
+
+                    <label for="fine_hours">Штраф часов</label>
+                    <input type="text" v-bind:value = "fineHours" class="form-control" placeholder="Штраф часов" disabled>
+
+                    <label for="edit_hours">Вручную часов</label>
+                    <input type="text" v-model="form.addHours" class="form-control" placeholder="Вручную часов">
+
+                    <br>
+
+                    <label for="salary">ЗП в ручную</label>
+                    <input type="text" v-model="form.editSalary" class="form-control" placeholder="ЗП в ручную">
+
+                    <label for="salary">ЗП</label>
+                    <input type="text" v-bind:value="salary" class="form-control" placeholder="ЗП" disabled>
+
+                    <label for="hours">Стоимость часа</label>
+                    <input type="text" v-model="form.salaryHours" name="hours" class="form-control" placeholder="Стоимость часа" disabled>
+
+                    <label for="hours">Стоимость часа без учета штрафа</label>
+                    <input type="text" v-bind:value = "valueHoursWithoutFine" name = "hours" class="form-control" placeholder="Стоимость часа без учета шрафа" disabled>
+                    
+                    <br>
+
+                    <button type = "button" v-on:click = "postSalary" class = "btn btn-primary">Сохранить</button>
+                
+                </div>
+
+                <div v-if="isSalaryFixed" class="form-group">
+                    <label for="salary">ЗП</label>
+                    <input type="text" v-model="form.salary" class="form-control" placeholder="ЗП">
+
+                    <label for="close_hours">Закрыто часов</label>
+                    <input type="text"  v-bind:value = "closeHours" class="form-control" placeholder="Закрыто часов" disabled>
+
+                    <label for="fine_hours">Штраф часов</label>
+                    <input type="text"  v-bind:value = "fineHours" class="form-control" placeholder="Штраф часов" disabled>
+
+                    <label for="edit_hours">Вручную часов</label>
+                    <input type="text" v-model="form.addHours" class="form-control" placeholder="Вручную часов">
+
+                    <br>
+
+                    <label for="salary">ЗП в ручную</label>
+                    <input type="text" v-model = "form.editSalary" class="form-control" placeholder="ЗП в ручную">
+
+                    <label for="salary">ЗП</label>
+                    <input type="text" v-bind:value = "salary" class="form-control" placeholder="ЗП" disabled>
+
+                    <label for="hours">Стоимость часа</label>
+                    <input type="text" v-bind:value = "valueHours" class="form-control" placeholder="Стоимость часа" disabled>
+
+                    <br>
+
+                    <button type = "button" v-on:click = "postSalary" class = "btn btn-primary">Сохранить</button>
+                </div>
+            </div>
+        </div>
+        <div class="box">
+            <div class="box-header with-border">
+                <h3 class="box-title">
+                    Расходы по проектам
+                </h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Проект</th>
+                            <th>Часы</th>
+                            <th>% от проекта</th>
+                            <th>Расход по проекту</th>
+                            <th>Расход в ручную</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="timeRecord in get.timeRecords" v-if="timeRecord.worktime !== null">
+                            <td>{{ timeRecord.name }}</td>
+                            <td>{{ timeRecord.worktime }}</td>
+                            <td>{{ parseFloat(timeRecord.worktime/get.trackedTime).toFixed(3) * 100 }} %</td>
+                            
+                                <td v-if = "Number(form.editSalary) !== 0">{{ ((form.editSalary * parseFloat(timeRecord.worktime/get.trackedTime)) + (get.costs * parseFloat(timeRecord.worktime/get.trackedTime))).toFixed(2) }}</td>
+                         
+
+                                <td v-else> {{ ((salary * parseFloat(timeRecord.worktime/get.trackedTime)) + (get.costs * parseFloat(timeRecord.worktime/get.trackedTime))).toFixed(2) }}</td>
+                           
+                            <td><input v-model = "form.editCosts[timeRecord.project_id]" type = "text" class = "form-controll"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <br>
+                <button v-if = "post.costs === false" type = "button" v-on:click = "costs" class = "btn btn-primary">Списать</button>
+            </div>
+        </div>
+    </div>
+
+</template>
+
+<script>
+    export default {
+        props: {
+            personalId: {
+                type: Number,
+                required: true
+            },
+
+            date: {
+                type: String,
+                required: true
+            }
+        },
+        created() {
+            axios.get('/api/personal/'+this.personalId+'?date='+this.date)
+                .then(response => {
+              
+                // JSON responses are automatically parsed.
+                    this.get.info = response.data.first;
+                    this.get.salary = response.data.salary;
+                    this.get.trackedTime = _.sumBy(this.get.info.times, 'totaltime');
+                    this.get.times = this.get.info.times;
+                    this.get.timeRecords = response.data.timeRecords;
+                    this.get.costs = response.data.costs.cost;
+                    this.post.costs = response.data.projectCosts;
+
+
+
+
+                    console.log(this.post.costs);
+
+                    if (this.get.salary !== null) {
+                        this.validSalary = '/'+this.get.salary.id;
+                    } else {
+                        this.validSalary = '';
+                    }
+
+                    if (this.get.salary !== null) {
+                        this.form.salaryHours = this.get.salary.hour;
+                        this.form.fix = this.get.salary.salary_fix;
+                        this.form.coef = this.get.salary.coefficient;
+                        this.form.salary = this.get.salary.salary;
+                        this.form.addHours = this.get.salary.edit_hours;
+                        this.form.editSalary = this.get.salary.edit_salary;
+                    }
+                  
+                     
+                })
+                .catch(e => {
+                    console.log(e);
+                })
+        },
+
+        mounted() {
+           console.log('hello Bogdan');
+        },
+        data() {
+            return {
+                post: {
+                    validSalary: null,
+                    costs: false
+                },
+
+                form: {
+                    fix: null,
+                    closeHours: null,
+                    addHours: null,
+                    estimatedTime: null,
+                    salary: null,
+                    posts: null,
+                    coef: 1.1,
+                    salaryHours: null,
+                    editSalary: null,
+                    costs: null,
+                    editCosts: []
+                },
+
+                get: {
+                    info: null,
+                    salary: null,
+                    trackedTime: null,
+                    times: null,
+                    fullEstimatedTime: 0,
+                    timeRecords: null,
+                    costs: null,
+                }
+            }
+        },
+        methods: {
+            costs : function () {
+                for (var timeRecord in this.get.timeRecords) {
+                    if (this.get.timeRecords[timeRecord]['worktime'] !== null) {
+                        if (this.get.timeRecords[timeRecord]['project_id'] in this.form.editCosts) {
+                            var projectCost = this.form.editCosts[this.get.timeRecords[timeRecord]['project_id']];
+                        } else {
+                            if (_.get(this.get.salary, 'edit_salary') && this.get.salary.edit_salary !== '0.00') {
+                                var projectCost = ((this.get.salary.edit_salary * parseFloat(this.get.timeRecords[timeRecord]['worktime']/this.get.trackedTime)) + (this.get.costs * parseFloat(this.get.timeRecords[timeRecord]['worktime']/this.get.trackedTime))).toFixed(2);
+                            } else {
+                                var projectCost = ((this.salary * parseFloat(this.get.timeRecords[timeRecord]['worktime']/this.get.trackedTime)) + (this.get.costs * parseFloat(this.get.timeRecords[timeRecord]['worktime']/this.get.trackedTime))).toFixed(2);
+                            }
+                        }
+                        
+                        axios.post('/api/personal/'+this.personalId+'/costs/store', {
+                            projectId: this.get.timeRecords[timeRecord]['project_id'],
+                            projectCost: projectCost,
+                            date: this.date,
+                            workTime: this.get.timeRecords[timeRecord]['worktime']
+                        })
+                        .then(response => {
+                            this.post.costs = true;
+                            //return console.log(response);
+                        })
+                        .catch(function (error) {
+                            return console.log(error);
+                        });
+                    }
+                }
+            },
+
+            postSalary: function () {
+                var day = new Date();
+               
+
+                axios.post('/api/personal/'+this.personalId+'/salary/store'+this.validSalary, {
+                    salaryFix: this.isSalaryFixed,
+                    salary: this.salary,
+                    coef: this.form.coef,
+                    hour: this.valueHours,
+                    date: this.date+'-'+day.getDay(),
+                    editHours: this.form.addHours ,
+                    editSalary: this.form.editSalary
+                })
+                .then(response => {
+                    this.get.salary = response.data;
+
+                    if (this.get.salary !== null) {
+                        this.validSalary = '/'+this.get.salary.id;
+                    } else {
+                        this.validSalary = '';
+                    }
+
+                        this.form.salaryHours = this.get.salary.hour;
+                        this.form.fix = this.get.salary.salary_fix;
+                        this.form.coef = this.get.salary.coefficient;
+                        this.form.salary = this.get.salary.salary;
+                        this.form.addHours = this.get.salary.edit_hours;
+                        this.form.editSalary = this.get.salary.edit_salary;
+                })
+                .catch(function (error) {
+                    return console.log(error);
+                });
+            }
+        },
+        computed: {
+            isSalaryFixed() {
+                return this.form.fix;
+            },
+            fineHours() {
+                this.get.fullEstimatedTime = 0;
+
+                for (var task in this.get.times) {                        
+                    this.get.fullEstimatedTime += parseFloat(this.get.times[task].tasks.estimated_time);
+                }
+
+                if (this.get.trackedTime - (this.get.fullEstimatedTime * this.form.coef) > 0) {
+                    return this.get.trackedTime - (this.get.fullEstimatedTime * this.form.coef);
+                } else {
+                    return 0;
+                }
+            },
+            salary() {
+                if (Number(this.form.fix) === 0) { 
+                        
+                    if (isNaN(parseFloat(this.form.addHours))) {
+                        
+                        return (this.closeHours - this.fineHours) * this.form.salaryHours;
+
+                    } else {
+
+                        return ((parseFloat(this.closeHours) + parseFloat(this.form.addHours)) - this.fineHours) * this.form.salaryHours;
+                    }
+
+                } else {
+                    return this.form.salary;
+                } 
+            },
+            closeHours() {
+                 
+                    return this.get.trackedTime;
+                
+            },
+            valueHours() {
+                if (this.form.fix !== 0) {
+                    return this.salary / (this.get.trackedTime - this.fineHours);
+                }
+
+                return this.form.salaryHours;
+
+            },
+            valueHoursWithoutFine() {
+                if (isNaN(parseFloat(this.form.addHours))) {     
+                    return parseFloat(this.closeHours) * parseFloat(this.form.salaryHours);
+                } 
+
+                return parseFloat(this.closeHours + this.form.addHours) * parseFloat(this.form.salaryHours);
+                
+            }
+        }
+    }
+</script>
