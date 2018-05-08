@@ -15,12 +15,7 @@ mix.js('resources/assets/js/app.js', 'public/js').version();
 
 mix.sass('resources/assets/scss/app.scss', 'public/css').version()
 
-// mix.copyDirectory('resources/assets/fonts', 'public/fonts');
-// .options({
-//    processCssUrls: false
-//  });
-
-// mix.browserSync({
-//   proxy: "cportal.loc",
-//   notify: false
-// });
+mix.browserSync({
+  proxy: "cportal.loc",
+  notify: false
+});

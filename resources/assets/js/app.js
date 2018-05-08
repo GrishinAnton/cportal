@@ -7,9 +7,6 @@
 
 require('./bootstrap');
 
-require('./../../../node_modules/admin-lte/plugins/iCheck/icheck.js');
-
-require('./../../../node_modules/admin-lte/dist/js/adminlte.js');
 
 window.Vue = require('vue');
 
@@ -19,17 +16,13 @@ window.Vue = require('vue');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-$(function () {
-    $('input').iCheck({
-        checkboxClass: 'icheckbox_square-blue',
-        radioClass: 'iradio_square-blue',
-        increaseArea: '20%'
-    });
-});
 
 Vue.component('salary', require('./components/Salary'));
 Vue.component('report-index', require('./components/Report'));
 Vue.component('costs', require('./components/finance/Costs'));
+
+import BootstrapVue from 'bootstrap-vue';
+Vue.use(BootstrapVue);
 
 const app = new Vue({
     el: '#app'

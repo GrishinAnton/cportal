@@ -1,20 +1,20 @@
 @import url("https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic");
 
 // Bootstrap
-@import "~bootstrap/dist/css/bootstrap.css";
+@import '~bootstrap/dist/css/bootstrap.css';
+@import '~bootstrap-vue/dist/bootstrap-vue.css';
 
 // Font-Awesome
 @import "~font-awesome/css/font-awesome.css";
 
-// Admin LTE
-@import "~admin-lte/dist/css/AdminLTE.css";
+// Helpers
+@import "helpers/_vars";
 
-// Skin for Admin LTE (yellow)
-@import "~admin-lte/dist/css/skins/skin-yellow.css";
 
-// ICheck
-@import "~admin-lte/plugins/iCheck/square/blue.css";
+// Components
+@import "base/main";
+@import "components/flex";
+@import "components/header";
+@import "components/header-logo";
 
-.auth-links {
-    margin-top: 10px;
-}
+
