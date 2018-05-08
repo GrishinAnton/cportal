@@ -8,12 +8,12 @@
 
 @section('content')
 <div class="box">
-    <div class="box-header with-border">
+    <div class="box-header">
         <h3 class="box-title">Список сотрудников</h3>
     </div>
     <!-- /.box-header -->
     <div class="box-body">
-        <table class="table table-striped">
+        <table class="table table-hover table-bordered">
             <tbody>
                 <tr>
                     <th style="width: 10px">#</th>
@@ -47,7 +47,7 @@
                         @endif
                         <td>
                             <div class = "text-center">
-                                <a href = "/personal/{{ $person->pers_id }}"><span style = "color:black;" class="glyphicon glyphicon-user fa-2x"></span></a>
+                                <a href = "/personal/{{ $person->pers_id }}"><span style = "color:black;" class="glyphicon glyphicon-user fa-1x"></span></a>
                             </div>
                         </td>
                     </tr>
