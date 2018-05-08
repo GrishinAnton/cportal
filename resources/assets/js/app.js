@@ -27,8 +27,9 @@ $(function () {
     });
 });
 
-Vue.component('salary', require('./components/Salary.vue'));
-Vue.component('report-index', require('./components/Report.vue'));
+Vue.component('salary', require('./components/Salary'));
+Vue.component('report-index', require('./components/Report'));
+Vue.component('costs', require('./components/finance/Costs'));
 
 const app = new Vue({
     el: '#app'

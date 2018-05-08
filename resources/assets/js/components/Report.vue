@@ -1,6 +1,6 @@
 <template>
     <div class="box">
-        <div class="box-header with-border">
+        <div class="box-header">
             <h3 class="box-title">Отчет</h3>
             <div class="pull-right">
                 <select class="form-control" v-model="year" @change="renderTableByYaer">
@@ -11,27 +11,29 @@
         </div>
         <div class="box-body">
             <template v-if="! success"><h3>Упс, что - то сломалось :(</h3></template>
-            <table class="table table-striped">
-                <tbody>
+            <table class="table table-hover table-bordered">
+                <thead>
                     <tr>
                         <th style="width: 10px">#</th>
                         <th>Имя Фамилия</th>
-                        <th>Январь</th>
-                        <th>Февраль</th>
-                        <th>Март</th>
-                        <th>Апрель</th>
-                        <th>Май</th>
-                        <th>Июнь</th>
-                        <th>Июль</th>
-                        <th>Август</th>
-                        <th>Сентябрь</th>
-                        <th>Октябрь</th>
-                        <th>Ноябрь</th>
-                        <th>Декабрь</th>
+                        <th class="text-center">Январь</th>
+                        <th class="text-center">Февраль</th>
+                        <th class="text-center">Март</th>
+                        <th class="text-center">Апрель</th>
+                        <th class="text-center">Май</th>
+                        <th class="text-center">Июнь</th>
+                        <th class="text-center">Июль</th>
+                        <th class="text-center">Август</th>
+                        <th class="text-center">Сентябрь</th>
+                        <th class="text-center">Октябрь</th>
+                        <th class="text-center">Ноябрь</th>
+                        <th class="text-center">Декабрь</th>
                     </tr>
-                    <tr v-for="personal in personals">
+                </thead>
+                <tbody v-for="personal in personals" :key="personal.id">
+                    <tr>
                         <td>{{ personal.id }}</td>
-                        <td>{{ personal.first_name }} {{ personal.last_name }}</td>
+                        <td class="clickable" data-toggle="collapse" :data-target="'#' + personal.id" aria-expanded="false" aria-controls="group-of-rows-1">{{ personal.first_name }} {{ personal.last_name }}</td>
                         <td @click="salaries(personal.id, 1)"></td>
                         <td @click="salaries(personal.id, 2)"></td>
                         <td @click="salaries(personal.id, 3)"></td>
@@ -44,6 +46,12 @@
                         <td @click="salaries(personal.id, 10)"></td>
                         <td @click="salaries(personal.id, 11)"></td>
                         <td @click="salaries(personal.id, 12)"></td>
+                    </tr>
+                    <tr :id="personal.id" class="collapse">
+                        <td></td>
+                        <td class="text-right">проект</td>
+                        <td>data 1</td>  
+                        <td>data 1</td>
                     </tr>
                 </tbody>
             </table>
@@ -109,6 +117,8 @@
                 .then(response => {
                     if (response.data.success) {
                         this.personals = response.data.data;
+                        console.log(this.personals);
+                        
 
                         return;
                     }
@@ -121,4 +131,11 @@
         }
     }
 </script>
+
+<style>
+    tbody.collapse.in {
+    display: table-row-group;
+    }
+</style>
+
 
