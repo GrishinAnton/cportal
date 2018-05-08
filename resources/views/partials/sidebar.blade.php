@@ -35,6 +35,7 @@
                 </a>
             </li>
         </ul>
+        
         <!-- /.sidebar-menu -->
     </section>
 
