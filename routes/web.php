@@ -26,10 +26,20 @@ Route::group(['middleware' => 'auth'], function () {
     //Главная
     Route::get('dashboard', 'HomeController@index');
 
+    //Personal groups
+    Route::get('api/personal/groups', 'Api\Personal\GroupController@getGroups')->name('api.personal.groups');
+    Route::post('api/personal/{personalId}/add/groups', 'Api\Personal\GroupController@addGroup')
+        ->name('api.personal.add.groups');
+
+    //Personal companies
+    Route::get('api/personal/companies', 'Api\Personal\CompanyController@getCompanies')->name('api.personal.companies');
+    Route::post('api/personal/{personalId}/add/company', 'Api\Personal\CompanyController@addGroup')
+        ->name('api.personal.add.company');
+
     //Resourse Personal
-    Route::get('api/personal/{id}', 'Api\PersonalController@show');
-    Route::post('api/personal/{pers_id}/salary/store/{salary_id?}', 'Api\PersonalController@storeSalary');
-    Route::post('api/personal/{pers_id}/costs/store', 'Api\PersonalController@storeCosts');
+    Route::get('api/personal/{id}', 'Api\Personal\PersonalController@show');
+    Route::post('api/personal/{pers_id}/salary/store/{salary_id?}', 'Api\Personal\PersonalController@storeSalary');
+    Route::post('api/personal/{pers_id}/costs/store', 'Api\Personal\PersonalController@storeCosts');
 
     //Personal
     Route::get('personal', 'PersonalController@index');
