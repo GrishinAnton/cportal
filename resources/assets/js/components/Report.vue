@@ -1,8 +1,8 @@
 <template>
     <div class="box">
-        <div class="box-header">
+        <div class="box-header flex flex_jc-sb">
             <h3 class="box-title">Отчет</h3>
-            <div class="pull-right">
+            <div class="col-sm-1">
                 <select class="form-control" v-model="year" @change="renderTableByYaer">
                     <option value="2017">2017</option>
                     <option value="2018">2018</option>
@@ -33,8 +33,8 @@
                 <tbody v-for="personal in personals" :key="personal.id">
                     <tr>
                         <td>{{ personal.id }}</td>
-                        <td class="clickable" data-toggle="collapse" :data-target="'#' + personal.id" aria-expanded="false" aria-controls="group-of-rows-1">{{ personal.first_name }} {{ personal.last_name }}</td>
-                        <td @click="salaries(personal.id, 1)"></td>
+                        <td>{{ personal.first_name }} {{ personal.last_name }}</td>
+                        <td @click="openmodal()"></td>
                         <td @click="salaries(personal.id, 2)"></td>
                         <td @click="salaries(personal.id, 3)"></td>
                         <td @click="salaries(personal.id, 4)"></td>
@@ -54,28 +54,15 @@
                         <td>data 1</td>
                     </tr>
                 </tbody>
-            </table>
-            <div class="modal fade in" id="modal-default" v-if="modalOpen" style="display: block; padding-right: 15px;">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" @click="modal(false)" aria-label="Close">
-                        <span aria-hidden="true">×</span></button>
-                        <h4 class="modal-title">Фиксированная зарплата</h4>
-                    </div>
-                    <div class="modal-body">
-                        <input type="text" class="form-control">
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default pull-left" @click="modal(false)" data-dismiss="modal">Закрыть</button>
-                        <button type="button" class="btn btn-primary">Сохранить</button>
-                    </div>
-                    </div>
-                    <!-- /.modal-content -->
+            </table>    
+            <b-modal ref="modal" title="Фиксированная зарплата">
+                <input type="text" class="form-control">
+                <div slot="modal-footer" class="w-100 d-flex justify-content-between">
+                    <button type="button" class="btn btn-default pull-left" @click="closeModal()">Закрыть</button>
+                    <button type="button" class="btn btn-primary">Сохранить</button>
                 </div>
-                <!-- /.modal-dialog -->
-            </div>
-        </div>
+            </b-modal>  
+        </div>             
     </div>
 </template>
 <script>
@@ -84,12 +71,17 @@
             return {
                 personals: {},
                 success: true,
-                modalOpen: false,
                 year: 2018,
-                salary: null
+                salary: null,
             }
         },
         methods: {
+            openmodal(){
+                this.$refs.modal.show()
+            },
+            closeModal(){
+                this.$refs.modal.hide()
+            },
             salaries(persId, month) {
                 axios.get('/api/report/personal/'+persId+'/salaries/'+this.year+'/'+month)
                     .then(response => {
@@ -98,11 +90,8 @@
                     .catch();
 
                 if (! this.salary) {
-                    this.modal(true);
+                    // this.modal(true);
                 }
-            },
-            modal(close){
-                this.modalOpen = close
             },
             renderTableByYaer() {
                 axios.get('/api/report/worktime/'+this.year)

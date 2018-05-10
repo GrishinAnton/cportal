@@ -3,9 +3,9 @@
 @section('title', 'AdminLTE')
 
 @section('content_header')
-    <h1>Отчет</h1>
+    <h1 class="h1">Отчет</h1>
 @stop
 
 @section('content')
-    <report-index></report-index>
+    <report-index></report-index>    
 @stop

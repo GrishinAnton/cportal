@@ -1,0 +1,18 @@
+.content-wrapper {
+    flex-grow: 1;
+    position: relative;
+
+    padding: 15px 15px 15px 15px;
+
+    background-color: #ecf0f5;
+
+    height: auto;
+    min-height: 100%;
+}
+
+.content {
+    margin-right: auto;
+    margin-left: auto;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}

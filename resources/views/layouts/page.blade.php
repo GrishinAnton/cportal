@@ -1,7 +1,5 @@
 @extends('layouts.app')
 
-<!-- @section('body_class', 'hold-transition skin-yellow sidebar-mini') -->
-
 @section('body')
     <div class="wrapper flex flex_w">
 
@@ -13,8 +11,8 @@
             </div>
 
             <!-- Header Navbar -->
-            <div class="navbar-custom-menu">
-                <a href="#">
+            <div class="header-logout flex">
+                <a href="#" class="header-logout__link">
                     <i class="fa fa-fw fa-power-off"></i> Log Out
                 </a>
             </div>  

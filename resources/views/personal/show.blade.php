@@ -3,7 +3,7 @@
 @section('title', ''.$first->first_name.' '.$first->last_name.'')
 
 @section('content_header')
-    <h1>{{ $first->first_name }} {{ $first->last_name }}</h1>
+    <h1 class="h1">{{ $first->first_name }} {{ $first->last_name }}</h1>
 @stop
 
 @section('content')

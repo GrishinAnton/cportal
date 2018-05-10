@@ -20,6 +20,7 @@ window.Vue = require('vue');
 Vue.component('salary', require('./components/Salary'));
 Vue.component('report-index', require('./components/Report'));
 Vue.component('costs', require('./components/finance/Costs'));
+Vue.component('sidebar', require('./components/sidebar/Sidebar'));
 
 import BootstrapVue from 'bootstrap-vue';
 Vue.use(BootstrapVue);

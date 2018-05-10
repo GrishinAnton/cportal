@@ -32,35 +32,20 @@
                 <tbody>
                      <tr>
                         <td>Издержки</td>
-                        <td class="text-center" @click="modal()">
+                        <td class="text-center" @click="openmodal()">
                             <span>0</span>
                             <i class="fa fa-pencil"></i>
                         </td>
                     </tr>
                 </tbody>
             </table>
-            <div class="modal fade in" id="modal-default" v-if="modalOpen" style="display: block; padding-right: 15px;">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" @click="modal()" aria-label="Close">
-                        <span aria-hidden="true">×</span></button>
-                        <h4 class="modal-title">Издержки</h4>
-                    </div>
-                    <div class="modal-body">
-                        <input type="text" class="form-control"
-                            v-model="input.cost"
-                        >
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default pull-left" @click="modal()" data-dismiss="modal">Закрыть</button>
-                        <button type="button" class="btn btn-primary" @click="submit()">Сохранить</button>
-                    </div>
-                    </div>
-                    <!-- /.modal-content -->
+            <b-modal ref="modal" title="Издержки">
+                <input type="text" class="form-control">
+                <div slot="modal-footer" class="w-100 d-flex justify-content-between">
+                    <button type="button" class="btn btn-default pull-left" @click="closeModal()">Закрыть</button>
+                    <button type="button" class="btn btn-primary">Сохранить</button>
                 </div>
-                <!-- /.modal-dialog -->
-            </div>
+            </b-modal>  
         </div>
     </div>
 </template>
@@ -73,11 +58,14 @@
             },
             modalOpen: false,
             year: 2018,
-            success: true
+            success: true, 
         }),
         methods: {
-            modal(){
-                this.modalOpen = !this.modalOpen
+            openmodal(){
+                this.$refs.modal.show()
+            },
+            closeModal(){
+                this.$refs.modal.hide()
             },
             // salaries(persId, month) {
             //     axios.get('/api/report/personal/'+persId+'/salaries/'+this.year+'/'+month)
@@ -111,14 +99,14 @@
             }
         },
         mounted() {
-            var url = '';
-            axios.get(url)
-            .then(response => {
-                console.log(response.data)
-            })
-            .catch(errors => {
-                console.log(errors)
-            })
+            // var url = '';
+            // axios.get(url)
+            // .then(response => {
+            //     console.log(response.data)
+            // })
+            // .catch(errors => {
+            //     console.log(errors)
+            // })
             // axios.get('/api/report/personal/all')
             //     .then(response => {
             //         if (response.data.success) {

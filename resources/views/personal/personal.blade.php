@@ -1,9 +1,7 @@
 @extends('layouts.page')
 
-@section('title', 'Сотрудники')
-
 @section('content_header')
-    <h1>Сотрудники</h1>
+    <h1 class="h1">Сотрудники</h1>
 @stop
 
 @section('content')
@@ -47,7 +45,7 @@
                         @endif
                         <td>
                             <div class = "text-center">
-                                <a href = "/personal/{{ $person->pers_id }}"><span style = "color:black;" class="glyphicon glyphicon-user fa-1x"></span></a>
+                                <a href = "/personal/{{ $person->pers_id }}"><i class="fa fa-user-o"></i></a>
                             </div>
                         </td>
                     </tr>
@@ -56,10 +54,8 @@
         </table>
     </div>
     <!-- /.box-body -->
-    <div class="box-footer clearfix">
-        <div class="pagination pagination-sm no-margin pull-right">
-            {{ $personal->links()  }}
-        </div>
+    <div class="box-footer">
+        {{ $personal->links()  }}
     </div>
 </div>
 @stop
