@@ -33,7 +33,7 @@
                 <tbody v-for="personal in personals" :key="personal.id">
                     <tr>
                         <td>{{ personal.id }}</td>
-                        <td>{{ personal.first_name }} {{ personal.last_name }}</td>
+                        <td v-b-toggle="personal.id">{{ personal.first_name }} {{ personal.last_name }}</td>
                         <td @click="openmodal()"></td>
                         <td @click="salaries(personal.id, 2)"></td>
                         <td @click="salaries(personal.id, 3)"></td>
@@ -47,12 +47,18 @@
                         <td @click="salaries(personal.id, 11)"></td>
                         <td @click="salaries(personal.id, 12)"></td>
                     </tr>
-                    <tr :id="personal.id" class="collapse">
+                    <b-collapse :id="personal.id" tag="tr">
                         <td></td>
                         <td class="text-right">проект</td>
                         <td>data 1</td>  
                         <td>data 1</td>
-                    </tr>
+                    </b-collapse>
+                    <!-- <tr :id="personal.id" class="collapse">
+                        <td></td>
+                        <td class="text-right">проект</td>
+                        <td>data 1</td>  
+                        <td>data 1</td>
+                    </tr> -->
                 </tbody>
             </table>    
             <b-modal ref="modal" title="Фиксированная зарплата">
@@ -122,8 +128,9 @@
 </script>
 
 <style>
-    tbody.collapse.in {
-    display: table-row-group;
+    .collapsing {
+        transition: none;
+        display: table-row;
     }
 </style>
 

@@ -1,6 +1,19 @@
 .form-group {
-    margin-bottom: 15px;
+    margin-bottom: 25px;
     position: relative;
+}
+
+.form-item {
+    margin-bottom: 10px;
+    position: relative;
+
+    &_bold {
+
+        label {
+            font-weight: bold;
+        }
+    }
+
 }
 
 .form-control {

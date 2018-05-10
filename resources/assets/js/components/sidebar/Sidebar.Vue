@@ -40,6 +40,12 @@
                     name: "Отчет",
                     href: '/report',
                     id: 5
+                },
+                {
+                    icon: "fa fa-fw fa-user",
+                    name: "Сотрудники",
+                    href: '/employees',
+                    id: 6
                 }
             ]
         }),

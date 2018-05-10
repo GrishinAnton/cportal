@@ -13,6 +13,10 @@
     position: relative;
 }
 
+.box-header.with-border {
+    border-bottom: 1px solid #f4f4f4;
+}
+
 .box-title {
     display: inline-block;
     font-size: 18px;
