@@ -3,24 +3,26 @@
         <div class="box-header">
             <h3 class="box-title">Список сотрудников</h3>
         </div>
+        <div class="box-header">
+            <div class="flex flex_jc-fs mr-2">
+                <template v-for="variant in ['outline-success']">
+                    <div class="pb-2 pr-2" v-for="item in load.companies" :key="item.id">
+                        <b-button :size="'sm'" :variant="variant">
+                            {{ item.name }}
+                        </b-button>
+                    </div>
+                </template>
+            </div>
 
-        <div class="flex flex_jc-fs mr-2">
-            <template v-for="variant in ['outline-success']">
-                <div class="col-md-2 pb-2" v-for="size in ['sm']" :key="`${variant}_${size}`">
-                    <b-button :size="size" :variant="variant">
-                        {{variant}} {{size}}
-                    </b-button>
-                </div>
-            </template>
-        </div>
-        <div class="flex flex_jc-fs mr-2">
-            <template v-for="variant in ['outline-success']">
-                <div class="col-md-2 pb-2" v-for="size in ['sm']" :key="`${variant}_${size}`">
-                    <b-button :size="size" :variant="variant">
-                        {{variant}} {{size}}
-                    </b-button>
-                </div>
-            </template>
+            <div class="flex flex_jc-fs mr-2">
+                <template v-for="variant in ['outline-success']">
+                    <div class="pb-2 pr-2" v-for="item in load.groups" :key="item.id">
+                        <b-button :size="'sm'" :variant="variant">
+                            {{ item.name }}
+                        </b-button>
+                    </div>
+                </template>
+            </div>
         </div>
         
 
@@ -35,7 +37,6 @@
                         <th>Закрыто часов</th>
                         <th>Штрафы</th>
                         <th>ЗП</th>
-                        <th></th>
                     </tr>
                     <tr>
                         <td></td>
@@ -45,12 +46,7 @@
                         <td></td>
                         <td></td>
                         <td>0</td>
-                        <td>
-                            <div class = "text-center">
-                                <a href = "/"><i class="fa fa-user-o"></i></a>
-                            </div>
-                        </td>
-                    </tr>
+                       </tr>
                 </tbody>
             </table>
         </div>
@@ -62,7 +58,10 @@
 </template>
 
 <script>
+    import { personalMixin } from './../../mixins/personalMixin'
+
     export default {
+        mixins: [personalMixin],
         data: ()=> ({
 
         })
