@@ -30,21 +30,30 @@
                 </select>
             </form>
         </div> 
+        <b-alert :show="dismissCountDown"
+                dismissible
+                :variant="alertVariant"
+                @dismissed="dismissCountdown=0"
+                @dismiss-count-down="countDownChanged">
+                <p>Данные обновлены. Закроюсь через {{dismissCountDown}} сукунд.</p>                 
+        </b-alert>
     </div>           
 
 </template>
 <script>
+    import { personalMixin } from './../../mixins/personalMixin';
+
     export default {
-        data: () => ({
-            load: {
-                groups: [],
-                companies: []
-            },
+        mixins: [personalMixin],
+        data: () => ({            
             input: {
                 group: '',
                 company: ''
             },
-            persId: '',      
+            persId: '',
+            dismissSecs: 5,
+            dismissCountDown: 0,
+            alertVariant: ''
 
         }),
         methods: {
@@ -54,7 +63,11 @@
                     groupId: this.input.group
                 })
                     .then(response => {
-                        console.log(response.data)
+
+                        if(response.data.success){
+                            this.alertVariant = 'success'
+                            this.dismissCountDown = 5
+                        }
                     })
                     .catch(e => {
                         console.log(e)
@@ -66,31 +79,22 @@
                     companyId: this.input.company
                 })
                     .then(response => {
-                        console.log(response.data)
+                        
+                        if(response.data.success){
+                            this.alertVariant = 'success'
+                            this.dismissCountDown = 5
+                        }
                     })
                     .catch(e => {
                         console.log(e)
                     })
 
-            }
+            },
+            countDownChanged (dismissCountDown) {
+                this.dismissCountDown = dismissCountDown
+            },
         },
         mounted(){
-
-            axios.get('/api/personal/groups')
-                .then(response => {
-                    this.load.groups = response.data.data
-                   })
-                .catch(e => {
-                    console.log(e)
-                })
-
-            axios.get('/api/personal/companies')
-                .then(response => {
-                   this.load.companies = response.data.data
-                })
-                .catch(e => {
-                    console.log(e)
-                })
 
             this.$watch(() => this.$store.getters['personal/personalInformation'], () => {
                 this.input.group = this.$store.getters['personal/personalInformation'].first.group_id
