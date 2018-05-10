@@ -16,7 +16,6 @@ window.Vue = require('vue');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-
 Vue.component('salary', require('./components/Salary'));
 Vue.component('report-index', require('./components/Report'));
 Vue.component('costs', require('./components/finance/Costs'));

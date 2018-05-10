@@ -33,9 +33,9 @@ class Tasks extends Command
     }
 
     /**
-     * Execute the console command.
+     * Hangle
      *
-     * @return mixed
+     * @throws \ActiveCollab\SDK\Exceptions\Authentication
      */
     public function handle()
     {
@@ -45,6 +45,7 @@ class Tasks extends Command
             env('ACTIVE_COLLAB_LOGIN'),
             env('ACTIVE_COLLAB_PASSWORD')
         );
+
         $authenticator->setSslVerifyPeer(false);
         
         $token = $authenticator->issueToken(144541);
