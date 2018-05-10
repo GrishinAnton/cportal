@@ -1,10 +1,12 @@
 <template>
-    <b-nav vertical>
-        <b-nav-item v-for="item in navItems" :key="item.id" :href="item.href">
-            <i :class="item.icon"></i>
-            <span>{{ item.name }}</span>
-        </b-nav-item>
-    </b-nav>
+    <div>
+        <b-nav vertical>
+            <b-nav-item v-for="item in navItems" :key="item.id" :href="item.href">
+                <i :class="item.icon"></i>
+                <span>{{ item.name }}</span>
+            </b-nav-item>
+        </b-nav>
+    </div>
 </template>
 
 <script>
