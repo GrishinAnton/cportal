@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Personal;
 
+use App\Http\Resources\PersonalResource;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Personal;
@@ -11,9 +12,40 @@ use App\Salary;
 use App\Cost;
 use App\Http\Requests\EditSalaryRequest;
 use App\Http\Requests\WriteOffCostsRequest;
+use DateTime;
 
 class PersonalController extends Controller
 {
+    public function index()
+    {
+        $date = new DateTime('-1 month');
+
+        $year = $date->format('Y');
+        $month = $date->format('m');
+
+        $personal = Personal::where('is_active', 1)->with(['times' => function ($query) use ($month, $year) {
+            $query->select(DB::raw('sum(worktime) as totaltime'), 'worktime', 'pers_id', 'task_id')
+                ->whereYear('date', $year)
+                ->whereMonth('date', $month)
+                ->groupBy('task_id')
+                ->groupBy('pers_id');
+        }])->with(['tasks' => function ($query) use ($month, $year) {
+            $query->groupBy('task_id')
+                ->groupBy('personal_times.pers_id')
+                ->groupBy('personal_times.task_id')
+                ->whereMonth('personal_times.date', $month)
+                ->whereYear('personal_times.date', $year);
+        }])->with(['salary' => function ($query) use ($month, $year) {
+            $query->whereYear('date', $year)
+                ->whereMonth('date', $month)
+                ->orderBy('date', 'desc');
+        }])
+            ->paginate(25);
+
+        return PersonalResource::collection($personal)
+            ->additional(['success' => true]);
+    }
+
     /**
      * Store a newly created resource in storage.
      *
