@@ -21,6 +21,8 @@ Vue.component('salary', require('./components/Salary'));
 Vue.component('report-index', require('./components/Report'));
 Vue.component('costs', require('./components/finance/Costs'));
 Vue.component('sidebar', require('./components/sidebar/Sidebar'));
+Vue.component('personal-position', require('./components/personal/PersonalPosition'));
+Vue.component('personal-table', require('./components/personal/PersonalTable'));
 
 import BootstrapVue from 'bootstrap-vue';
 Vue.use(BootstrapVue);

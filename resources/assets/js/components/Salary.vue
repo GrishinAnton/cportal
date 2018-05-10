@@ -9,6 +9,68 @@
             </div>
             <!-- /.box-header -->
             <div class="box-body">
+                <div class="form-group flex form-group_w20 ">
+                    <div class="form-item form-item_bold mr-5">
+                        <p>Фикс ЗП</p>
+                        <button type="button"  class="btn mr-1" :class="{'btn-success': form.fix}" @click="">Да</button>
+                        <button type="button" class="btn" :class="{'btn-success': form.fix == false}" @click="">Нет</button>
+                    </div>
+
+                    <div class="form-item form-item_bold">
+                        <label for="coef">Коэффициент</label>
+                        <input type="text" v-model="form.coef" class="form-control" placeholder="Коэффициент" id="coef">
+                    </div> 
+                </div>
+
+                <div class="form-group flex form-group_w20 ">
+                    <div class="form-item form-item_bold mr-5">
+                        <label for="hour">Стоимость часа</label>
+                        <div class="flex">
+                            <input type="text" name="hours" v-bind="form.salaryHours"  class="form-control mr-1" placeholder="Стоимость часа" id="hour">
+                            <input type="text" class="form-control" placeholder="Стоимость часа">
+                        </div> 
+                    </div> 
+
+                    <div class="form-item form-item_bold">
+                        <label for="closeHour">Закрыто часов</label>
+                        <div class="flex">
+                            <input type="text" name="close_hours" v-bind:value="closeHours" class="form-control mr-1" placeholder="Закрыто часов" id="closeHour">
+                            <input type="text" class="form-control" placeholder="Закрыто часов">
+                        </div> 
+                    </div>
+                </div>
+
+                <div class="form-group flex form-group_w20 ">
+                    <div class="form-item form-item_bold mr-5">
+                        <label for="fineHours">Штрафных часов</label>
+                        <div class="flex">
+                            <input type="text" :value="get.fullEstimatedTime" class="form-control mr-1" placeholder="Штрафных часов" disabled>
+                            <input type="text" class="form-control" placeholder="Штрафных часов" id="fineHours">
+                        </div> 
+                    </div> 
+
+                    <div class="form-item form-item_bold">
+                        <label for="zp">ЗП</label>
+                        <div class="flex">
+                            <input type="text" v-bind:value="salary" class="form-control mr-1" placeholder="Зарплата" id="zp">
+                            <input type="text" class="form-control" placeholder="Зарплата">
+                        </div> 
+                    </div>
+                </div>
+
+                <button type = "button" v-on:click = "postSalary" class = "btn btn-primary w-15">Сохранить</button>
+            </div>
+        </div>
+
+
+
+        <!-- <div class="box">
+            <div class="box-header with-border">
+                <h3 class="box-title">
+                    Зарплата
+                </h3>
+            </div>
+            <div class="box-body">
                 <div class="form-group">
                     <div class="form-item form-item_bold">
                         <label for="coef">Коэффициент</label>
@@ -118,9 +180,9 @@
                     </div>
                 </div>
 
-                    <button type = "button" v-on:click = "postSalary" class = "btn btn-primary">Сохранить</button>
-                </div>
+                <button type = "button" v-on:click = "postSalary" class = "btn btn-primary">Сохранить</button>
             </div>
+        </div> -->
         <div class="box">
             <div class="box-header with-border">
                 <h3 class="box-title">
@@ -150,7 +212,7 @@
 
                                 <td v-else> {{ ((salary * parseFloat(timeRecord.worktime/get.trackedTime)) + (get.costs * parseFloat(timeRecord.worktime/get.trackedTime))).toFixed(2) }}</td>
                            
-                            <td><input v-model = "form.editCosts[timeRecord.project_id]" type = "text" class = "form-controll"></td>
+                            <td><input v-model = "form.editCosts[timeRecord.project_id]" type = "text" class = "form-control"></td>
                         </tr>
                     </tbody>
                 </table>
@@ -315,21 +377,11 @@
                 return this.form.fix;
             },
             fineHours() {
-                this.get.fullEstimatedTime = 0;
-                console.log(this.get.times);
-                
-
-                for (var task in this.get.times) {     
-                    console.log(task);
-                                       
+               
+                for (var task in this.get.times) {                                 
                     this.get.fullEstimatedTime += parseFloat(this.get.times[task].tasks.estimated_time);
                 }
-
-                if (this.get.trackedTime - (this.get.fullEstimatedTime * this.form.coef) > 0) {
-                    return this.get.trackedTime - (this.get.fullEstimatedTime * this.form.coef);
-                } else {
-                    return 0;
-                }
+                // console.log(this.get.fullEstimatedTime);
             },
             salary() {
                 if (Number(this.form.fix) === 0) { 

@@ -29,6 +29,10 @@
     padding: 20px;
     border-top: 0;
     color: #666;
+
+    .form-control {
+        padding-right: 35px;
+    }
 }
 
 .login-box-msg, .register-box-msg {
