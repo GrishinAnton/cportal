@@ -11,6 +11,11 @@
 
 <script>
     export default {
+        props: {
+            url: {
+                type: String
+            }
+        },
         data: () => ({
             navItems: [
                 {
@@ -51,5 +56,9 @@
                 }
             ]
         }),
+        mounted(){
+            console.log(this.url);
+            
+        }
     }
 </script>

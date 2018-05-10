@@ -21,6 +21,7 @@
   "dependencies": {
     "bootstrap": "^4.1.1",
     "bootstrap-vue": "^2.0.0-rc.9",
-    "font-awesome": "^4.7.0"
+    "font-awesome": "^4.7.0",
+    "vuex": "^3.0.1"
   }
 }

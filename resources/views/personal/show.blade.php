@@ -17,14 +17,13 @@
                 <form method = "post" action = "/personal/{{ $first->pers_id }}/is-active/store">
                     {{ csrf_field() }}
                     @if ($first->is_active)
-                        <button name = "is_active" value = "0" type = "submit" class = "btn btn-danger">Деактивировать</button>
+                        <button name = "is_active" value = "0" type = "submit" class = "btn btn-danger">Уволить</button>
                     @else
-                        <button name = "is_active" value = "1" type = "submit" class = "btn btn-success">Активировать</button>
+                        <button name = "is_active" value = "1" type = "submit" class = "btn btn-success">Восстановить</button>
                     @endif
                 </form>
             </div>
         </div>
-        <!-- /.box-header -->
         <div class="box-body box-body_personal-select-group flex flex_jc-fs">    
             <div class="input-group mb-3 mr-4">
                 <form method = "get">
@@ -36,30 +35,12 @@
                     </select>
                 </form>
             </div>
-            <div class="input-group mb-3 mr-4">
-                <form method = "get">
-                    <label for="group">Группы</label>
-                    <select class="custom-select" id="group">
-                        @foreach($dates as $key => $date)
-                                <option {{ Request::get('date') == $key ? 'selected' : '' }} value = "{{ $key }}">{{ $date }}</option>
-                            @endforeach
-                    </select>
-                </form>
-            </div>
-            <div class="input-group mb-3 mr-4">
-                <form method = "get">
-                    <label for="company">Компании</label>
-                    <select class="custom-select" id="company">
-                        @foreach($dates as $key => $date)
-                                <option {{ Request::get('date') == $key ? 'selected' : '' }} value = "{{ $key }}">{{ $date }}</option>
-                            @endforeach
-                    </select>
-                </form>
-            </div>
-            <?php
+
+            <personal-position></personal-position>          
+        </div>
+        <?php
                 $coefficient = isset($salary->coefficient) ? $salary->coefficient : 1.1;
             ?>
-        </div>
     </div>
     <div class="box">
         <table class="table table-striped">

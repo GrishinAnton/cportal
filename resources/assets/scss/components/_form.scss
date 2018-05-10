@@ -1,6 +1,13 @@
 .form-group {
     margin-bottom: 25px;
     position: relative;
+
+    &_w20 {
+
+        .form-item {
+            width: 20%;
+        }
+    }
 }
 
 .form-item {
@@ -9,15 +16,13 @@
 
     &_bold {
 
-        label {
+        label,
+        p {
             font-weight: bold;
+            margin-bottom: 0.5rem;
         }
     }
 
-}
-
-.form-control {
-    padding-right: 35px;
 }
 
 .form-img {

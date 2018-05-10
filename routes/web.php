@@ -33,7 +33,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     //Personal companies
     Route::get('api/personal/companies', 'Api\Personal\CompanyController@getCompanies')->name('api.personal.companies');
-    Route::post('api/personal/{personalId}/add/company', 'Api\Personal\CompanyController@addGroup')
+    Route::post('api/personal/{personalId}/add/company', 'Api\Personal\CompanyController@addCompany')
         ->name('api.personal.add.company');
 
     //Resourse Personal
