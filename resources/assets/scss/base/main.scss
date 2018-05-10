@@ -1,0 +1,36 @@
+html {
+    height: 100%;
+}
+
+body {
+    font-family: 'Source Sans Pro', sans-serif;
+    overflow-x: hidden;
+    font-size: 16px;
+    line-height: 20px;
+    height: 100%;
+    min-height: 100%;
+}
+
+.wrapper {
+    height: 100%;
+    min-height: 100%;
+}
+
+#app {
+    height: 100%;
+    min-height: 100%;
+}
+
+label {
+    cursor: pointer;
+}
+
+a {
+    color: #3c8dbc;
+}
+
+a:hover, a:active, a:focus {
+    outline: none;
+    text-decoration: none;
+    color: #72afd2;
+}

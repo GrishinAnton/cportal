@@ -3,17 +3,17 @@
 @section('title', ''.$first->first_name.' '.$first->last_name.'')
 
 @section('content_header')
-    <h1>{{ $first->first_name }} {{ $first->last_name }}</h1>
+    <h1 class="h1">{{ $first->first_name }} {{ $first->last_name }}</h1>
 @stop
 
 @section('content')
 @if($first->times->isNotEmpty())
 <div class="box">
-    <div class="box-header with-border">
+    <div class="box-header flex flex_jc-sb">
         <h3 class="box-title">
             {{ $first->first_name }} {{ $first->last_name }}
         </h3>
-        <div class = "pull-right">
+        <div class="col-2 flex flex_jc-fe">
             <form method = "post" action = "/personal/{{ $first->pers_id }}/is-active/store">
                 {{ csrf_field() }}
                 @if ($first->is_active)
@@ -79,9 +79,9 @@
                         @endif
                         <td>
                             @if (round($time->tasks->estimated_time / $time->totaltime, 2) * 100 > 100)
-                                <span class="badge bg-red">{{ round($time->tasks->estimated_time / $time->totaltime, 2) * 100 }} %</span>
+                                <span class="badge badge-danger">{{ round($time->tasks->estimated_time / $time->totaltime, 2) * 100 }} %</span>
                             @else
-                                <span class="badge bg-green">{{ round($time->tasks->estimated_time / $time->totaltime, 2) * 100 }} %</span>
+                                <span class="badge badge-success">{{ round($time->tasks->estimated_time / $time->totaltime, 2) * 100 }} %</span>
                             @endif
                         </td>
                         

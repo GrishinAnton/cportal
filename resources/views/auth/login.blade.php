@@ -5,9 +5,9 @@
 @section('body')
     <div class="login-box">
         <div class="login-logo">
-            <a href="{{ url(config('adminlte.dashboard_url', 'home')) }}">{!! config('adminlte.logo', '<b>Admin</b>LTE') !!}</a>
+            <a><b>2</b>UP</a>
         </div>
-        <!-- /.login-logo -->
+
         <div class="login-box-body">
             <p class="login-box-msg">Sign in to start your session</p>
             <form action="{{ url('/') }}" method="post">
@@ -16,7 +16,7 @@
                 <div class="form-group has-feedback {{ $errors->has('email') ? 'has-error' : '' }}">
                     <input type="email" name="email" class="form-control" value="{{ old('email') }}"
                            placeholder="E-mail">
-                    <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                    <i class="fa fa-envelope-o form-img"></i>
                     @if ($errors->has('email'))
                         <span class="help-block">
                             <strong>{{ $errors->first('email') }}</strong>
@@ -26,23 +26,22 @@
                 <div class="form-group has-feedback {{ $errors->has('password') ? 'has-error' : '' }}">
                     <input type="password" name="password" class="form-control"
                            placeholder="Password">
-                    <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                    <i class="fa fa-lock form-img"></i>
                     @if ($errors->has('password'))
                         <span class="help-block">
                             <strong>{{ $errors->first('password') }}</strong>
                         </span>
                     @endif
                 </div>
-                <div class="row">
-                    <div class="col-xs-8">
-                        <div class="checkbox icheck">
-                            <label>
-                                <input type="checkbox" name="remember"> Remember Me
-                            </label>
+                <div class="row flex_ai-c">
+                    <div class="col-sm-8">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="customCheck1">
+                            <label class="custom-control-label" for="customCheck1">Remember Me</label>
                         </div>
-                    </div>
+                     </div>
                     <!-- /.col -->
-                    <div class="col-xs-4">
+                    <div class="col-sm-4">
                         <button type="submit"
                                 class="btn btn-primary btn-block btn-flat">Sign in</button>
                     </div>

@@ -1,0 +1,17 @@
+.header-logo {
+    width: 300px;
+
+    text-align: center;
+
+    background-color: #e08e0b;
+
+    &__link {
+        margin: auto;
+
+        color: $white;
+        font-size: 26px;
+        line-height: 26px;
+        font-weight: 500;
+
+    }
+}

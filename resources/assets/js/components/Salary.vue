@@ -10,8 +10,10 @@
             <!-- /.box-header -->
             <div class="box-body">
                 <div class="form-group">
-                    <label for="coef">Коэффициент</label>
-                    <input type="text" v-model="form.coef" class="form-control" placeholder="Коэффициент">
+                    <div class="form-item form-item_bold">
+                        <label for="coef">Коэффициент</label>
+                        <input type="text" v-model="form.coef" class="form-control" placeholder="Коэффициент" id="coef">
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -24,70 +26,101 @@
                     
                 </div>
                 <div v-if="isSalaryFixed == false" class = "form-group">
-                    <label for="hour">Стоимость часа</label>
-                    <input type="text" v-model="form.salaryHours" name="hours" class="form-control" placeholder="Стоимость часа">
+                    <div class="form-group">
+                        <div class="form-item form-item_bold">
+                            <label for="hour">Стоимость часа</label>
+                            <input type="text" id="hour" v-model="form.salaryHours" name="hours" class="form-control" placeholder="Стоимость часа">
+                        </div>
+                    </div>
 
-                    <br>
+                    <div class="form-group">
 
-                    <label for="close_hours">Закрыто часов</label>
-                    <input type="text" name = "close_hours" v-bind:value = "closeHours" class="form-control" placeholder="Закрыто часов" disabled>
+                        <div class="form-item form-item_bold">
+                            <label for="close_hours">Закрыто часов</label>
+                            <input type="text" id="close_hours" name = "close_hours" v-bind:value = "closeHours" class="form-control" placeholder="Закрыто часов" disabled>
+                        </div>
 
-                    <label for="fine_hours">Штраф часов</label>
-                    <input type="text" v-bind:value = "fineHours" class="form-control" placeholder="Штраф часов" disabled>
+                        <div class="form-item form-item_bold">
+                            <label for="fine_hours">Штраф часов</label>
+                            <input type="text" id="fine_hours" v-bind:value = "fineHours" class="form-control" placeholder="Штраф часов" disabled>
+                        </div>
 
-                    <label for="edit_hours">Вручную часов</label>
-                    <input type="text" v-model="form.addHours" class="form-control" placeholder="Вручную часов">
+                        <div class="form-item form-item_bold">
+                            <label for="edit_hours">Вручную часов</label>
+                            <input type="text" id="edit_hours" v-model="form.addHours" class="form-control" placeholder="Вручную часов">
+                        </div>
+                    </div>
 
-                    <br>
+                    <div class="form-group">
+                        <div class="form-item form-item_bold">
+                            <label for="salary">ЗП в ручную</label>
+                            <input type="text" id="salary" v-model="form.editSalary" class="form-control" placeholder="ЗП в ручную">
+                        </div>
 
-                    <label for="salary">ЗП в ручную</label>
-                    <input type="text" v-model="form.editSalary" class="form-control" placeholder="ЗП в ручную">
+                        <div class="form-item form-item_bold">
+                            <label for="salary">ЗП</label>
+                            <input type="text" id="salary" v-bind:value="salary" class="form-control" placeholder="ЗП" disabled>
+                        </div>
 
-                    <label for="salary">ЗП</label>
-                    <input type="text" v-bind:value="salary" class="form-control" placeholder="ЗП" disabled>
+                        <div class="form-item form-item_bold">
+                            <label for="hours">Стоимость часа</label>
+                            <input type="text" id="hours" v-model="form.salaryHours" name="hours" class="form-control" placeholder="Стоимость часа" disabled>
+                        </div>
 
-                    <label for="hours">Стоимость часа</label>
-                    <input type="text" v-model="form.salaryHours" name="hours" class="form-control" placeholder="Стоимость часа" disabled>
-
-                    <label for="hours">Стоимость часа без учета штрафа</label>
-                    <input type="text" v-bind:value = "valueHoursWithoutFine" name = "hours" class="form-control" placeholder="Стоимость часа без учета шрафа" disabled>
-                    
-                    <br>
+                        <div class="form-item form-item_bold">
+                            <label for="hours">Стоимость часа без учета штрафа</label>
+                            <input type="text" id="hours" v-bind:value = "valueHoursWithoutFine" name = "hours" class="form-control" placeholder="Стоимость часа без учета шрафа" disabled>
+                        </div>
+                    </div>
 
                     <button type = "button" v-on:click = "postSalary" class = "btn btn-primary">Сохранить</button>
                 
                 </div>
 
                 <div v-if="isSalaryFixed" class="form-group">
-                    <label for="salary">ЗП</label>
-                    <input type="text" v-model="form.salary" class="form-control" placeholder="ЗП">
 
-                    <label for="close_hours">Закрыто часов</label>
-                    <input type="text"  v-bind:value = "closeHours" class="form-control" placeholder="Закрыто часов" disabled>
+                    <div class="form-item form-item_bold">
+                        <label for="salary">ЗП</label>
+                        <input type="text" v-model="form.salary" class="form-control" placeholder="ЗП">
+                    </div>
 
-                    <label for="fine_hours">Штраф часов</label>
-                    <input type="text"  v-bind:value = "fineHours" class="form-control" placeholder="Штраф часов" disabled>
+                    <div class="form-item form-item_bold">
+                        <label for="close_hours">Закрыто часов</label>
+                        <input type="text"  v-bind:value = "closeHours" class="form-control" placeholder="Закрыто часов" disabled>
+                    </div>
 
-                    <label for="edit_hours">Вручную часов</label>
-                    <input type="text" v-model="form.addHours" class="form-control" placeholder="Вручную часов">
+                    <div class="form-item form-item_bold">
+                        <label for="fine_hours">Штраф часов</label>
+                        <input type="text"  v-bind:value = "fineHours" class="form-control" placeholder="Штраф часов" disabled>
+                    </div>
 
-                    <br>
+                    <div class="form-item form-item_bold">
+                        <label for="edit_hours">Вручную часов</label>
+                        <input type="text" v-model="form.addHours" class="form-control" placeholder="Вручную часов">
+                    </div>
+                </div>
 
-                    <label for="salary">ЗП в ручную</label>
-                    <input type="text" v-model = "form.editSalary" class="form-control" placeholder="ЗП в ручную">
+                <div class="form-group">
 
-                    <label for="salary">ЗП</label>
-                    <input type="text" v-bind:value = "salary" class="form-control" placeholder="ЗП" disabled>
+                    <div class="form-item form-item_bold">
+                        <label for="salary">ЗП в ручную</label>
+                        <input type="text" v-model = "form.editSalary" class="form-control" placeholder="ЗП в ручную">
+                    </div>
 
-                    <label for="hours">Стоимость часа</label>
-                    <input type="text" v-bind:value = "valueHours" class="form-control" placeholder="Стоимость часа" disabled>
+                    <div class="form-item form-item_bold">
+                        <label for="salary">ЗП</label>
+                        <input type="text" v-bind:value = "salary" class="form-control" placeholder="ЗП" disabled>
+                    </div>
 
-                    <br>
+                    <div class="form-item form-item_bold">
+                        <label for="hours">Стоимость часа</label>
+                        <input type="text" v-bind:value = "valueHours" class="form-control" placeholder="Стоимость часа" disabled>
+                    </div>
+                </div>
 
                     <button type = "button" v-on:click = "postSalary" class = "btn btn-primary">Сохранить</button>
                 </div>
             </div>
-        </div>
         <div class="box">
             <div class="box-header with-border">
                 <h3 class="box-title">
@@ -142,49 +175,6 @@
                 required: true
             }
         },
-        created() {
-            axios.get('/api/personal/'+this.personalId+'?date='+this.date)
-                .then(response => {
-              
-                // JSON responses are automatically parsed.
-                    this.get.info = response.data.first;
-                    this.get.salary = response.data.salary;
-                    this.get.trackedTime = _.sumBy(this.get.info.times, 'totaltime');
-                    this.get.times = this.get.info.times;
-                    this.get.timeRecords = response.data.timeRecords;
-                    this.get.costs = response.data.costs.cost;
-                    this.post.costs = response.data.projectCosts;
-
-
-
-
-                    console.log(this.post.costs);
-
-                    if (this.get.salary !== null) {
-                        this.validSalary = '/'+this.get.salary.id;
-                    } else {
-                        this.validSalary = '';
-                    }
-
-                    if (this.get.salary !== null) {
-                        this.form.salaryHours = this.get.salary.hour;
-                        this.form.fix = this.get.salary.salary_fix;
-                        this.form.coef = this.get.salary.coefficient;
-                        this.form.salary = this.get.salary.salary;
-                        this.form.addHours = this.get.salary.edit_hours;
-                        this.form.editSalary = this.get.salary.edit_salary;
-                    }
-                  
-                     
-                })
-                .catch(e => {
-                    console.log(e);
-                })
-        },
-
-        mounted() {
-           console.log('hello Bogdan');
-        },
         data() {
             return {
                 post: {
@@ -217,8 +207,47 @@
                 }
             }
         },
+        created() {
+            axios.get('/api/personal/'+this.personalId+'?date='+this.date)
+                .then(response => {
+              
+                // JSON responses are automatically parsed.
+                    this.get.info = response.data.first;
+                    this.get.salary = response.data.salary;
+                    this.get.trackedTime = _.sumBy(this.get.info.times, 'totaltime');
+                    this.get.times = this.get.info.times;
+                    this.get.timeRecords = response.data.timeRecords;
+                    this.get.costs = response.data.costs.cost;
+                    this.post.costs = response.data.projectCosts;
+
+
+
+
+                    console.log(response.data);
+
+                    if (this.get.salary !== null) {
+                        this.validSalary = '/'+this.get.salary.id;
+                    } else {
+                        this.validSalary = '';
+                    }
+
+                    if (this.get.salary !== null) {
+                        this.form.salaryHours = this.get.salary.hour;
+                        this.form.fix = this.get.salary.salary_fix;
+                        this.form.coef = this.get.salary.coefficient;
+                        this.form.salary = this.get.salary.salary;
+                        this.form.addHours = this.get.salary.edit_hours;
+                        this.form.editSalary = this.get.salary.edit_salary;
+                    }
+                  
+                     
+                })
+                .catch(e => {
+                    console.log(e);
+                })
+        },
         methods: {
-            costs : function () {
+            costs : function () {               
                 for (var timeRecord in this.get.timeRecords) {
                     if (this.get.timeRecords[timeRecord]['worktime'] !== null) {
                         if (this.get.timeRecords[timeRecord]['project_id'] in this.form.editCosts) {
@@ -247,7 +276,6 @@
                     }
                 }
             },
-
             postSalary: function () {
                 var day = new Date();
                
