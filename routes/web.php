@@ -28,7 +28,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     //Personal groups
     Route::get('api/personal/groups', 'Api\Personal\GroupController@getGroups')->name('api.personal.groups');
-    Route::post('api/personal/{personalId}/add/groups', 'Api\Personal\GroupController@addGroup')
+    Route::post('api/personal/{personalId}/add/group', 'Api\Personal\GroupController@addGroup')
         ->name('api.personal.add.groups');
 
     //Personal companies
