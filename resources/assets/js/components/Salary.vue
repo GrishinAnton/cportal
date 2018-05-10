@@ -280,12 +280,9 @@
                     this.get.times = this.get.info.times;
                     this.get.timeRecords = response.data.timeRecords;
                     this.get.costs = response.data.costs.cost;
-                    this.post.costs = response.data.projectCosts;
+                    this.post.costs = response.data.projectCosts; 
 
-
-
-
-                    console.log(response.data);
+                    this.$store.commit('personal/personalInformation', response.data)
 
                     if (this.get.salary !== null) {
                         this.validSalary = '/'+this.get.salary.id;

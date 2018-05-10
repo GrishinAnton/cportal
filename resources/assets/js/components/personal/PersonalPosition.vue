@@ -1,27 +1,32 @@
 <template>
     <div class="flex">
 
-        <div class="input-group mb-3 mr-4" v-if="load.group.length">
+        <div class="input-group mb-3 mr-4" v-if="load.groups.length">
             <form method = "get">
                 <label for="group">Группы</label>
-                <select  class="custom-select" id="group"
-                    v-for="item in load.group" :key="item.id"
+                <select  class="custom-select" id="group"                   
                     v-model="input.group"
                     @change="onChangeGroup()"
                     >
-                    <option :value="item.id">{{ item.name }}</option>
+                    <option 
+                    :value="item.id"
+                     v-for="item in load.groups" :key="item.id"
+                    >{{ item.name }}</option>
                 </select>
             </form>
         </div>
-        <div class="input-group mb-3 mr-4" v-if="load.group.length">
+        <div class="input-group mb-3 mr-4" v-if="load.companies.length">
             <form method = "get">
                 <label for="company">Компании</label>
                 <select class="custom-select" id="company" 
-                    v-for="item in load.company" :key="item.id"
+                    
                     v-model="input.company"
                     @change="onChangeCompany()"
                     >
-                    <option :value="item.id">{{ item.name }}</option>
+                    <option 
+                    :value="item.id"
+                    v-for="item in load.companies" :key="item.id"
+                    >{{ item.name }}</option>
                 </select>
             </form>
         </div> 
@@ -38,26 +43,30 @@
             input: {
                 group: '',
                 company: ''
-            }
-            
+            },
+            persId: '',      
 
         }),
         methods: {
-            onChangeGroup(){
-
-                axios.post('/api/personal/groups')
+            onChangeGroup(){                
+                  
+                axios.post(`/api/personal/${this.input.persId}/add/group`, {
+                    groupId: this.input.group
+                })
                     .then(response => {
-
+                        console.log(response.data)
                     })
                     .catch(e => {
                         console.log(e)
                     })
             },
-            onChangeCompany(){                
+            onChangeCompany(){    
 
-                axios.post('/api/personal/com')
+                axios.post(`/api/personal/${this.input.persId}/add/company`, {
+                    companyId: this.input.company
+                })
                     .then(response => {
-
+                        console.log(response.data)
                     })
                     .catch(e => {
                         console.log(e)
@@ -69,26 +78,27 @@
 
             axios.get('/api/personal/groups')
                 .then(response => {
-                    console.log(response.data)
-                })
+                    this.load.groups = response.data.data
+                   })
                 .catch(e => {
                     console.log(e)
                 })
 
             axios.get('/api/personal/companies')
                 .then(response => {
-                    console.log(response.data)
+                   this.load.companies = response.data.data
                 })
                 .catch(e => {
                     console.log(e)
                 })
 
-             
+            this.$watch(() => this.$store.getters['personal/personalInformation'], () => {
+                this.input.group = this.$store.getters['personal/personalInformation'].first.group_id
+                this.input.company = this.$store.getters['personal/personalInformation'].first.company_id
+                this.input.persId = this.$store.getters['personal/personalInformation'].first.pers_id
+            }); 
         }
     }
-
-    // api/personal/companies
-    // api/personal/groups
 </script>
 
 
