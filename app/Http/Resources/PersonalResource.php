@@ -36,7 +36,7 @@ class PersonalResource extends JsonResource
     private function getSalary($salary)
     {
         if ($salary->isNotEmpty()) {
-            return $salary->edit_salary ? $salary->edit_salary : $salary->salary;
+            return ! empty($salary->edit_salary) ? $salary->edit_salary : $salary->salary;
         }
 
         return 0;
