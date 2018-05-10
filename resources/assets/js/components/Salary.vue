@@ -316,8 +316,12 @@
             },
             fineHours() {
                 this.get.fullEstimatedTime = 0;
+                console.log(this.get.times);
+                
 
-                for (var task in this.get.times) {                        
+                for (var task in this.get.times) {     
+                    console.log(task);
+                                       
                     this.get.fullEstimatedTime += parseFloat(this.get.times[task].tasks.estimated_time);
                 }
 

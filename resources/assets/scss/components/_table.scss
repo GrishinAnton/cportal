@@ -30,6 +30,13 @@
     border-bottom-right-radius: 3px;
     border-bottom-left-radius: 3px;
     padding: 10px;
+
+    &_personal-select-group {
+
+        .input-group {
+            width: auto;
+        }
+    }
 }
 
 .box-footer {
