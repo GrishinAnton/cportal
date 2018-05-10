@@ -19,11 +19,27 @@ window.Vue = require('vue');
 Vue.component('salary', require('./components/Salary'));
 Vue.component('report-index', require('./components/Report'));
 Vue.component('costs', require('./components/finance/Costs'));
-//Vue.component('sidebar', require('./components/sidebar/Sidebar.vue'));
+Vue.component('sidebar', require('./components/sidebar/Sidebar'));
+Vue.component('personal-position', require('./components/personal/PersonalPosition'));
+Vue.component('personal-table', require('./components/personal/PersonalTable'));
 
+import Vuex from 'vuex';
 import BootstrapVue from 'bootstrap-vue';
+
+import personal from './store/personal'
+
+Vue.use(Vuex)
+
 Vue.use(BootstrapVue);
 
+const store = new Vuex.Store({
+    modules: {
+        personal
+    },
+    strict: false
+})
+
 const app = new Vue({
-    el: '#app'
+    el: '#app',
+    store
 });
