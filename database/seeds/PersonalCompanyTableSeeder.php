@@ -16,10 +16,7 @@ class PersonalCompanyTableSeeder extends Seeder
             $personalGroup = PersonalCompany::where('index', $param)->first();
 
             if ($personalGroup) {
-                PersonalCompany::where('index', $param)->update([
-                    'name' => $param['name'],
-                    'index' => $param['index']
-                ]);
+                PersonalCompany::where('index', $param)->update($param);
             } else {
                 PersonalCompany::create($param);
             }
