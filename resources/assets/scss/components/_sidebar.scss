@@ -12,6 +12,9 @@
     //li
     &-item {
 
+        &.active {
+            background-color: lighten($color: #222d32, $amount: 10);
+        }
     }
     //a
     &-link {

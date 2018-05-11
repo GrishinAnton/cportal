@@ -9,9 +9,7 @@ export const personalMixin = {
 
         axios.get('/api/personal/groups')
             .then(response => {
-                this.load.groups = response.data.data
-                console.log(this.load.groups);
-                
+                this.load.groups = response.data.data;              
             })
             .catch(e => {
                 console.log(e)
@@ -19,7 +17,7 @@ export const personalMixin = {
 
         axios.get('/api/personal/companies')
             .then(response => {
-                this.load.companies = response.data.data
+                this.load.companies = response.data.data;
             })
             .catch(e => {
                 console.log(e)

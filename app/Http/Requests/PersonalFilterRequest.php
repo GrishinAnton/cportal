@@ -24,8 +24,8 @@ class PersonalFilterRequest extends FormRequest
     public function rules()
     {
         return [
-            'company' => 'sometimes|exists:personal_companies,id',
-            'group' => 'sometimes|exists:personal_groups,id'
+            'company.*.' => 'sometimes|exists:personal_companies,id',
+            'group.*.' => 'sometimes|exists:personal_groups,id'
         ];
     }
 }
