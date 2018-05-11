@@ -20,10 +20,10 @@ class PersonalResource extends JsonResource
             'last_name' => $this->last_name,
             'email' => $this->email,
             'url' => route('web.personal.show', ['id' => $this->pers_id]),
-            'coefficient' => $this->getCoefficient($this->salary),
+            'coefficient' => $this->getCoefficient($this->salary->first()),
             'closedHours' => $this->times->sum('totaltime'),
             'fine' => $this->getFine($this) < 0 ? 0 : $this->getFine($this),
-            'salary' => $this->getSalary($this->salary)
+            'salary' => $this->getSalary($this->salary->first())
         ];
     }
 
@@ -35,7 +35,7 @@ class PersonalResource extends JsonResource
      */
     private function getSalary($salary)
     {
-        if ($salary->isNotEmpty()) {
+        if ($salary) {
             return ! empty($salary->edit_salary) ? $salary->edit_salary : $salary->salary;
         }
 

@@ -1,7 +1,7 @@
 <template>
     <div>
         <b-nav vertical>
-            <b-nav-item v-for="item in navItems" :key="item.id" :href="item.href">
+            <b-nav-item v-for="item in navItems" :key="item.id" :href="item.href" :class="{'active': item.href == url}">
                 <i :class="item.icon"></i>
                 <span>{{ item.name }}</span>
             </b-nav-item>
@@ -56,9 +56,5 @@
                 }
             ]
         }),
-        mounted(){
-            console.log(this.url);
-            
-        }
     }
 </script>

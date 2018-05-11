@@ -5,23 +5,19 @@
         </div>
         <div class="box-header">
             <div class="flex flex_jc-fs mr-2">
-                <template v-for="variant in ['outline-success']">
-                    <div class="pb-2 pr-2" v-for="item in load.companies" :key="item.id">
-                        <b-button :size="'sm'" :variant="variant">
-                            {{ item.name }}
-                        </b-button>
-                    </div>
-                </template>
+                <div class="pb-2 pr-2" v-for="item in load.companies" :key="item.id">
+                    <b-button :size="'sm'" :variant="'outline-success'">
+                        {{ item.name }}
+                    </b-button>
+                </div>
             </div>
 
             <div class="flex flex_jc-fs mr-2">
-                <template v-for="variant in ['outline-success']">
-                    <div class="pb-2 pr-2" v-for="item in load.groups" :key="item.id">
-                        <b-button :size="'sm'" :variant="variant">
-                            {{ item.name }}
-                        </b-button>
-                    </div>
-                </template>
+                <div class="pb-2 pr-2" v-for="item in load.groups" :key="item.id">
+                    <b-button :size="'sm'" :variant="'outline-success'">
+                        {{ item.name }}
+                    </b-button>
+                </div>
             </div>
         </div>
         
@@ -64,7 +60,18 @@
         mixins: [personalMixin],
         data: ()=> ({
 
-        })
+        }),
+        mounted(){
+            axios.get('/api/personal')
+            .then(response => {
+                console.log("___");
+                
+                console.log(response.data); 
+            })
+            .catch(e => {
+                console.log(e)
+            })
+        }
     }
 </script>
 

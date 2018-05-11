@@ -38,7 +38,8 @@ class PersonalController extends Controller
         }])->with(['salary' => function ($query) use ($month, $year) {
             $query->whereYear('date', $year)
                 ->whereMonth('date', $month)
-                ->orderBy('date', 'desc');
+                ->orderBy('date', 'desc')
+                ->first();
         }])
             ->paginate(25);
 
