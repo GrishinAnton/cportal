@@ -26,7 +26,7 @@ class PersonalController extends Controller
     {
         $personal = $this->personal();
 
-        foreach ($request->all as $key => $filter) {
+        foreach ($request->all() as $key => $filter) {
             $method = 'scope'.ucfirst($key);
 
             try {
