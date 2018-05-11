@@ -59,6 +59,9 @@ Route::group(['middleware' => 'auth'], function () {
     //Report
     Route::get('report', 'ReportController@index')->name('web.report');
 
+    //Employees
+    Route::get('employees', 'EmployeesController@index')->name('web.employees');
+
     //Финансы
     Route::get('finance/costs', 'Finance\CostsController@index');
     Route::put('finance/costs', 'Finance\CostsController@edit');
