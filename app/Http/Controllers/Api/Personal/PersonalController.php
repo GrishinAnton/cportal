@@ -27,10 +27,8 @@ class PersonalController extends Controller
         $personal = $this->personal();
 
         foreach ($request->all() as $key => $filter) {
-            $method = 'scope'.ucfirst($key);
-
             try {
-                $personal->{$method}($filter);
+                $personal->{$key}($filter);
             } catch (\Exception $e) {
                 report($e);
             }

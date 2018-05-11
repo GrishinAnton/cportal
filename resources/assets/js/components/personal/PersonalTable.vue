@@ -75,11 +75,18 @@
                 }  
                 
                 console.log(this.activeGroups);
-                
 
-                axios.get('/api/personal', {
+                var params = {
                     group: this.activeGroups,
                     company: this.activeCompanies
+                };
+
+
+                axios.get('/api/personal', {
+                    params: {
+                        group: this.activeGroups,
+                        company: this.activeCompanies
+                    }
                 })
                 .then(response => {
                     console.log(response.data);
@@ -102,11 +109,12 @@
                 }  
                 
                 console.log(this.activeCompanies);
-                
 
                 axios.get('/api/personal', {
-                    group: this.activeGroups,
-                    company: this.activeCompanies
+                    params: {
+                        group: this.activeGroups,
+                        company: this.activeCompanies
+                    }
                 })
                 .then(response => {
                     console.log(response.data);
