@@ -34,7 +34,7 @@
                         <th>Штрафы</th>
                         <th>ЗП</th>
                     </tr>
-                    <tr>
+                    <tr v-for="item in personalInformation" :key="item.id">
                         <td></td>
                         <td><a href = "/"></a></td>
                         <td></td>
@@ -59,14 +59,14 @@
     export default {
         mixins: [personalMixin],
         data: ()=> ({
-
+            personalInformation: []
         }),
         mounted(){
             axios.get('/api/personal')
             .then(response => {
-                console.log("___");
+                this.personalInformation = response.data.data
+                console.log(this.personalInformation);
                 
-                console.log(response.data); 
             })
             .catch(e => {
                 console.log(e)
