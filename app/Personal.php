@@ -106,7 +106,7 @@ class Personal extends Model
      */
     public function scopeCompany($query, $companyId)
     {
-        return $query->where('company_id', $companyId);
+        return $query->whereIn('company_id', $companyId);
     }
 
     /**
@@ -118,6 +118,6 @@ class Personal extends Model
      */
     public function scopeGroup($query, $groupId)
     {
-        return $query->where('group_id', $groupId);
+        return $query->whereIn('group_id', $groupId);
     }
 }
