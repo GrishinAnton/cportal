@@ -6,7 +6,7 @@
         <div class="box-header">
             <div class="flex flex_jc-fs mr-2">
                 <div class="pb-2 pr-2" v-for="item in load.companies" :key="item.id">
-                    <b-button :size="'sm'" :variant="activeGroups.indexOf(item.id) === -1 ? 'outline-success' : 'success'" @click.prevent="onGroupClick(item.id)">
+                    <b-button :size="'sm'" :variant="activeGroups.indexOf(item.id) === -1 ? 'outline-success' : 'success'" @click.prevent="onChange(item.id, 'group')">
                         {{ item.name }}
                     </b-button>
                 </div>
@@ -14,7 +14,7 @@
 
             <div class="flex flex_jc-fs mr-2">
                 <div class="pb-2 pr-2" v-for="item in load.groups" :key="item.id">
-                    <b-button :size="'sm'" :variant="activeCompanies.indexOf(item.id) === -1 ? 'outline-success' : 'success'" @click.prevent="onCompanyClick(item.id)">
+                    <b-button :size="'sm'" :variant="activeCompanies.indexOf(item.id) === -1 ? 'outline-success' : 'success'" @click.prevent="onChange(item.id, 'company')">
                         {{ item.name }}
                     </b-button>
                 </div>
@@ -64,51 +64,29 @@
             activeCompanies: []
         }),
         methods: {
-            onGroupClick(id){
+            onChange(id, item){
 
-                var arrPosition = this.activeGroups.indexOf(id);
+                var arrName;
+
+                if(item === 'group'){
+                    arrName = this.activeGroups;
+                }
+                if(item === 'company'){
+                    arrName = this.activeCompanies;      
+                }
+
+                var arrPosition = arrName.indexOf(id);
 
                 if(arrPosition === -1){
-                    this.activeGroups.push(id)
+                    arrName.push(id);
                 } else {         
-                    this.activeGroups.splice(arrPosition, 1)
-                }  
-                
-                console.log(this.activeGroups);
+                    arrName.splice(arrPosition, 1);
+                } 
 
-                var params = {
-                    group: this.activeGroups,
-                    company: this.activeCompanies
-                };
-
-
-                axios.get('/api/personal', {
-                    params: {
-                        group: this.activeGroups,
-                        company: this.activeCompanies
-                    }
-                })
-                .then(response => {
-                    console.log(response.data);
-                    
-                })
-                .catch(e=> {
-                    console.log(e);
-                    
-                })
+                this.requestFilter()
                 
             },
-            onCompanyClick(id){
-
-                var arrPosition = this.activeCompanies.indexOf(id);
-
-                if(arrPosition === -1){
-                    this.activeCompanies.push(id)
-                } else {         
-                    this.activeCompanies.splice(arrPosition, 1)
-                }  
-                
-                console.log(this.activeCompanies);
+            requestFilter(){
 
                 axios.get('/api/personal', {
                     params: {
@@ -117,26 +95,44 @@
                     }
                 })
                 .then(response => {
-                    console.log(response.data);
-                    
+
+                    this.activeGroups.length ? localStorage.setItem('activeGroup', this.activeGroups) : localStorage.removeItem('activeGroup');
+
+                    this.activeCompanies.length ? localStorage.setItem('activeCompanies', this.activeCompanies) : localStorage.removeItem('activeCompanies');
+              
+                    this.personalInformation = response.data.data;
                 })
                 .catch(e=> {
                     console.log(e);
                     
                 })
-                
-            }
+
+            }            
         },
         mounted(){
-            axios.get('/api/personal')
-            .then(response => {
-                this.personalInformation = response.data.data
-                console.log(this.personalInformation);
+            if(!localStorage.length){
                 
-            })
-            .catch(e => {
-                console.log(e)
-            })
+                axios.get('/api/personal')
+                    .then(response => {
+                        this.personalInformation = response.data.data;    
+                    })
+                    .catch(e => {
+                        console.log(e);
+                    })
+            } else {      
+                
+                var localGroup = localStorage.getItem('activeGroup');
+                var localCompany = localStorage.getItem('activeCompanies');
+                 
+                var arrGroup = localGroup ? localGroup.split(',') : localStorage.removeItem('activeGroup');
+                this.activeGroups = _.map(arrGroup, _.parseInt) 
+
+                var arrCompany = localCompany ? localCompany.split(',') : localStorage.removeItem('activeCompanies');     
+                this.activeCompanies = _.map(arrCompany, _.parseInt) 
+
+                this.requestFilter()
+
+            } 
         }
     }
 </script>
