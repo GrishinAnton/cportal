@@ -35,7 +35,7 @@ class PersonalController extends Controller
             }
         }
 
-        return PersonalResource::collection($personal->paginate(10))
+        return PersonalResource::collection($personal->paginate(50))
             ->additional(['success' => true]);
     }
 
