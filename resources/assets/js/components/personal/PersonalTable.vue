@@ -37,11 +37,11 @@
                     </tr>
                     <tr v-for="item in personalInformation" :key="item.id">
                         <td>{{ item.id }}</td>
-                        <td><a :href="item.url">{{ item.first_name }} {{ item.last_name }}</a></td>
+                        <td><a :href="item.url">{{ item.firstName }} {{ item.lastName }}</a></td>
                         <td>{{ item.email }}</td>
                         <td>{{ item.coefficient }}</td>
                         <td>{{ item.closedHours }}</td>
-                        <td>1</td>
+                        <td>{{ item.previousWeeksCloseHours }}</td>
                         <td>{{ item.fine }}</td>
                         <td>{{ item.solary }}</td>
                        </tr>
