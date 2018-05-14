@@ -26,7 +26,7 @@
                     <div class="form-item form-item_bold mr-5">
                         <label for="hour">Стоимость часа</label>
                         <div class="flex">
-                            <input type="text" name="hours" :value="staticData.salaryHour" class="form-control mr-1" placeholder="Стоимость часа" disabled>
+                            <input type="text" name="hours" :value="staticData.salaryHour.toFixed(2)" class="form-control mr-1" placeholder="Стоимость часа" disabled>
                             <input type="text" id="hour" class="form-control" @input="onChangeSalaryHour($event)" v-model="changeData.salaryHour" placeholder="Стоимость часа">
                         </div> 
                     </div> 
@@ -52,13 +52,13 @@
                     <div class="form-item form-item_bold">
                         <label for="zp">ЗП</label>
                         <div class="flex">
-                            <input type="text" :value="staticData.salary" class="form-control mr-1" placeholder="Зарплата" disabled>
+                            <input type="text" :value="staticData.salary.toFixed(2)" class="form-control mr-1" placeholder="Зарплата" disabled>
                             <input type="text" id="zp" @input="onChangeSalary($event)" v-model="changeData.salary" class="form-control" placeholder="Зарплата">
                         </div> 
                     </div>
                 </div>
 
-                <button type = "button" @click="" class = "btn btn-primary w-15">Сохранить</button>
+                <button type = "button" @click="saveSalary()" class = "btn btn-primary w-15">Сохранить</button>
             </div>
         </div>
 
@@ -235,6 +235,9 @@
         date: {
             type: String,
             required: true
+        },
+        penaltyTime: {
+            type: String
         }
     },
     data: () => ({
@@ -248,20 +251,72 @@
         },
         staticData: {
             salaryHour: 0,
-            closeHours: 150,
-            penaltyTime: 10,
+            closeHours: 0,
+            penaltyTime: 0,
             salary: 0
+        },
+        postData: {
+            salaryId: ''
         }
     }),
     methods: {
-        onChangeSalaryHour(e){           
-            this.staticData.salary = e.target.value * ((this.changeData.closeHours || this.staticData.closeHours) - this.staticData.penaltyTime)            
+        onChangeSalaryHour(e){
+            this.staticData.salary = e.target.value * ((this.changeData.closeHours || this.staticData.closeHours) - (this.changeData.penaltyTime || this.staticData.penaltyTime))      
         },
         onChangeSalary(e){
             this.staticData.salary = e.target.value
             
             this.staticData.salaryHour = e.target.value / (this.changeData.closeHours || this.staticData.closeHours)
+        },
+        saveSalary(){
+            var day = new Date();
+            console.log(this.changeData.closeHours);
+                    
+          
+            axios.post(`/api/personal/${this.personalId}/salary/store/${this.postData.salaryId}`, {
+                salaryFix: this.changeData.salaryHour || this.staticData.salaryHour,
+                salary: this.changeData.salary || this.staticData.salary,
+                coef: this.changeData.coef,
+                hour: this.changeData.salaryHour || this.staticData.salaryHour,
+                date: this.date+'-'+day.getDay(),
+                editHours: this.changeData.salaryHour || this.staticData.salaryHour,
+                editSalary: this.changeData.closeHours || this.staticData.closeHours
+            })
+            .then(response => {
+                console.log(response);
+                
+            })
+            .catch(e=> {
+                console.log(e);
+            });
         }
+    },
+    created() {
+        console.log(this.date);
+
+        this.staticData.penaltyTime = this.penaltyTime ? this.penaltyTime : 0;        
+        
+         axios.get('/api/personal/'+this.personalId+'?date='+this.date)
+            .then(response => {
+
+                var data = response.data
+
+                //отправляем данные в store чтобы загрузить группы
+                this.$store.commit('personal/personalInformation', data)  
+                
+                console.log(data);
+                
+                this.changeData.coef = data.salary ? data.salary.coefficient : 0;
+                this.staticData.closeHours = data.first ? Math.trunc(_.sumBy(data.first.times, 'totaltime')) : '';
+                this.staticData.salary = data.salary ? data.salary.salary : '';
+                this.staticData.salaryHour = data.salary ? data.salary.edit_hours : '';
+
+                this.postData.salaryId = data.salary ? data.salary.id : '';
+            })
+            .catch(e => {
+                console.log(e);
+            })
+
     }
  }   
 </script>  

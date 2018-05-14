@@ -29,8 +29,9 @@
                         <th style="width: 10px">#</th>
                         <th>Имя Фамилия</th>
                         <th>E-mail</th>
-                        <th>Коэффициент</th>
-                        <th>Закрыто часов</th>
+                        <th>К</th>
+                        <th>Закрыто ч.</th>
+                        <th>Закрыто ч. неделя</th>
                         <th>Штрафы</th>
                         <th>ЗП</th>
                     </tr>
@@ -40,6 +41,7 @@
                         <td>{{ item.email }}</td>
                         <td>{{ item.coefficient }}</td>
                         <td>{{ item.closedHours }}</td>
+                        <td>1</td>
                         <td>{{ item.fine }}</td>
                         <td>{{ item.solary }}</td>
                        </tr>
@@ -48,20 +50,35 @@
         </div>
 
         <div class="box-footer">
-           <!-- pagination -->
+            <pagination @change="onPagination($event)" :options="paginationData"></pagination>
         </div>
     </div>
 </template>
 
 <script>
-    import { personalMixin } from './../../mixins/personalMixin'
+    import { personalMixin } from './../../mixins/personalMixin';
+    import Pagination from './../pagination/Pagination';
 
     export default {
         mixins: [personalMixin],
+        components: {
+            Pagination
+        },
         data: ()=> ({
             personalInformation: [],
             activeGroups: [],
-            activeCompanies: []
+            activeCompanies: [],
+            paginationData: {
+                links: {
+                    first: '',
+                    last: '',
+                    next: '',
+                    prev: ''
+                },
+                currentPage: 0,
+                perPage: 0,
+                total: 0
+            }
         }),
         methods: {
             onChange(id, item){
@@ -107,14 +124,40 @@
                     
                 })
 
-            }            
+            },
+            onPagination(data){
+
+                axios.get(`/api/personal`, {
+                    params: {
+                        page: data
+                    }
+                })
+                    .then(response => {
+                        this.personalInformation = response.data.data;   
+
+                        //pagination
+                        this.paginationData.links = response.data.links
+                        this.paginationData.currentPage = response.data.meta.current_page
+                        this.paginationData.perPage = response.data.meta.per_page
+                        this.paginationData.total = response.data.meta.total
+                    })
+                    .catch(e => {
+                        console.log(e);
+                    }) 
+            }
         },
         mounted(){
             if(!localStorage.length){
                 
                 axios.get('/api/personal')
                     .then(response => {
-                        this.personalInformation = response.data.data;    
+                        this.personalInformation = response.data.data;   
+
+                        //pagination
+                        this.paginationData.links = response.data.links
+                        this.paginationData.currentPage = response.data.meta.current_page
+                        this.paginationData.perPage = response.data.meta.per_page
+                        this.paginationData.total = response.data.meta.total
                     })
                     .catch(e => {
                         console.log(e);

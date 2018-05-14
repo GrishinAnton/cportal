@@ -22,11 +22,12 @@ Vue.component('costs', require('./components/finance/Costs'));
 Vue.component('sidebar', require('./components/sidebar/Sidebar'));
 Vue.component('personal-position', require('./components/personal/PersonalPosition'));
 Vue.component('personal-table', require('./components/personal/PersonalTable'));
+Vue.component('employees-card', require('./components/employees/EmployeesCard'));
 
 import Vuex from 'vuex';
 import BootstrapVue from 'bootstrap-vue';
 
-import personal from './store/personal'
+import personal from './store/personal';
 
 Vue.use(Vuex);
 
