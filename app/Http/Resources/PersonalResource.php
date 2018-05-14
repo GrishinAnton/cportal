@@ -2,7 +2,9 @@
 
 namespace App\Http\Resources;
 
+use App\PersonalTime;
 use Illuminate\Http\Resources\Json\JsonResource;
+use DateTime;
 
 class PersonalResource extends JsonResource
 {
@@ -16,15 +18,36 @@ class PersonalResource extends JsonResource
     {
         return [
             'id' => $this->pers_id,
-            'first_name' => $this->first_name,
-            'last_name' => $this->last_name,
+            'firstName' => $this->first_name,
+            'lastName' => $this->last_name,
             'email' => $this->email,
             'url' => route('web.personal.show', ['id' => $this->pers_id]),
             'coefficient' => $this->getCoefficient($this->salary->first()),
-            'closedHours' => $this->times->sum('totaltime'),
-            'fine' => $this->getFine($this) < 0 ? 0 : $this->getFine($this),
-            'salary' => $this->getSalary($this->salary->first())
+            'closedHours' => round($this->times->sum('totaltime'), 2),
+            'fine' => round($this->getFine($this) < 0 ? 0 : $this->getFine($this)),
+            'salary' => $this->getSalary($this->salary->first()),
+            'previousWeeksCloseHours' => round($this->previousWeeksCloseHours()->sum('worktime'), 2),
+            'group' => (new GroupResource($this->group)),
+            'company' => (new CompanyResource($this->company))
         ];
+    }
+
+    /**
+     * Get work time previous weeks
+     *
+     * @return mixed
+     */
+    private function previousWeeksCloseHours()
+    {
+        $date = new DateTime('previous week monday');
+
+        return PersonalTime::select('worktime')
+            ->where('pers_id', $this->pers_id)
+            ->whereDay('date', '>=', $date->format('d'))
+            ->whereDay('date', '<=', $date->format('d') + 6)
+            ->whereMonth('date', $date->format('m'))
+            ->whereYear('date', $date->format('Y'))
+            ->get();
     }
 
     /**

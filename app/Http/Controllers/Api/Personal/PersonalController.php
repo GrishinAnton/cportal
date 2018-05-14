@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Personal;
 
 use App\Http\Requests\PersonalFilterRequest;
+use App\Http\Resources\CompanyGroupResource;
 use App\Http\Resources\PersonalResource;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -39,6 +40,24 @@ class PersonalController extends Controller
     }
 
     /**
+     * Get company and group personal
+     *
+     * @param $personalId
+     * @return CompanyGroupResource
+     */
+    public function getCompanyGroupPersonal($personalId)
+    {
+        $personal = Personal::select('company_id', 'group_id')
+            ->where('pers_id', $personalId)
+            ->with('company', 'group')
+            ->firstOrFail();
+
+        return (new CompanyGroupResource($personal))->additional([
+            'success' => true
+        ]);
+    }
+
+    /**
      * Personal query
      *
      * @return mixed
@@ -67,7 +86,7 @@ class PersonalController extends Controller
                 $query->whereYear('date', $year)
                     ->whereMonth('date', $month)
                     ->orderBy('date', 'desc');
-            }]);
+            }])->with(['company', 'group']);
 
         return $personal;
     }

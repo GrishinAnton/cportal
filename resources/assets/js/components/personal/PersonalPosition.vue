@@ -69,8 +69,8 @@
                     .then(response => {
 
                         if(response.data.success){
-                            this.alertVariant = 'success'
-                            this.dismissCountDown = 5
+                            this.alertVariant = 'success';
+                            this.dismissCountDown = 5;
                         }
                     })
                     .catch(e => {
@@ -85,8 +85,8 @@
                     .then(response => {
                         
                         if(response.data.success){
-                            this.alertVariant = 'success'
-                            this.dismissCountDown = 5
+                            this.alertVariant = 'success';
+                            this.dismissCountDown = 5;
                         }
                     })
                     .catch(e => {
