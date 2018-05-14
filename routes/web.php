@@ -61,6 +61,9 @@ Route::group(['middleware' => 'auth'], function () {
     //Report
     Route::get('report', 'ReportController@index')->name('web.report');
 
+    //Productivity
+    Route::get('productivity', 'ProductivityController@index')->name('web.productivity');
+
     //Employees
     Route::get('employees', 'EmployeesController@index')->name('web.employees');
 

@@ -57,12 +57,18 @@
                             name: "Проекты",
                             href: '/projects',
                             id: 3.2
-                        }, 
+                        },
+                        {
+                            icon: "fa fa-fw fa-file",
+                            name: "Отчет",
+                            href: '/report',
+                            id: 3.3
+                        },
                         {
                             icon: "fa fa-fw fa-file",
                             name: "Выработка",
-                            href: '/report',
-                            id: 3.3
+                            href: '/productivity',
+                            id: 3.4
                         }
                     ],
                     id: 3
