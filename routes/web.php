@@ -41,6 +41,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('api/personal/{pers_id}/salary/store/{salary_id?}', 'Api\Personal\PersonalController@storeSalary');
     Route::post('api/personal/{pers_id}/costs/store', 'Api\Personal\PersonalController@storeCosts');
     Route::get('api/personal', 'Api\Personal\PersonalController@index')->name('web.personal.index');
+    Route::get('api/personal/{id}/group-company', 'Api\Personal\PersonalController@getCompanyGroupPersonal')
+        ->name('web.personal.company.group');
 
     //Personal
     Route::get('personal', 'PersonalController@index');
