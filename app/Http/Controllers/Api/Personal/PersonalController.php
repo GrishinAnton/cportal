@@ -1,15 +1,14 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Personal;
 
+use App\Http\Requests\PersonalFilterRequest;
+use App\Http\Resources\PersonalResource;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Personal;
 use DB;
-use App\PersonalTime;
-use App\Project;
 use App\ProjectCost;
-use Carbon\Carbon;
 use App\Salary;
 use App\Cost;
 use App\Http\Requests\EditSalaryRequest;
@@ -19,30 +18,67 @@ use DateTime;
 class PersonalController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Index
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function index()
+    public function index(PersonalFilterRequest $request)
     {
-        //
+        $personal = $this->personal();
+
+        foreach ($request->all() as $key => $filter) {
+            try {
+                $personal->{$key}($filter);
+            } catch (\Exception $e) {
+                report($e);
+            }
+        }
+
+        return PersonalResource::collection($personal->paginate(25))
+            ->additional(['success' => true]);
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Personal query
      *
-     * @return \Illuminate\Http\Response
+     * @return mixed
      */
-    public function create()
+    private function personal()
     {
-        //
+        $date = new DateTime('-1 month');
+
+        $year = $date->format('Y');
+        $month = $date->format('m');
+
+        $personal = Personal::where('is_active', 1)
+            ->with(['times' => function ($query) use ($month, $year) {
+                $query->select(DB::raw('sum(worktime) as totaltime'), 'worktime', 'pers_id', 'task_id')
+                    ->whereYear('date', $year)
+                    ->whereMonth('date', $month)
+                    ->groupBy('task_id')
+                    ->groupBy('pers_id');
+            }])->with(['tasks' => function ($query) use ($month, $year) {
+                $query->groupBy('task_id')
+                    ->groupBy('personal_times.pers_id')
+                    ->groupBy('personal_times.task_id')
+                    ->whereMonth('personal_times.date', $month)
+                    ->whereYear('personal_times.date', $year);
+            }])->with(['salary' => function ($query) use ($month, $year) {
+                $query->whereYear('date', $year)
+                    ->whereMonth('date', $month)
+                    ->orderBy('date', 'desc');
+            }]);
+
+        return $personal;
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param EditSalaryRequest $request
+     * @param $pers_id
+     * @param null $salary_id
+     * @return \Illuminate\Http\JsonResponse
      */
     public function storeSalary(EditSalaryRequest $request, $pers_id, $salary_id = null)
     {
@@ -70,9 +106,9 @@ class PersonalController extends Controller
     /**
      * Add costs for projects first worker
      *
+     * @param $pers_id
      * @param WriteOffCostsRequest $request
-     * @param [integer] $id
-     * @return Illuminate\Http\Redirect
+     * @return \Illuminate\Http\JsonResponse
      */
     public function storeCosts($pers_id, WriteOffCostsRequest $request)
     {
@@ -101,8 +137,9 @@ class PersonalController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param $id
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show($id, Request $request)
     {

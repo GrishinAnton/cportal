@@ -26,14 +26,25 @@ Route::group(['middleware' => 'auth'], function () {
     //Главная
     Route::get('dashboard', 'HomeController@index');
 
+    //Personal groups
+    Route::get('api/personal/groups', 'Api\Personal\GroupController@getGroups')->name('api.personal.groups');
+    Route::post('api/personal/{personalId}/add/group', 'Api\Personal\GroupController@addGroup')
+        ->name('api.personal.add.groups');
+
+    //Personal companies
+    Route::get('api/personal/companies', 'Api\Personal\CompanyController@getCompanies')->name('api.personal.companies');
+    Route::post('api/personal/{personalId}/add/company', 'Api\Personal\CompanyController@addCompany')
+        ->name('api.personal.add.company');
+
     //Resourse Personal
-    Route::get('api/personal/{id}', 'Api\PersonalController@show');
-    Route::post('api/personal/{pers_id}/salary/store/{salary_id?}', 'Api\PersonalController@storeSalary');
-    Route::post('api/personal/{pers_id}/costs/store', 'Api\PersonalController@storeCosts');
+    Route::get('api/personal/{id}', 'Api\Personal\PersonalController@show')->name('api.personal.show');
+    Route::post('api/personal/{pers_id}/salary/store/{salary_id?}', 'Api\Personal\PersonalController@storeSalary');
+    Route::post('api/personal/{pers_id}/costs/store', 'Api\Personal\PersonalController@storeCosts');
+    Route::get('api/personal', 'Api\Personal\PersonalController@index')->name('web.personal.index');
 
     //Personal
     Route::get('personal', 'PersonalController@index');
-    Route::get('personal/{id}', 'PersonalController@show');
+    Route::get('personal/{id}', 'PersonalController@show')->name('web.personal.show');
     Route::post('personal/{pers_id}/is-active/store', 'PersonalController@store');
     
     //Projects
@@ -47,6 +58,9 @@ Route::group(['middleware' => 'auth'], function () {
 
     //Report
     Route::get('report', 'ReportController@index')->name('web.report');
+
+    //Employees
+    Route::get('employees', 'EmployeesController@index')->name('web.employees');
 
     //Финансы
     Route::get('finance/costs', 'Finance\CostsController@index');

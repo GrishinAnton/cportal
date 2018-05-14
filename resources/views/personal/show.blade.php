@@ -3,41 +3,52 @@
 @section('title', ''.$first->first_name.' '.$first->last_name.'')
 
 @section('content_header')
-    <h1>{{ $first->first_name }} {{ $first->last_name }}</h1>
+    <h1 class="h1">{{ $first->first_name }} {{ $first->last_name }}</h1>
 @stop
 
 @section('content')
 @if($first->times->isNotEmpty())
-<div class="box">
-    <div class="box-header with-border">
-        <h3 class="box-title">
-            {{ $first->first_name }} {{ $first->last_name }}
-        </h3>
-        <div class = "pull-right">
-            <form method = "post" action = "/personal/{{ $first->pers_id }}/is-active/store">
-                {{ csrf_field() }}
-                @if ($first->is_active)
-                    <button name = "is_active" value = "0" type = "submit" class = "btn btn-danger">Деактивировать</button>
-                @else
-                    <button name = "is_active" value = "1" type = "submit" class = "btn btn-success">Активировать</button>
-                @endif
-            </form>
+    <div class="box">
+        <div class="box-header flex flex_jc-sb">
+            <h3 class="box-title">
+                {{ $first->first_name }} {{ $first->last_name }}
+            </h3>
+            <div class="col-2 flex flex_jc-fe">
+                <form method = "post" action = "/personal/{{ $first->pers_id }}/is-active/store">
+                    {{ csrf_field() }}
+                    @if ($first->is_active)
+                        <button name = "is_active" value = "0" type = "submit" class = "btn btn-danger">Уволить</button>
+                    @else
+                        <button name = "is_active" value = "1" type = "submit" class = "btn btn-success">Восстановить</button>
+                    @endif
+                </form>
+            </div>
         </div>
-    </div>
-    <!-- /.box-header -->
-    <div class="box-body">
-        <form method = "get">
-            <select style = "margin-bottom: 5px" name="date" onchange="this.form.submit()">
-                @foreach($dates as $key => $date)
-                    <option {{ Request::get('date') == $key ? 'selected' : '' }} value = "{{ $key }}">{{ $date }}</option>
-                @endforeach
-            </select>
-        </form>
+        <div class="box-body box-body_personal-select-group flex flex_jc-fs">    
+            <div class="input-group mb-3 mr-4">
+                <form method = "get">
+                    <label for="mounth">Месяц</label>
+                    <select class="custom-select" id="mounth" name="date"  onchange="this.form.submit()">
+                        @foreach($dates as $key => $date)
+                                <option {{ Request::get('date') == $key ? 'selected' : '' }} value = "{{ $key }}">{{ $date }}</option>
+                            @endforeach
+                    </select>
+                </form>
+            </div>
+
+            <personal-position></personal-position>          
+        </div>
         <?php
-            $coefficient = isset($salary->coefficient) ? $salary->coefficient : 1.1;
-        ?>
-        
+                $coefficient = isset($salary->coefficient) ? $salary->coefficient : 1.1;
+            ?>
+    </div>
+    <div class="box">
         <table class="table table-striped">
+            <div class="box-header with-border">
+                <h3 class="box-title">
+                    Часы
+                </h3>
+            </div>
             <tbody>
                 <tr>
                     <th style="width: 10px">Название задачи</th>
@@ -79,9 +90,9 @@
                         @endif
                         <td>
                             @if (round($time->tasks->estimated_time / $time->totaltime, 2) * 100 > 100)
-                                <span class="badge bg-red">{{ round($time->tasks->estimated_time / $time->totaltime, 2) * 100 }} %</span>
+                                <span class="badge badge-danger">{{ round($time->tasks->estimated_time / $time->totaltime, 2) * 100 }} %</span>
                             @else
-                                <span class="badge bg-green">{{ round($time->tasks->estimated_time / $time->totaltime, 2) * 100 }} %</span>
+                                <span class="badge badge-success">{{ round($time->tasks->estimated_time / $time->totaltime, 2) * 100 }} %</span>
                             @endif
                         </td>
                         
@@ -107,8 +118,8 @@
                 </tr>
             </tbody>
         </table>
-        </div>
-        </div>
+    </div>        
+        
         
         <salary date = "{{ Request::filled('date') ? Request::get('date') : date('Y-m') }}" :personal-id = "{{ $first->pers_id }}"></salary>
 

@@ -7,9 +7,6 @@
 
 require('./bootstrap');
 
-require('./../../../node_modules/admin-lte/plugins/iCheck/icheck.js');
-
-require('./../../../node_modules/admin-lte/dist/js/adminlte.js');
 
 window.Vue = require('vue');
 
@@ -19,17 +16,30 @@ window.Vue = require('vue');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-$(function () {
-    $('input').iCheck({
-        checkboxClass: 'icheckbox_square-blue',
-        radioClass: 'iradio_square-blue',
-        increaseArea: '20%'
-    });
+Vue.component('salary', require('./components/Salary'));
+Vue.component('report-index', require('./components/Report'));
+Vue.component('costs', require('./components/finance/Costs'));
+Vue.component('sidebar', require('./components/sidebar/Sidebar'));
+Vue.component('personal-position', require('./components/personal/PersonalPosition'));
+Vue.component('personal-table', require('./components/personal/PersonalTable'));
+
+import Vuex from 'vuex';
+import BootstrapVue from 'bootstrap-vue';
+
+import personal from './store/personal'
+
+Vue.use(Vuex);
+
+Vue.use(BootstrapVue);
+
+const store = new Vuex.Store({
+    modules: {
+        personal
+    },
+    strict: false
 });
 
-Vue.component('salary', require('./components/Salary.vue'));
-Vue.component('report-index', require('./components/Report.vue'));
-
 const app = new Vue({
-    el: '#app'
+    el: '#app',
+    store
 });

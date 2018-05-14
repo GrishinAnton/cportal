@@ -3,17 +3,17 @@
 @section('title', 'Проекты')
 
 @section('content_header')
-    <h1>Проекты</h1>
+    <h1 class="h1">Проекты</h1>
 @stop
 
 @section('content')
 <div class="box">
-    <div class="box-header with-border">
+    <div class="box-header">
         <h3 class="box-title">Список проектов</h3>
     </div>
     <!-- /.box-header -->
     <div class="box-body">
-        <table class="table table-striped">
+        <table class="table table-hover table-bordered">
             <tbody>
                 <tr>
                     <th style="width: 10px">#</th>
