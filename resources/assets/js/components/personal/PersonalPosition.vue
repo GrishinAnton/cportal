@@ -45,12 +45,16 @@
 
     export default {
         mixins: [personalMixin],
+        props: {
+            personalId: {
+                type: Number
+            }
+        },
         data: () => ({            
             input: {
                 group: '',
                 company: ''
             },
-            persId: '',
             dismissSecs: 5,
             dismissCountDown: 0,
             alertVariant: ''
@@ -59,7 +63,7 @@
         methods: {
             onChangeGroup(){                
                   
-                axios.post(`/api/personal/${this.input.persId}/add/group`, {
+                axios.post(`/api/personal/${this.personalId}/add/group`, {
                     groupId: this.input.group
                 })
                     .then(response => {
@@ -75,7 +79,7 @@
             },
             onChangeCompany(){    
 
-                axios.post(`/api/personal/${this.input.persId}/add/company`, {
+                axios.post(`/api/personal/${this.personalId}/add/company`, {
                     companyId: this.input.company
                 })
                     .then(response => {
@@ -96,11 +100,23 @@
         },
         mounted(){
 
-            this.$watch(() => this.$store.getters['personal/personalInformation'], () => {               
-                this.input.group = this.$store.getters['personal/personalInformation'].first.group_id
-                this.input.company = this.$store.getters['personal/personalInformation'].first.company_id
-                this.input.persId = this.$store.getters['personal/personalInformation'].first.pers_id
-            }); 
+            console.log(this.personalId);
+            
+
+            // axios.get(`/api/personal/${this.presonalId}`)
+            //     .then(response => {
+
+            //         this.input.group = 
+            //         this.input.company = 
+            //     })
+            //     .catch(e=> {
+            //         console.log(e)
+            //     })
+
+            // this.$watch(() => this.$store.getters['personal/personalInformation'], () => {               
+            //     this.input.group = this.$store.getters['personal/personalInformation'].first.group_id
+            //     this.input.company = this.$store.getters['personal/personalInformation'].first.company_id
+            // }); 
         }
     }
 </script>

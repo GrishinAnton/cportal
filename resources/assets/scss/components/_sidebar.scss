@@ -10,9 +10,11 @@
 //ul
 .nav {
     //li
+    
     &-item {
+        position: relative;
 
-        &.active {
+        &.active > a {
             background-color: lighten($color: #222d32, $amount: 10);
         }
     }
@@ -30,5 +32,34 @@
             background: #1e282c;
         }
 
+    }
+}
+
+.submenu-toggle {
+    position: absolute;
+    
+    right: 20px;
+    top: 11px;
+    width: 30px;
+    height: 30px;
+
+    text-align: center;
+    line-height: 30px;
+
+    color: #fff;
+
+    cursor: pointer;
+}
+
+.nav-submenu {
+    display: none;
+    user-select: none;
+
+    &-show {
+        display: block;
+    }
+
+    .nav-item a {
+        padding-left: 40px;
     }
 }

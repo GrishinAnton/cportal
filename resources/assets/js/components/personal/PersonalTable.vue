@@ -118,6 +118,15 @@
                     this.activeCompanies.length ? localStorage.setItem('activeCompanies', this.activeCompanies) : localStorage.removeItem('activeCompanies');
               
                     this.personalInformation = response.data.data;
+
+                    console.log(response);
+                    
+
+                    //pagination
+                    this.paginationData.links = response.data.links
+                    this.paginationData.currentPage = response.data.meta.current_page
+                    this.paginationData.perPage = response.data.meta.per_page
+                    this.paginationData.total = response.data.meta.total
                 })
                 .catch(e=> {
                     console.log(e);

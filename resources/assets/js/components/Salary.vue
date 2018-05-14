@@ -26,7 +26,7 @@
                     <div class="form-item form-item_bold mr-5">
                         <label for="hour">Стоимость часа</label>
                         <div class="flex">
-                            <input type="text" name="hours" :value="staticData.salaryHour.toFixed(2)" class="form-control mr-1" placeholder="Стоимость часа" disabled>
+                            <input type="text" name="hours" :value="staticData.salaryHour" class="form-control mr-1" placeholder="Стоимость часа" disabled>
                             <input type="text" id="hour" class="form-control" @input="onChangeSalaryHour($event)" v-model="changeData.salaryHour" placeholder="Стоимость часа">
                         </div> 
                     </div> 
@@ -52,7 +52,7 @@
                     <div class="form-item form-item_bold">
                         <label for="zp">ЗП</label>
                         <div class="flex">
-                            <input type="text" :value="staticData.salary.toFixed(2)" class="form-control mr-1" placeholder="Зарплата" disabled>
+                            <input type="text" :value="staticData.salary" class="form-control mr-1" placeholder="Зарплата" disabled>
                             <input type="text" id="zp" @input="onChangeSalary($event)" v-model="changeData.salary" class="form-control" placeholder="Зарплата">
                         </div> 
                     </div>
@@ -269,9 +269,7 @@
             this.staticData.salaryHour = e.target.value / (this.changeData.closeHours || this.staticData.closeHours)
         },
         saveSalary(){
-            var day = new Date();
-            console.log(this.changeData.closeHours);
-                    
+            var day = new Date();                  
           
             axios.post(`/api/personal/${this.personalId}/salary/store/${this.postData.salaryId}`, {
                 salaryFix: this.changeData.salaryHour || this.staticData.salaryHour,
@@ -292,8 +290,6 @@
         }
     },
     created() {
-        console.log(this.date);
-
         this.staticData.penaltyTime = this.penaltyTime ? this.penaltyTime : 0;        
         
          axios.get('/api/personal/'+this.personalId+'?date='+this.date)
@@ -308,8 +304,8 @@
                 
                 this.changeData.coef = data.salary ? data.salary.coefficient : 0;
                 this.staticData.closeHours = data.first ? Math.trunc(_.sumBy(data.first.times, 'totaltime')) : '';
-                this.staticData.salary = data.salary ? data.salary.salary : '';
-                this.staticData.salaryHour = data.salary ? data.salary.edit_hours : '';
+                this.staticData.salary = data.salary ? data.salary.salary.toFixed(2) : '';
+                this.staticData.salaryHour = data.salary ? data.salary.edit_hours.toFixed(2) : '';
 
                 this.postData.salaryId = data.salary ? data.salary.id : '';
             })
