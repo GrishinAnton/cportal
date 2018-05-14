@@ -65,8 +65,8 @@
                     .then(response => {
 
                         if(response.data.success){
-                            this.alertVariant = 'success'
-                            this.dismissCountDown = 5
+                            this.alertVariant = 'success';
+                            this.dismissCountDown = 5;
                         }
                     })
                     .catch(e => {
@@ -81,8 +81,8 @@
                     .then(response => {
                         
                         if(response.data.success){
-                            this.alertVariant = 'success'
-                            this.dismissCountDown = 5
+                            this.alertVariant = 'success';
+                            this.dismissCountDown = 5;
                         }
                     })
                     .catch(e => {
@@ -97,9 +97,9 @@
         mounted(){
 
             this.$watch(() => this.$store.getters['personal/personalInformation'], () => {               
-                this.input.group = this.$store.getters['personal/personalInformation'].first.group_id
-                this.input.company = this.$store.getters['personal/personalInformation'].first.company_id
-                this.input.persId = this.$store.getters['personal/personalInformation'].first.pers_id
+                this.input.group = this.$store.getters['personal/personalInformation'].first.group_id;
+                this.input.company = this.$store.getters['personal/personalInformation'].first.company_id;
+                this.input.persId = this.$store.getters['personal/personalInformation'].first.pers_id;
             }); 
         }
     }

@@ -98,6 +98,26 @@ class Personal extends Model
     }
 
     /**
+     * Get personal group
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function group()
+    {
+        return $this->hasOne('App\PersonalGroup', 'id', 'group_id');
+    }
+
+    /**
+     * Get personal company
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function company()
+    {
+        return $this->hasOne('App\PersonalCompany', 'id', 'company_id');
+    }
+
+    /**
      * Filter by companies
      *
      * @param $query
