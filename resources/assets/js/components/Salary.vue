@@ -155,6 +155,9 @@
             } else {
                 url = `/api/personal/${this.personalId}/salary/store`;
             }
+
+            console.log(`${this.date}-${day.getDate()}`);
+            
           
             axios.post(url, {
                 salary: this.changeData.salary || this.staticData.salary,
@@ -163,7 +166,7 @@
                 closeHours: this.changeData.closeHours || this.staticData.closeHours,
                 penaltyHours: this.changeData.penaltyTime || this.staticData.penaltyTime,
                 fix: this.changeData.fixSalary,
-                date: `${this.date}-${day.getDay()}`
+                date: `${this.date}-${day.getDate()()}`
             })
             .then(response => {
                 console.log(response);
