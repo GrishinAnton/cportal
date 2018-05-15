@@ -269,9 +269,16 @@
             this.staticData.salaryHour = e.target.value / (this.changeData.closeHours || this.staticData.closeHours)
         },
         saveSalary(){
-            var day = new Date();                  
+            var day = new Date();    
+            var url; 
+            
+            if(this.postData.salaryId){
+                url =  `/api/personal/${this.personalId}/salary/store/${this.postData.salaryId}`;
+            } else {
+                url =  `/api/personal/${this.personalId}/salary/store`;
+            }
           
-            axios.post(`/api/personal/${this.personalId}/salary/store/${this.postData.salaryId}`, {
+            axios.post(url, {
                 salaryFix: this.changeData.salaryHour || this.staticData.salaryHour,
                 salary: this.changeData.salary || this.staticData.salary,
                 coef: this.changeData.coef,
