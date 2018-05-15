@@ -12,22 +12,22 @@ use DateTime;
 class PersonalController extends Controller
 {
     /**
-    * Show active worker
-    *
-    * @return view
-    */
+     * Show active worker
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function index()
     {
         return view('personal.personal');
     }
 
     /**
-    * Show one worker
-    *
-    * @param Request $request
-    * @param integer $id
-    * @return view
-    */
+     * Show one worker
+     *
+     * @param $id
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function show($id, Request $request)
     {
         //Если есть дата делаем переменную для запроса
@@ -64,9 +64,9 @@ class PersonalController extends Controller
     /**
      * Active, DeActive personal
      *
-     * @param [integer] $pers_id
+     * @param $pers_id
      * @param Request $request
-     * @return back
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function store($pers_id, Request $request)
     {

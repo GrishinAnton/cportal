@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api\Report;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Personal;
 use App\Salary;
@@ -15,12 +14,10 @@ class PersonalController extends Controller
             ->with('salary')
             ->get();
 
-        return response()->json(
-            [
-                'success' => true,
-                'data' => $users
-            ]
-        );
+        return response()->json([
+            'success' => true,
+            'data' => $users
+        ]);
     }
 
     public function salaries($persId, $year, $month)

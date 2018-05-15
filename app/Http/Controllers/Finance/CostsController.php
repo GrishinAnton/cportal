@@ -2,19 +2,16 @@
 
 namespace App\Http\Controllers\Finance;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\PersonalTime;
-use Carbon\Carbon;
 use App\Cost;
 use App\Http\Requests\Finance\EditCostsForMonthRequest;
 
 class CostsController extends Controller
 {
-     /**
-     * Show Costs
+    /**
+     * Show all costs
      *
-     * @return view
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index()
     {
@@ -27,8 +24,8 @@ class CostsController extends Controller
     /**
      * Edit costs
      *
-     * @param Request $request
-     * @return redirect
+     * @param EditCostsForMonthRequest $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function edit(EditCostsForMonthRequest $request)
     {

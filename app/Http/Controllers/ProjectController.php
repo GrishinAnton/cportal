@@ -12,7 +12,7 @@ class ProjectController extends Controller
     /**
     * Show all project
     *
-    * @return \Illuminate\Http\Response
+    * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
     */
     public function index()
     {
@@ -28,16 +28,15 @@ class ProjectController extends Controller
 
         $fullInfoProjects = Project::with('costs');
 
-
         return view('projects.projects', compact('projects', 'fullInfoProjects'));
     }
 
     /**
      * Show one projects
      *
-     * @param [integer] $id
+     * @param $id
      * @param Request $request
-     * @return view
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function show($id, Request $request)
     {
