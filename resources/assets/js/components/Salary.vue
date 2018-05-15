@@ -163,7 +163,7 @@
                 closeHours: this.changeData.closeHours || this.staticData.closeHours,
                 penaltyHours: this.changeData.penaltyTime || this.staticData.penaltyTime,
                 fix: this.changeData.fixSalary,
-                date: `${this.date}-${day.getDay()}`
+                date: this.date
             })
             .then(response => {
                 console.log(response);
