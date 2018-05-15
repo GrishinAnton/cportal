@@ -121,7 +121,7 @@
     </div>        
         
         
-    <salary date = "{{ Request::filled('date') ? Request::get('date') : date('Y-m') }}" :personal-id = "{{ $first->pers_id }}" penalty-time="{{ $fine }}"></salary>
+    <salary date = "{{ Request::filled('date') ? Request::get('date') : date('Y-m') }}" :personal-id="{{ $first->pers_id }}" penalty-time="{{ $fine }}" close-hours="{{ $close }}"></salary>
 
     @else
         <div class="box">

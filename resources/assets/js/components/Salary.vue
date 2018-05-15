@@ -27,7 +27,7 @@
                         <label for="hour">Стоимость часа</label>
                         <div class="flex">
                             <input type="text" name="hours" :value="Math.trunc(staticData.salaryHour)" class="form-control mr-1" placeholder="Стоимость часа" disabled>
-                            <input type="text" id="hour" class="form-control" @input="onChangeSalaryHour($event)" v-model="changeData.salaryHour" placeholder="Стоимость часа">
+                            <input type="text" id="hour" class="form-control" @input="onChangeSalaryHour()" v-model="changeData.salaryHour" placeholder="Стоимость часа">
                         </div> 
                     </div> 
 
@@ -35,7 +35,7 @@
                         <label for="closeHour">Закрыто часов</label>
                         <div class="flex">
                             <input type="text" name="close_hours" :value="staticData.closeHours" class="form-control mr-1" placeholder="Закрыто часов" disabled>
-                            <input type="text" id="closeHour" class="form-control" v-model.number="changeData.closeHours" placeholder="Закрыто часов">
+                            <input type="text" id="closeHour" class="form-control" @input="onChangeCloseHour()" v-model.number="changeData.closeHours" placeholder="Закрыто часов">
                         </div> 
                     </div>
                 </div>
@@ -53,7 +53,7 @@
                         <label for="zp">ЗП</label>
                         <div class="flex">
                             <input type="text" :value="Math.trunc(staticData.salary)" class="form-control mr-1" placeholder="Зарплата" disabled>
-                            <input type="text" id="zp" @input="onChangeSalary($event)" v-model="changeData.salary" class="form-control" placeholder="Зарплата">
+                            <input type="text" id="zp" @input="onChangeSalary()" v-model="changeData.salary" class="form-control" placeholder="Зарплата">
                         </div> 
                     </div>
                 </div>
@@ -64,7 +64,7 @@
                     :variant="alertVariant"
                     @dismissed="dismissCountdown=0"
                     @dismiss-count-down="countDownChanged"
-                    class="w-25">
+                    class="w-50">
                     <p>Данные обновлены. Закроюсь через {{dismissCountDown}} сукунд.</p>                 
                 </b-alert>
             </div>
@@ -160,6 +160,9 @@
         },
         penaltyTime: {
             type: String
+        },
+        closeHours: {
+            type: String
         }
     },
     data: () => ({
@@ -186,15 +189,22 @@
         alertVariant: ''
     }),
     methods: {
-        onChangeSalaryHour(e){
-            this.staticData.salary = e.target.value * ((this.changeData.closeHours || this.staticData.closeHours) - (this.changeData.penaltyTime || this.staticData.penaltyTime))    
+        onChangeSalaryHour(){
+            this.staticData.salary = this.changeData.salaryHour * ((this.changeData.closeHours || this.staticData.closeHours) - (this.changeData.penaltyTime || this.staticData.penaltyTime))    
             this.flagHours = true;  
         },
-        onChangeSalary(e){
-            this.staticData.salary = e.target.value;
+        onChangeSalary(){
+            this.staticData.salary = this.changeData.salary;
             
-            this.staticData.salaryHour = e.target.value / (this.changeData.closeHours || this.staticData.closeHours)
+            this.staticData.salaryHour = Math.trunc(this.changeData.salary / (this.changeData.closeHours || this.staticData.closeHours))
             this.flagHours = false;  
+        },
+        onChangeCloseHour(){
+            if(this.flagHours){
+                this.onChangeSalaryHour()
+            } else {
+                this.onChangeSalary()
+            }
         },
         saveSalary(){
             var day = new Date();
@@ -207,7 +217,7 @@
             }
           
             axios.post(url, {
-                salary: this.changeData.salary || this.staticData.salary,
+                salary: this.flagHours ? this.staticData.salary : this.changeData.salary,
                 coefficient: this.changeData.coef,
                 salaryHours: this.flagHours ? this.changeData.salaryHour : this.staticData.salaryHour,
                 closeHours: this.changeData.closeHours || this.staticData.closeHours,
@@ -232,6 +242,7 @@
         },
         salary() {
             this.staticData.penaltyTime = this.penaltyTime ? this.penaltyTime : 0;
+            this.staticData.closeHours = this.closeHours ? this.closeHours : 0;
 
             axios.get('/api/personal/'+this.personalId+'/salary', {
                 params: {
@@ -245,9 +256,9 @@
                 this.changeData.fixSalary = data.salary ? data.salary.fix : 0;
                 this.changeData.coef = data.salary ? data.salary.coefficient : 0;
                 this.staticData.salaryHour = data.salary ? data.salary.salary_hours.toFixed(2) : '';
-                this.staticData.closeHours = data.salary.close_hours ? data.salary.close_hours : Math.trunc(_.sumBy(data.first.times, 'totaltime'));
+                this.changeData.closeHours = data.salary.close_hours ? data.salary.close_hours : '';
                 this.staticData.salary = data.salary ? data.salary.salary.toFixed(2) : '';
-                this.staticData.penaltyTime = data.salary ? data.salary.penalty_hours : '';
+                this.changeData.penaltyTime = data.salary ? data.salary.penalty_hours : '';
 
                 this.postData.salaryId = data.salary ? data.salary.id : '';
             })
