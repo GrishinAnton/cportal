@@ -45,7 +45,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('api/personal/salary/{salaryId}/update', 'Api\Personal\SalaryController@update')->name('api.personal.salary.update');
 
     //Personal
-    Route::get('personal', 'PersonalController@index');
+    Route::get('personal', 'PersonalController@index')->name('web.personal.index');
     Route::get('personal/{id}', 'PersonalController@show')->name('web.personal.show');
     Route::post('personal/{pers_id}/is-active/store', 'PersonalController@store');
     

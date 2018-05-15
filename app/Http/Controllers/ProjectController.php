@@ -10,10 +10,10 @@ use DateTime;
 class ProjectController extends Controller
 {
     /**
-    * Show all project
-    *
-    * @return \Illuminate\Http\Response
-    */
+     * Show all projects
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function index()
     {
         $date = new DateTime('-1 month');
@@ -33,11 +33,11 @@ class ProjectController extends Controller
     }
 
     /**
-     * Show one projects
+     * Show one project
      *
-     * @param [integer] $id
+     * @param $id
      * @param Request $request
-     * @return view
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function show($id, Request $request)
     {

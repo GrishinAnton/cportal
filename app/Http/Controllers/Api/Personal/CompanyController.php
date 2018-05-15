@@ -33,22 +33,9 @@ class CompanyController extends Controller
      */
     public function addCompany($personalId, CompanyRequest $request)
     {
-        DB::beginTransaction();
-
-        try {
-
-            Personal::where('pers_id', $personalId)->update([
-                'company_id' => $request->companyId
-            ]);
-
-        } catch (\Exception $e) {
-            DB::rollback();
-            report($e);
-
-            return response()->json(['success' => false]);
-        }
-
-        DB::commit();
+        Personal::where('pers_id', $personalId)->update([
+            'company_id' => $request->companyId
+        ]);
 
         return response()->json(['success' => true]);
     }

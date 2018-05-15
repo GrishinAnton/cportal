@@ -44,7 +44,7 @@ class SalaryController extends Controller
      */
     public function update(SalaryRequest $request, $salaryId)
     {
-        $salary = Salary::where('id', $salaryId)
+        Salary::where('id', $salaryId)
             ->update([
                 'coefficient' => $request->coefficient,
                 'fix' => $request->fix,
@@ -53,10 +53,6 @@ class SalaryController extends Controller
                 'salary_hours' => $request->salaryHours,
                 'penalty_hours' => $request->penaltyHours,
             ]);
-
-        if (! $salary) {
-            return response()->json(['success' => false]);
-        }
 
         return response()->json(['success' => true]);
     }
