@@ -53,12 +53,6 @@
                         <td>data 1</td>  
                         <td>data 1</td>
                     </b-collapse>
-                    <!-- <tr :id="personal.id" class="collapse">
-                        <td></td>
-                        <td class="text-right">проект</td>
-                        <td>data 1</td>  
-                        <td>data 1</td>
-                    </tr> -->
                 </tbody>
             </table>    
             <b-modal ref="modal" title="Фиксированная зарплата">
@@ -128,10 +122,12 @@
 </script>
 
 <style>
+
     .collapsing {
         transition: none;
-        display: table-row;
+        display: table-row!important;
     }
+
 </style>
 
 
