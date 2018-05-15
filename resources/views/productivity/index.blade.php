@@ -1,10 +1,10 @@
 @extends('layouts.page')
 
 @section('content_header')
-    <h1 class="h1">Сотрудники</h1>
+    <h1 class="h1">Выработка</h1>
 @stop
 
 @section('content')
-    <employees-card></employees-card>
+    <productivity></productivity>
     
 @stop

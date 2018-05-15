@@ -14,7 +14,7 @@
 // Authentication Routes...
 Route::get('/', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('/', 'Auth\LoginController@login');
-Route::post('logout', 'Auth\LoginController@logout')->name('logout');
+Route::get('logout', 'Auth\LoginController@logout')->name('logout');
 
 // Password Reset Routes...
 Route::get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('password.request');
@@ -28,22 +28,24 @@ Route::group(['middleware' => 'auth'], function () {
 
     //Personal groups
     Route::get('api/personal/groups', 'Api\Personal\GroupController@getGroups')->name('api.personal.groups');
-    Route::post('api/personal/{personalId}/add/group', 'Api\Personal\GroupController@addGroup')
-        ->name('api.personal.add.groups');
+    Route::post('api/personal/{personalId}/add/group', 'Api\Personal\GroupController@addGroup')->name('api.personal.add.groups');
 
     //Personal companies
     Route::get('api/personal/companies', 'Api\Personal\CompanyController@getCompanies')->name('api.personal.companies');
-    Route::post('api/personal/{personalId}/add/company', 'Api\Personal\CompanyController@addCompany')
-        ->name('api.personal.add.company');
+    Route::post('api/personal/{personalId}/add/company', 'Api\Personal\CompanyController@addCompany')->name('api.personal.add.company');
 
-    //Resourse Personal
+    //Resource Personal
     Route::get('api/personal/{id}', 'Api\Personal\PersonalController@show')->name('api.personal.show');
-    Route::post('api/personal/{pers_id}/salary/store/{salary_id?}', 'Api\Personal\PersonalController@storeSalary');
     Route::post('api/personal/{pers_id}/costs/store', 'Api\Personal\PersonalController@storeCosts');
     Route::get('api/personal', 'Api\Personal\PersonalController@index')->name('web.personal.index');
+    Route::get('api/personal/{id}/group-company', 'Api\Personal\PersonalController@getCompanyGroupPersonal')->name('web.personal.company.group');
+
+    //Resource Personal Salary
+    Route::post('api/personal/{persId}/salary/store', 'Api\Personal\SalaryController@store')->name('api.personal.salary.store');
+    Route::post('api/personal/salary/{salaryId}/update', 'Api\Personal\SalaryController@update')->name('api.personal.salary.update');
 
     //Personal
-    Route::get('personal', 'PersonalController@index');
+    Route::get('personal', 'PersonalController@index')->name('web.personal.index');
     Route::get('personal/{id}', 'PersonalController@show')->name('web.personal.show');
     Route::post('personal/{pers_id}/is-active/store', 'PersonalController@store');
     
@@ -58,6 +60,9 @@ Route::group(['middleware' => 'auth'], function () {
 
     //Report
     Route::get('report', 'ReportController@index')->name('web.report');
+
+    //Productivity
+    Route::get('productivity', 'ProductivityController@index')->name('web.productivity');
 
     //Employees
     Route::get('employees', 'EmployeesController@index')->name('web.employees');

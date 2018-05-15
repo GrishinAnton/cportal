@@ -1,5 +1,5 @@
 .main-sidebar {
-    width: 250px;
+    width: 13.6%;
 
     background-color: #222d32;
 
@@ -10,9 +10,11 @@
 //ul
 .nav {
     //li
+    
     &-item {
+        position: relative;
 
-        &.active {
+        &.active > a {
             background-color: lighten($color: #222d32, $amount: 10);
         }
     }
@@ -30,5 +32,41 @@
             background: #1e282c;
         }
 
+    }
+}
+
+.submenu-toggle {
+    position: absolute;
+    
+    right: 20px;
+    top: 11px;
+    width: 30px;
+    height: 30px;
+
+    transform: rotate(0deg);
+
+    text-align: center;
+    line-height: 30px;
+
+    color: #fff;
+    cursor: pointer;
+
+    transition: $tr;
+
+    &-active {
+        transform: rotate(45deg);
+    }
+}
+
+.nav-submenu {
+    display: none;
+    user-select: none;
+
+    &-show {
+        display: block;
+    }
+
+    .nav-item a {
+        padding-left: 40px;
     }
 }

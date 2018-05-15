@@ -1,5 +1,5 @@
 <template>
-    <div class="box">
+  <div class="box">
         <div class="box-header">
             <h3 class="box-title">Список сотрудников</h3>
         </div>
@@ -20,7 +20,6 @@
                 </div>
             </div>
         </div>
-        
 
         <div class="box-body">
             <table class="table table-hover table-bordered">
@@ -29,13 +28,12 @@
                         <th style="width: 10px">#</th>
                         <th>Имя Фамилия</th>
                         <th>E-mail</th>
-                        <th>К</th>
-                        <th>Закрыто ч.</th>
-                        <th>Закрыто ч. неделя</th>
-                        <th>Компания</th>
-                        <th>Группа</th>
-                        <th>Штрафы</th>
-                        <th>ЗП</th>
+                        <th>Неделя 1 14.05-20.05</th>
+                        <th>Неделя 2 7.05-13.05</th>
+                        <th>Неделя 3 30.04-6.05</th>
+                        <th>Неделя 4 23.04-29.04</th>
+                        <th>Неделя 5 16.04-22.04</th>
+                        <th>Неделя 6 9.04-15.04</th>
                     </tr>
                     <tr v-for="item in personalInformation" :key="item.id">
                         <td>{{ item.id }}</td>
@@ -47,7 +45,7 @@
                         <td>{{ item.company ? item.company.name : '' }}</td>
                         <td>{{ item.group ? item.group.name : ''}}</td>
                         <td>{{ item.fine }}</td>
-                        <td>{{ item.solary }}</td>
+
                        </tr>
                 </tbody>
             </table>
@@ -67,10 +65,11 @@
 </template>
 
 <script>
+
     import { personalMixin } from './../../mixins/personalMixin';
     import { paginationMixin } from './../../mixins/paginationMixin';
 
-    export default {
+     export default {
         mixins: [paginationMixin, personalMixin],
         data: ()=> ({
             personalInformation: [],
@@ -156,4 +155,3 @@
         }
     }
 </script>
-

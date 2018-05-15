@@ -3,15 +3,14 @@
 namespace App\Http\Controllers\Api\Personal;
 
 use App\Http\Requests\PersonalFilterRequest;
+use App\Http\Resources\CompanyGroupResource;
 use App\Http\Resources\PersonalResource;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Personal;
 use DB;
 use App\ProjectCost;
-use App\Salary;
 use App\Cost;
-use App\Http\Requests\EditSalaryRequest;
 use App\Http\Requests\WriteOffCostsRequest;
 use DateTime;
 
@@ -34,8 +33,26 @@ class PersonalController extends Controller
             }
         }
 
-        return PersonalResource::collection($personal->paginate(25))
+        return PersonalResource::collection($personal->paginate(50))
             ->additional(['success' => true]);
+    }
+
+    /**
+     * Get company and group personal
+     *
+     * @param $personalId
+     * @return CompanyGroupResource
+     */
+    public function getCompanyGroupPersonal($personalId)
+    {
+        $personal = Personal::select('company_id', 'group_id')
+            ->where('pers_id', $personalId)
+            ->with('company', 'group')
+            ->firstOrFail();
+
+        return (new CompanyGroupResource($personal))->additional([
+            'success' => true
+        ]);
     }
 
     /**
@@ -67,40 +84,9 @@ class PersonalController extends Controller
                 $query->whereYear('date', $year)
                     ->whereMonth('date', $month)
                     ->orderBy('date', 'desc');
-            }]);
+            }])->with(['company', 'group']);
 
         return $personal;
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param EditSalaryRequest $request
-     * @param $pers_id
-     * @param null $salary_id
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function storeSalary(EditSalaryRequest $request, $pers_id, $salary_id = null)
-    {
-        $create = Salary::updateOrCreate(
-            [
-                'id' => $salary_id
-            ],
-            [
-                'salary' => $request->salary,
-                'salary_fix' => $request->salaryFix,
-                'hour' => $request->hour,
-                'coefficient' => $request->coef,
-                'date' => $request->date,
-                'pers_id' => $pers_id,
-                'edit_salary' => $request->editSalary,
-                'edit_hours' => $request->editHours
-            ]
-        );
-
-        $salary = Salary::find($create->id);
-
-        return response()->json($salary);
     }
 
     /**

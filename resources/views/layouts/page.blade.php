@@ -12,7 +12,7 @@
 
             <!-- Header Navbar -->
             <div class="header-logout flex">
-                <a href="#" class="header-logout__link">
+                <a href="{{ route('logout') }}" class="header-logout__link">
                     <i class="fa fa-fw fa-power-off"></i> Log Out
                 </a>
             </div>  

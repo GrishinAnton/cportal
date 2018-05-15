@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class EditSalaryRequest extends FormRequest
+class SalaryRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,13 +24,13 @@ class EditSalaryRequest extends FormRequest
     public function rules()
     {
         return [
-            'salary' => 'required|numeric',
-            'salaryFix' => 'required',
-            'hour' => 'required|numeric',
-            'coef' => 'required|numeric',
-            'date' => 'required',
-            'editSalary' => '',
-            'editHours' => ''
+            'coefficient' => 'required',
+            'fix' => 'required|boolean',
+            'salary' => 'required',
+            'closeHours' => 'required',
+            'salaryHours' => 'required',
+            'penaltyHours' => 'required',
+            'date' => 'required|date_format:Y-m-d',
         ];
     }
 }

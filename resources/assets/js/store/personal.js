@@ -6,15 +6,13 @@ export default {
     },
     getters: {
         personalInformation(state){
-
+            
             return state.personal;
         }
     },
     mutations: {
-        personalInformation(state, obj){
-            state.personal = obj;
-            console.log(state.personal);
-            
+        personalInformation(state, obj){            
+            state.personal = obj;            
         }
     },
     actions: {

@@ -45,12 +45,16 @@
 
     export default {
         mixins: [personalMixin],
+        props: {
+            personalId: {
+                type: Number
+            }
+        },
         data: () => ({            
             input: {
                 group: '',
                 company: ''
             },
-            persId: '',
             dismissSecs: 5,
             dismissCountDown: 0,
             alertVariant: ''
@@ -59,14 +63,14 @@
         methods: {
             onChangeGroup(){                
                   
-                axios.post(`/api/personal/${this.input.persId}/add/group`, {
+                axios.post(`/api/personal/${this.personalId}/add/group`, {
                     groupId: this.input.group
                 })
                     .then(response => {
 
                         if(response.data.success){
-                            this.alertVariant = 'success'
-                            this.dismissCountDown = 5
+                            this.alertVariant = 'success';
+                            this.dismissCountDown = 5;
                         }
                     })
                     .catch(e => {
@@ -75,14 +79,14 @@
             },
             onChangeCompany(){    
 
-                axios.post(`/api/personal/${this.input.persId}/add/company`, {
+                axios.post(`/api/personal/${this.personalId}/add/company`, {
                     companyId: this.input.company
                 })
                     .then(response => {
                         
                         if(response.data.success){
-                            this.alertVariant = 'success'
-                            this.dismissCountDown = 5
+                            this.alertVariant = 'success';
+                            this.dismissCountDown = 5;
                         }
                     })
                     .catch(e => {
@@ -94,13 +98,18 @@
                 this.dismissCountDown = dismissCountDown
             },
         },
-        mounted(){
+        mounted(){           
 
-            this.$watch(() => this.$store.getters['personal/personalInformation'], () => {
-                this.input.group = this.$store.getters['personal/personalInformation'].first.group_id
-                this.input.company = this.$store.getters['personal/personalInformation'].first.company_id
-                this.input.persId = this.$store.getters['personal/personalInformation'].first.pers_id
-            }); 
+            axios.get(`/api/personal/${this.personalId}/group-company`)
+                .then(response => {
+
+                    this.input.group = response.data.data.group.id
+                    this.input.company = response.data.data.company.id
+                    
+                })
+                .catch(e=> {
+                    console.log(e)
+                })
         }
     }
 </script>

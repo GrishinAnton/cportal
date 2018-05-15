@@ -36,7 +36,7 @@
                 </form>
             </div>
 
-            <personal-position></personal-position>          
+            <personal-position :personal-id = "{{ $first->pers_id }}"></personal-position>          
         </div>
         <?php
                 $coefficient = isset($salary->coefficient) ? $salary->coefficient : 1.1;
@@ -121,38 +121,44 @@
     </div>        
         
         
-        <salary date = "{{ Request::filled('date') ? Request::get('date') : date('Y-m') }}" :personal-id = "{{ $first->pers_id }}"></salary>
+    <salary date = "{{ Request::filled('date') ? Request::get('date') : date('Y-m') }}" :personal-id = "{{ $first->pers_id }}" penalty-time="{{ $fine }}"></salary>
 
-        @else
-            <div class="box">
-                <div class="box-header with-border">
-                
-                    <h3 class="box-title">
-                        {{ $first->first_name }} {{ $first->last_name }}
-                    </h3>
+    @else
+        <div class="box">
+            <div class="box-header flex flex_jc-sb">
+            
+                <h3 class="box-title">
+                    {{ $first->first_name }} {{ $first->last_name }}
+                </h3>
 
-                    <div class = "pull-right">
-                        <form method = "post" action = "/personal/{{ $first->pers_id }}/is-active/store">
-                            {{ csrf_field() }}
-                            @if ($first->is_active)
-                                <button name = "is_active" value = "0" type = "submit" class = "btn btn-danger">Деактивировать</button>
-                            @else
-                                <button name = "is_active" value = "1" type = "submit" class = "btn btn-success">Активировать</button>
-                            @endif
-                        </form>
-                    </div>
-                </div>
-                <!-- /.box-header -->
-                <div class="box-body">
-                    <form method = "get">
-                        <select style = "margin-bottom: 5px" name="date" onchange="this.form.submit()">
-                            @foreach($dates as $key => $date)
-                                <option {{ Request::get('date') == $key ? 'selected' : '' }} value = "{{ $key }}">{{ $date }}</option>
-                            @endforeach
-                        </select>
+                <div class="col-2 flex flex_jc-fe">
+                    <form method = "post" action = "/personal/{{ $first->pers_id }}/is-active/store">
+                        {{ csrf_field() }}
+                        @if ($first->is_active)
+                            <button name = "is_active" value = "0" type = "submit" class = "btn btn-danger">Деактивировать</button>
+                        @else
+                            <button name = "is_active" value = "1" type = "submit" class = "btn btn-success">Активировать</button>
+                        @endif
                     </form>
-                    <h3>Увы, пусто((</h3>
                 </div>
             </div>
-        @endif
+            <div class="box-body box-body_personal-select-group flex flex_jc-fs">    
+                <div class="input-group mb-3 mr-4">
+                    <form method = "get">
+                        <label for="mounth">Месяц</label>
+                        <select class="custom-select" id="mounth" name="date"  onchange="this.form.submit()">
+                            @foreach($dates as $key => $date)
+                                    <option {{ Request::get('date') == $key ? 'selected' : '' }} value = "{{ $key }}">{{ $date }}</option>
+                                @endforeach
+                        </select>
+                    </form>
+                </div>
+
+                <personal-position :personal-id = "{{ $first->pers_id }}"></personal-position>          
+            </div>
+            <div class="box-body">
+                <h4>Данных нет</h4>
+            </div>
+        </div>
+    @endif
 @stop
