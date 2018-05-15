@@ -9,7 +9,7 @@ export const personalMixin = {
 
         axios.get('/api/personal/groups')
             .then(response => {
-                this.load.groups = response.data.data;              
+                this.load.groups = response.data.data;                       
             })
             .catch(e => {
                 console.log(e)
@@ -21,6 +21,6 @@ export const personalMixin = {
             })
             .catch(e => {
                 console.log(e)
-            });
+            });        
     }
 }

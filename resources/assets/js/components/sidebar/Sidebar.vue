@@ -60,15 +60,9 @@
                         },
                         {
                             icon: "fa fa-fw fa-file",
-                            name: "Отчет",
-                            href: '/report',
-                            id: 3.3
-                        },
-                        {
-                            icon: "fa fa-fw fa-file",
                             name: "Выработка",
                             href: '/productivity',
-                            id: 3.4
+                            id: 3.3
                         }
                     ],
                     id: 3
@@ -83,6 +77,7 @@
         }),
         methods: {
             openMnu(e){
+               
                 e.srcElement.nextElementSibling.classList.toggle('nav-submenu-show');                
             },
             

@@ -11,11 +11,19 @@ let mix = require('laravel-mix');
  |
  */
 
-mix.js('resources/assets/js/app.js', 'public/js').version();
+mix.js('resources/assets/js/app.js', 'public/js').sourceMaps().version();
 
-mix.sass('resources/assets/scss/app.scss', 'public/css').version()
+mix.sass('resources/assets/scss/app.scss', 'public/css').sourceMaps().version()
 
 mix.browserSync({
   proxy: "cportal.loc",
   notify: false
+});
+
+
+mix.webpackConfig({
+  output: {
+    publicPath: '/',
+    chunkFilename: 'js/[name].js'
+  }
 });

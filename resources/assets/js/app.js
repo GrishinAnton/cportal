@@ -16,13 +16,14 @@ window.Vue = require('vue');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('salary', require('./components/Salary'));
-Vue.component('report-index', require('./components/Report'));
-Vue.component('costs', require('./components/finance/Costs'));
-Vue.component('sidebar', require('./components/sidebar/Sidebar'));
-Vue.component('personal-position', require('./components/personal/PersonalPosition'));
-Vue.component('personal-table', require('./components/personal/PersonalTable'));
-Vue.component('employees-card', require('./components/employees/EmployeesCard'));
+Vue.component('salary', function (resolve) {require(['./components/Salary'], resolve)});
+Vue.component('report-index', function (resolve) { require(['./components/Report'], resolve)});
+Vue.component('costs', function (resolve) { require(['./components/finance/Costs'], resolve)});
+Vue.component('sidebar', function (resolve) { require(['./components/sidebar/Sidebar'], resolve)});
+Vue.component('personal-position', function (resolve) { require(['./components/personal/PersonalPosition'], resolve)});
+Vue.component('personal-table', function (resolve) { require(['./components/personal/PersonalTable'], resolve)});
+Vue.component('employees-card', function (resolve) { require(['./components/employees/EmployeesCard'], resolve)});
+Vue.component('productivity', function (resolve) { require(['./components/productivity/Productivity'], resolve)});
 
 import Vuex from 'vuex';
 import BootstrapVue from 'bootstrap-vue';

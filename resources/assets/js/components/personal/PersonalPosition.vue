@@ -98,25 +98,18 @@
                 this.dismissCountDown = dismissCountDown
             },
         },
-        mounted(){
+        mounted(){           
 
-            console.log(this.personalId);
-            
+            axios.get(`/api/personal/${this.personalId}/group-company`)
+                .then(response => {
 
-            // axios.get(`/api/personal/${this.presonalId}`)
-            //     .then(response => {
-
-            //         this.input.group = 
-            //         this.input.company = 
-            //     })
-            //     .catch(e=> {
-            //         console.log(e)
-            //     })
-
-            // this.$watch(() => this.$store.getters['personal/personalInformation'], () => {               
-            //     this.input.group = this.$store.getters['personal/personalInformation'].first.group_id
-            //     this.input.company = this.$store.getters['personal/personalInformation'].first.company_id
-            // }); 
+                    this.input.group = response.data.data.group.id
+                    this.input.company = response.data.data.company.id
+                    
+                })
+                .catch(e=> {
+                    console.log(e)
+                })
         }
     }
 </script>

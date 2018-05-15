@@ -43,12 +43,19 @@
     width: 30px;
     height: 30px;
 
+    transform: rotate(0deg);
+
     text-align: center;
     line-height: 30px;
 
     color: #fff;
-
     cursor: pointer;
+
+    transition: $tr;
+
+    &-active {
+        transform: rotate(45deg);
+    }
 }
 
 .nav-submenu {
