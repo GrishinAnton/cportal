@@ -36,7 +36,7 @@
                 </form>
             </div>
 
-            <personal-position></personal-position>          
+            <personal-position :personal-id = "{{ $first->pers_id }}"></personal-position>          
         </div>
         <?php
                 $coefficient = isset($salary->coefficient) ? $salary->coefficient : 1.1;

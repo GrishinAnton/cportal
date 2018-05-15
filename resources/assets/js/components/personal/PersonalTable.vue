@@ -54,36 +54,29 @@
         </div>
 
         <div class="box-footer">
-            <pagination @change="onPagination($event)" :options="paginationData"></pagination>
+            <b-pagination align="right" 
+                v-show="showPagination" 
+                :total-rows="paginationData.total"
+                v-model="paginationData.currentPage" 
+                @change="onPaginationChange($event)" 
+                :per-page="paginationData.perPage"
+                >
+            </b-pagination>
         </div>
     </div>
 </template>
 
 <script>
     import { personalMixin } from './../../mixins/personalMixin';
-    import Pagination from './../pagination/Pagination';
+    import { paginationMixin } from './../../mixins/paginationMixin';
 
     export default {
-        mixins: [personalMixin],
-        components: {
-            Pagination
-        },
+        mixins: [paginationMixin, personalMixin],
         data: ()=> ({
             personalInformation: [],
             activeGroups: [],
             activeCompanies: [],
-            paginationData: {
-                links: {
-                    first: '',
-                    last: '',
-                    next: '',
-                    prev: ''
-                },
-                currentPage: 0,
-                perPage: 0,
-                total: 0
-            }
-        }),
+        }),        
         methods: {
             onChange(id, item){
 
@@ -121,43 +114,17 @@
 
                     this.activeCompanies.length ? localStorage.setItem('activeCompanies', this.activeCompanies) : localStorage.removeItem('activeCompanies');
               
-                    this.personalInformation = response.data.data;
-
-                    console.log(response);
-                    
+                    this.personalInformation = response.data.data;                   
 
                     //pagination
-                    this.paginationData.links = response.data.links
-                    this.paginationData.currentPage = response.data.meta.current_page
-                    this.paginationData.perPage = response.data.meta.per_page
-                    this.paginationData.total = response.data.meta.total
+                    this.paginationDataChange(response.data)
                 })
                 .catch(e=> {
                     console.log(e);
                     
                 })
 
-            },
-            onPagination(data){
-
-                axios.get(`/api/personal`, {
-                    params: {
-                        page: data
-                    }
-                })
-                    .then(response => {
-                        this.personalInformation = response.data.data;   
-
-                        //pagination
-                        this.paginationData.links = response.data.links
-                        this.paginationData.currentPage = response.data.meta.current_page
-                        this.paginationData.perPage = response.data.meta.per_page
-                        this.paginationData.total = response.data.meta.total
-                    })
-                    .catch(e => {
-                        console.log(e);
-                    }) 
-            }
+            }      
         },
         mounted(){
             if(!localStorage.length){
@@ -167,10 +134,7 @@
                         this.personalInformation = response.data.data;   
 
                         //pagination
-                        this.paginationData.links = response.data.links
-                        this.paginationData.currentPage = response.data.meta.current_page
-                        this.paginationData.perPage = response.data.meta.per_page
-                        this.paginationData.total = response.data.meta.total
+                        this.paginationDataChange(response.data)
                     })
                     .catch(e => {
                         console.log(e);
