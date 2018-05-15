@@ -26,7 +26,7 @@
                     <div class="form-item form-item_bold mr-5">
                         <label for="hour">Стоимость часа</label>
                         <div class="flex">
-                            <input type="text" name="hours" :value="staticData.salaryHour" class="form-control mr-1" placeholder="Стоимость часа" disabled>
+                            <input type="text" name="hours" :value="Math.trunc(staticData.salaryHour)" class="form-control mr-1" placeholder="Стоимость часа" disabled>
                             <input type="text" id="hour" class="form-control" @input="onChangeSalaryHour($event)" v-model="changeData.salaryHour" placeholder="Стоимость часа">
                         </div> 
                     </div> 
@@ -52,15 +52,59 @@
                     <div class="form-item form-item_bold">
                         <label for="zp">ЗП</label>
                         <div class="flex">
-                            <input type="text" :value="staticData.salary" class="form-control mr-1" placeholder="Зарплата" disabled>
+                            <input type="text" :value="Math.trunc(staticData.salary)" class="form-control mr-1" placeholder="Зарплата" disabled>
                             <input type="text" id="zp" @input="onChangeSalary($event)" v-model="changeData.salary" class="form-control" placeholder="Зарплата">
                         </div> 
                     </div>
                 </div>
 
-                <button type = "button" @click="saveSalary()" class = "btn btn-primary w-15">Сохранить</button>
+                <button type = "button" @click="saveSalary()" class = "btn btn-primary w-15 mb-2">Сохранить</button>
+                <b-alert :show="dismissCountDown"
+                    dismissible
+                    :variant="alertVariant"
+                    @dismissed="dismissCountdown=0"
+                    @dismiss-count-down="countDownChanged"
+                    class="w-25">
+                    <p>Данные обновлены. Закроюсь через {{dismissCountDown}} сукунд.</p>                 
+                </b-alert>
             </div>
         </div>
+    <div class="box">
+            <div class="box-header">
+                <h3 class="box-title">
+                    Расходы по проектам
+                </h3>
+            </div>
+            <div class="box-body">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Проект</th>
+                            <th>Часы</th>
+                            <th>% от проекта</th>
+                            <th>Расход по проекту</th>
+                            <th>Расход в ручную</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td> %</td>                           
+                            <td>123</td>
+                            <td><input type="text" class="form-control w-50"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button type="button"  class="btn btn-primary">Списать</button>
+            </div>
+        </div>
+
+
+
+
+
+
         <!-- <div class="box">
             <div class="box-header with-border">
                 <h3 class="box-title">
@@ -119,6 +163,7 @@
         }
     },
     data: () => ({
+        flagHours: '',
         changeData: {
             fixSalary: false,
             coef: '',
@@ -135,46 +180,58 @@
         },
         postData: {
             salaryId: ''
-        }
+        },
+        dismissSecs: 5,
+        dismissCountDown: 0,
+        alertVariant: ''
     }),
     methods: {
         onChangeSalaryHour(e){
-            this.staticData.salary = e.target.value * ((this.changeData.closeHours || this.staticData.closeHours) - (this.changeData.penaltyTime || this.staticData.penaltyTime))      
+            this.staticData.salary = e.target.value * ((this.changeData.closeHours || this.staticData.closeHours) - (this.changeData.penaltyTime || this.staticData.penaltyTime))    
+            this.flagHours = true;  
         },
         onChangeSalary(e){
             this.staticData.salary = e.target.value;
             
             this.staticData.salaryHour = e.target.value / (this.changeData.closeHours || this.staticData.closeHours)
+            this.flagHours = false;  
         },
         saveSalary(){
-            var day = new Date()
+            var day = new Date();
             var url; 
             
             if (this.postData.salaryId) {
                 url = `/api/personal/salary/${this.postData.salaryId}/update`;
             } else {
                 url = `/api/personal/${this.personalId}/salary/store`;
-            }        
+            }
           
             axios.post(url, {
                 salary: this.changeData.salary || this.staticData.salary,
                 coefficient: this.changeData.coef,
-                salaryHours: this.changeData.salaryHour || this.staticData.salaryHour,
+                salaryHours: this.flagHours ? this.changeData.salaryHour : this.staticData.salaryHour,
                 closeHours: this.changeData.closeHours || this.staticData.closeHours,
                 penaltyHours: this.changeData.penaltyTime || this.staticData.penaltyTime,
                 fix: this.changeData.fixSalary,
                 date: `${this.date}-${day.getDate()}`
             })
             .then(response => {
-                console.log(response);
-                
-                this.postData.salaryId = response.data.data.id
-                
+                if (response.data.data) {
+                    this.postData.salaryId = response.data.data.id
+                }
+
+                if(response.data.success){
+                    this.alertVariant = 'success';
+                    this.dismissCountDown = 5;
+                }
             })
             .catch(e=> {
                 console.log(e);
             });
-        }
+        },
+        countDownChanged (dismissCountDown) {
+            this.dismissCountDown = dismissCountDown
+        },
     },
     created() {
         this.staticData.penaltyTime = this.penaltyTime ? this.penaltyTime : 0;        
@@ -186,11 +243,12 @@
 
                 console.log(response.data);
                 
-                
+                this.changeData.fixSalary = data.salary ? data.salary.fix : 0;
                 this.changeData.coef = data.salary ? data.salary.coefficient : 0;
-                this.staticData.closeHours = data.first ? Math.trunc(_.sumBy(data.first.times, 'totaltime')) : '';
+                this.staticData.salaryHour = data.salary ? data.salary.salary_hours.toFixed(2) : '';
+                this.staticData.closeHours = data.salary.close_hours ? data.salary.close_hours : Math.trunc(_.sumBy(data.first.times, 'totaltime'));
                 this.staticData.salary = data.salary ? data.salary.salary.toFixed(2) : '';
-                this.staticData.salaryHour = data.salary ? data.salary.edit_hours.toFixed(2) : '';
+                this.staticData.penaltyTime = data.salary ? data.salary.penalty_hours : '';
 
                 this.postData.salaryId = data.salary ? data.salary.id : '';
             })
