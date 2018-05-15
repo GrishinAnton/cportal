@@ -120,7 +120,7 @@
     },
     data: () => ({
         changeData: {
-            fixSalary: '',
+            fixSalary: false,
             coef: '',
             salaryHour: 0,
             closeHours: 0,
@@ -150,17 +150,18 @@
             var url; 
             
             if (this.postData.salaryId) {
-                url = `api/personal/salary/${this.personalId}/update`;
+                url = `/api/personal/salary/${this.personalId}/update`;
             } else {
-                url = `api/personal/${this.personalId}/salary/store`;
+                url = `/api/personal/${this.personalId}/salary/store`;
             }
           
             axios.post(url, {
-                salaryFix: this.changeData.salaryHour || this.staticData.salaryHour,
                 salary: this.changeData.salary || this.staticData.salary,
                 coefficient: this.changeData.coef,
                 salaryHours: this.changeData.salaryHour || this.staticData.salaryHour,
-                closeHours: this.changeData.closeHours || this.staticData.closeHours
+                closeHours: this.changeData.closeHours || this.staticData.closeHours,
+                penaltyHours: this.changeData.penaltyTime || this.staticData.penaltyTime,
+                fix: this.changeData.fixSalary
             })
             .then(response => {
                 console.log(response);
