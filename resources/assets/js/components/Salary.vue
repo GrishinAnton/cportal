@@ -147,14 +147,14 @@
             this.staticData.salaryHour = e.target.value / (this.changeData.closeHours || this.staticData.closeHours)
         },
         saveSalary(){
-            var day = new Date()
+            var day = new Date();
             var url; 
             
             if (this.postData.salaryId) {
                 url = `/api/personal/salary/${this.postData.salaryId}/update`;
             } else {
                 url = `/api/personal/${this.personalId}/salary/store`;
-            }        
+            }
           
             axios.post(url, {
                 salary: this.changeData.salary || this.staticData.salary,
@@ -163,7 +163,7 @@
                 closeHours: this.changeData.closeHours || this.staticData.closeHours,
                 penaltyHours: this.changeData.penaltyTime || this.staticData.penaltyTime,
                 fix: this.changeData.fixSalary,
-                date: `${this.date}-${day.getDate()()}`
+                date: `${this.date}-${day.getDate()}`
             })
             .then(response => {
                 console.log(response);
