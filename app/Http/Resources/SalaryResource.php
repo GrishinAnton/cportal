@@ -19,9 +19,9 @@ class SalaryResource extends JsonResource
             'coefficient' => $this->coefficient,
             'fix' => $this->fix,
             'salary' => $this->salary,
-            'closeHours' => $this->closeHours,
-            'salaryHours' => $this->salaryHours,
-            'penaltyHours' => $this->penaltyHours,
+            'closeHours' => $this->close_hours,
+            'salaryHours' => $this->salary_hours,
+            'penaltyHours' => $this->penalty_hours,
         ];
     }
 }

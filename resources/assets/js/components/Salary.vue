@@ -45,7 +45,7 @@
                         <label for="fineHours">Штрафных часов</label>
                         <div class="flex">
                             <input type="text" :value="staticData.penaltyTime" class="form-control mr-1" placeholder="Штрафных часов" disabled>
-                            <input type="text" class="form-control" v-model="changeData.penaltyTime" placeholder="Штрафных часов" id="fineHours">
+                            <input type="text" class="form-control" @input="onChangeCloseHour()" v-model="changeData.penaltyTime" placeholder="Штрафных часов" id="fineHours">
                         </div> 
                     </div> 
 
@@ -209,6 +209,8 @@
         saveSalary(){
             var day = new Date();
             var url; 
+
+            console.log(this.postData.salaryId);
             
             if (this.postData.salaryId) {
                 url = `/api/personal/salary/${this.postData.salaryId}/update`;
@@ -250,17 +252,17 @@
                 }
             })
             .then(response => {
-
+                
                 var data = response.data.data;
 
-                this.changeData.fixSalary = data.salary ? data.salary.fix : 0;
-                this.changeData.coef = data.salary ? data.salary.coefficient : 0;
-                this.staticData.salaryHour = data.salary ? data.salary.salary_hours.toFixed(2) : '';
-                this.changeData.closeHours = data.salary.close_hours ? data.salary.close_hours : '';
-                this.staticData.salary = data.salary ? data.salary.salary.toFixed(2) : '';
-                this.changeData.penaltyTime = data.salary ? data.salary.penalty_hours : '';
+                this.changeData.fixSalary = data.fix;
+                this.changeData.coef = data.coefficient;
+                this.staticData.salaryHour = data.salaryHours;
+                this.changeData.closeHours = data.closeHours;
+                this.staticData.salary = data.salary;
+                this.changeData.penaltyTime = data.penaltyHours;
 
-                this.postData.salaryId = data.salary ? data.salary.id : '';
+                this.postData.salaryId = data.id ;
             })
             .catch(e => {
                 console.log(e);
