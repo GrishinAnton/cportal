@@ -1,6 +1,6 @@
 @extends('layouts.page')
 
-@section('title', 'AdminLTE')
+@section('title')
 
 @section('content_header')
     <h1 class="h1">Отчет</h1>
