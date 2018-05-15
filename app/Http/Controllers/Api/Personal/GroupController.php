@@ -33,22 +33,9 @@ class GroupController extends Controller
      */
     public function addGroup($personalId, GroupRequest $request)
     {
-        DB::beginTransaction();
-
-        try {
-
-            Personal::where('pers_id', $personalId)->update([
-                'group_id' => $request->groupId
-            ]);
-
-        } catch (\Exception $e) {
-            DB::rollback();
-            report($e);
-
-            return response()->json(['success' => false]);
-        }
-
-        DB::commit();
+        Personal::where('pers_id', $personalId)->update([
+            'group_id' => $request->groupId
+        ]);
 
         return response()->json(['success' => true]);
     }

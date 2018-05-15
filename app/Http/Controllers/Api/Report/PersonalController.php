@@ -2,27 +2,37 @@
 
 namespace App\Http\Controllers\Api\Report;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Personal;
 use App\Salary;
 
 class PersonalController extends Controller
 {
+    /**
+     * Get all personal
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function all()
     {
         $users = Personal::where('is_active', true)
             ->with('salary')
             ->get();
 
-        return response()->json(
-            [
+        return response()->json([
                 'success' => true,
                 'data' => $users
-            ]
-        );
+        ]);
     }
 
+    /**
+     * Get salaries
+     *
+     * @param $persId
+     * @param $year
+     * @param $month
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function salaries($persId, $year, $month)
     {
         $salaries = Salary::where('pers_id', $persId)
