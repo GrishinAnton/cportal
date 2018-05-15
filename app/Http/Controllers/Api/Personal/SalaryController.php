@@ -29,7 +29,7 @@ class SalaryController extends Controller
             'close_hours' => $request->closeHours,
             'salary_hours' => $request->salaryHours,
             'penalty_hours' => $request->penaltyHours,
-            'date' => date('Y-m-d')
+            'date' => $request->date,
         ]);
 
         return response()->json(['success' => true]);

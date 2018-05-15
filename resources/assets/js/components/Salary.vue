@@ -150,7 +150,7 @@
             var url; 
             
             if (this.postData.salaryId) {
-                url = `/api/personal/salary/${this.personalId}/update`;
+                url = `/api/personal/salary/${this.postData.salaryId}/update`;
             } else {
                 url = `/api/personal/${this.personalId}/salary/store`;
             }
