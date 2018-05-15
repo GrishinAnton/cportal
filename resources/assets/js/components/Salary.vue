@@ -216,14 +216,12 @@
                 date: `${this.date}-${day.getDate()}`
             })
             .then(response => {
-                if (response.data.data) {
-                    this.postData.salaryId = response.data.data.id
-                }
-
                 if(response.data.success){
                     this.alertVariant = 'success';
                     this.dismissCountDown = 5;
                 }
+
+                this.salary();
             })
             .catch(e=> {
                 console.log(e);
@@ -232,17 +230,18 @@
         countDownChanged (dismissCountDown) {
             this.dismissCountDown = dismissCountDown
         },
-    },
-    created() {
-        this.staticData.penaltyTime = this.penaltyTime ? this.penaltyTime : 0;        
-        
-         axios.get('/api/personal/'+this.personalId+'?date='+this.date)
+        salary() {
+            this.staticData.penaltyTime = this.penaltyTime ? this.penaltyTime : 0;
+
+            axios.get('/api/personal/'+this.personalId+'/salary', {
+                params: {
+                    date: this.date
+                }
+            })
             .then(response => {
 
-                var data = response.data
+                var data = response.data.data;
 
-                console.log(response.data);
-                
                 this.changeData.fixSalary = data.salary ? data.salary.fix : 0;
                 this.changeData.coef = data.salary ? data.salary.coefficient : 0;
                 this.staticData.salaryHour = data.salary ? data.salary.salary_hours.toFixed(2) : '';
@@ -255,7 +254,10 @@
             .catch(e => {
                 console.log(e);
             })
-
+        }
+    },
+    created() {
+        this.salary();
     }
  }   
 </script>  

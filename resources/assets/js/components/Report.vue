@@ -102,7 +102,7 @@
             }
         },
         mounted() {
-            axios.get('/api/report/personal/all')
+            axios.get('/api/report/personal')
                 .then(response => {
                     if (response.data.success) {
                         this.personals = response.data.data;

@@ -39,8 +39,8 @@
             <personal-position :personal-id = "{{ $first->pers_id }}"></personal-position>          
         </div>
         <?php
-                $coefficient = isset($salary->coefficient) ? $salary->coefficient : 1.1;
-            ?>
+            $coefficient = isset($salary->coefficient) ? $salary->coefficient : 1.1;
+        ?>
     </div>
     <div class="box">
         <table class="table table-striped">
