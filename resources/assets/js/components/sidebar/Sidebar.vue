@@ -53,13 +53,13 @@
                             id: 3.1
                         },
                         {
-                            icon: "fa fa-fw fa-file",
+                            icon: "fa fa-fw fa-folder",
                             name: "Проекты",
                             href: '/projects',
                             id: 3.2
                         },
                         {
-                            icon: "fa fa-fw fa-file",
+                            icon: "fa fa-fw fa-user-md",
                             name: "Выработка",
                             href: '/productivity',
                             id: 3.3

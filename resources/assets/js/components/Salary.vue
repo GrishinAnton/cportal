@@ -147,10 +147,11 @@
             this.staticData.salaryHour = e.target.value / (this.changeData.closeHours || this.staticData.closeHours)
         },
         saveSalary(){
+            var day = new Date()
             var url; 
             
             if (this.postData.salaryId) {
-                url = `/api/personal/salary/${this.personalId}/update`;
+                url = `/api/personal/salary/${this.postData.salaryId}/update`;
             } else {
                 url = `/api/personal/${this.personalId}/salary/store`;
             }
@@ -161,7 +162,8 @@
                 salaryHours: this.changeData.salaryHour || this.staticData.salaryHour,
                 closeHours: this.changeData.closeHours || this.staticData.closeHours,
                 penaltyHours: this.changeData.penaltyTime || this.staticData.penaltyTime,
-                fix: this.changeData.fixSalary
+                fix: this.changeData.fixSalary,
+                date: `${this.date}-${day.getDay()}`
             })
             .then(response => {
                 console.log(response);
@@ -179,6 +181,9 @@
             .then(response => {
 
                 var data = response.data
+
+                console.log(response.data);
+                
                 
                 this.changeData.coef = data.salary ? data.salary.coefficient : 0;
                 this.staticData.closeHours = data.first ? Math.trunc(_.sumBy(data.first.times, 'totaltime')) : '';
