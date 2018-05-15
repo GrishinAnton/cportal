@@ -163,10 +163,12 @@
                 closeHours: this.changeData.closeHours || this.staticData.closeHours,
                 penaltyHours: this.changeData.penaltyTime || this.staticData.penaltyTime,
                 fix: this.changeData.fixSalary,
-                date: `${this.date}-${day.getDate()()}`
+                date: `${this.date}-${day.getDate()}`
             })
             .then(response => {
                 console.log(response);
+                
+                this.postData.salaryId = response.data.data.id
                 
             })
             .catch(e=> {
