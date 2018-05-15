@@ -29,7 +29,8 @@ class SalaryRequest extends FormRequest
             'salary' => 'required',
             'closeHours' => 'required',
             'salaryHours' => 'required',
-            'penaltyHours' => 'required'
+            'penaltyHours' => 'required',
+            'date' => 'required|date_format:Y-m-d',
         ];
     }
 }
