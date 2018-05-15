@@ -10,9 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Personal;
 use DB;
 use App\ProjectCost;
-use App\Salary;
 use App\Cost;
-use App\Http\Requests\EditSalaryRequest;
 use App\Http\Requests\WriteOffCostsRequest;
 use DateTime;
 
@@ -89,37 +87,6 @@ class PersonalController extends Controller
             }])->with(['company', 'group']);
 
         return $personal;
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param EditSalaryRequest $request
-     * @param $pers_id
-     * @param null $salary_id
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function storeSalary(EditSalaryRequest $request, $pers_id, $salary_id = null)
-    {
-        $create = Salary::updateOrCreate(
-            [
-                'id' => $salary_id
-            ],
-            [
-                'salary' => $request->salary,
-                'salary_fix' => $request->salaryFix,
-                'hour' => $request->hour,
-                'coefficient' => $request->coef,
-                'date' => $request->date,
-                'pers_id' => $pers_id,
-                'edit_salary' => $request->editSalary,
-                'edit_hours' => $request->editHours
-            ]
-        );
-
-        $salary = Salary::find($create->id);
-
-        return response()->json($salary);
     }
 
     /**
