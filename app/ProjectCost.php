@@ -6,15 +6,24 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProjectCost extends Model
 {
+    /**
+     * @var array
+     */
     protected $fillable = [
-        'project_id',
         'pers_id',
+        'project_id',
         'project_cost',
-        'rus_date',
-        'year_month',
-        'hours'
+        'hours',
+        'cost_override',
+        'date',
+        'percent',
     ];
 
+    /**
+     * Personal
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function pers()
     {
         return $this->belongsTo('App\Personal', 'pers_id', 'pers_id');
