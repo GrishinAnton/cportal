@@ -15,7 +15,13 @@ class SalaryResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->id
+            'id' => $this->id,
+            'coefficient' => $this->coefficient,
+            'fix' => $this->fix,
+            'salary' => $this->salary,
+            'closeHours' => $this->close_hours,
+            'salaryHours' => $this->salary_hours,
+            'penaltyHours' => $this->penalty_hours,
         ];
     }
 }

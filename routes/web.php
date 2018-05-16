@@ -35,7 +35,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('api/personal/{personalId}/add/company', 'Api\Personal\CompanyController@addCompany')->name('api.personal.add.company');
 
     //Resource Personal
-    Route::get('api/personal/{id}', 'Api\Personal\PersonalController@show')->name('api.personal.show');
+    //Route::get('api/personal/{id}', 'Api\Personal\PersonalController@show')->name('api.personal.show');
     Route::post('api/personal/{pers_id}/costs/store', 'Api\Personal\PersonalController@storeCosts');
     Route::get('api/personal', 'Api\Personal\PersonalController@index')->name('web.personal.index');
     Route::get('api/personal/{id}/group-company', 'Api\Personal\PersonalController@getCompanyGroupPersonal')->name('web.personal.company.group');
@@ -43,6 +43,11 @@ Route::group(['middleware' => 'auth'], function () {
     //Resource Personal Salary
     Route::post('api/personal/{persId}/salary/store', 'Api\Personal\SalaryController@store')->name('api.personal.salary.store');
     Route::post('api/personal/salary/{salaryId}/update', 'Api\Personal\SalaryController@update')->name('api.personal.salary.update');
+    Route::get('api/personal/{persId}/salary', 'Api\Personal\SalaryController@show')->name('api.personal.salary.show');
+
+    //Resource Personal Project Costs
+    Route::get('api/personal/{persId}/project-costs', 'Api\Personal\ProjectCostController@index')->name('api.personal.project-costs.index');
+    Route::post('api/personal/{persId}/project-costs/store')->name('api.personal.project-costs.store');
 
     //Personal
     Route::get('personal', 'PersonalController@index')->name('web.personal.index');
@@ -54,7 +59,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('projects/{id}', 'ProjectController@show');
 
     //Resourse Report
-    Route::get('api/report/personal/all', 'Api\Report\PersonalController@all');
+    Route::get('api/report/personal', 'Api\Report\PersonalController@index');
+
     Route::get('api/report/worktime/{year}', 'Api\Report\WorkTimeController@workTimeByMonth');
     Route::get('api/report/personal/{persId}/salaries/{year}/{month}', 'Api\Report\PersonalController@salaries');
 

@@ -5,7 +5,7 @@
 @section('body')
     <div class="login-box">
         <div class="login-logo">
-            <a><b>2</b>UP</a>
+            <a><b>Корпоративный портал 2</b>UP</a>
         </div>
 
         <div class="login-box-body">

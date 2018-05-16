@@ -39,8 +39,8 @@
             <personal-position :personal-id = "{{ $first->pers_id }}"></personal-position>          
         </div>
         <?php
-                $coefficient = isset($salary->coefficient) ? $salary->coefficient : 1.1;
-            ?>
+            $coefficient = isset($salary->coefficient) ? $salary->coefficient : 1.1;
+        ?>
     </div>
     <div class="box">
         <table class="table table-striped">
@@ -121,7 +121,7 @@
     </div>        
         
         
-    <salary date = "{{ Request::filled('date') ? Request::get('date') : date('Y-m') }}" :personal-id = "{{ $first->pers_id }}" penalty-time="{{ $fine }}"></salary>
+    <salary date = "{{ Request::filled('date') ? Request::get('date') : date('Y-m') }}" :personal-id="{{ $first->pers_id }}" penalty-time="{{ $fine }}" close-hours="{{ $close }}"></salary>
 
     @else
         <div class="box">

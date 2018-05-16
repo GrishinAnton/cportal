@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Report;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Report\PersonalResource;
 use App\Personal;
 use App\Salary;
 
@@ -11,18 +12,16 @@ class PersonalController extends Controller
     /**
      * Get all personal
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function all()
+    public function index()
     {
-        $users = Personal::where('is_active', true)
+        $personal = Personal::where('is_active', true)
             ->with('salary')
             ->get();
 
-        return response()->json([
-                'success' => true,
-                'data' => $users
-        ]);
+        return PersonalResource::collection($personal)
+            ->additional(['success' => true]);
     }
 
     /**

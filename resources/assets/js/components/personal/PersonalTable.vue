@@ -20,37 +20,18 @@
                 </div>
             </div>
         </div>
-        
 
         <div class="box-body">
-            <table class="table table-hover table-bordered">
-                <tbody>
-                    <tr>
-                        <th style="width: 10px">#</th>
-                        <th>Имя Фамилия</th>
-                        <th>E-mail</th>
-                        <th>К</th>
-                        <th>Закрыто ч.</th>
-                        <th>Закрыто ч. неделя</th>
-                        <th>Компания</th>
-                        <th>Группа</th>
-                        <th>Штрафы</th>
-                        <th>ЗП</th>
-                    </tr>
-                    <tr v-for="item in personalInformation" :key="item.id">
-                        <td>{{ item.id }}</td>
-                        <td><a :href="item.url">{{ item.firstName }} {{ item.lastName }}</a></td>
-                        <td>{{ item.email }}</td>
-                        <td>{{ item.coefficient }}</td>
-                        <td>{{ item.closedHours }}</td>
-                        <td>{{ item.previousWeeksCloseHours }}</td>
-                        <td>{{ item.company ? item.company.name : '' }}</td>
-                        <td>{{ item.group ? item.group.name : ''}}</td>
-                        <td>{{ item.fine }}</td>
-                        <td>{{ item.solary }}</td>
-                       </tr>
-                </tbody>
-            </table>
+            <b-table bordered hover :items="table.items" :fields="table.fields">
+                <template slot="index" slot-scope="data">
+                    {{data.index + 1}}
+                </template>
+                <template slot="firstName" slot-scope="data">
+                    <a :href="data.item.url">
+                        {{data.item.firstName}} {{data.item.lastName}}
+                    </a>
+                </template>
+            </b-table>
         </div>
 
         <div class="box-footer">
@@ -76,6 +57,10 @@
             personalInformation: [],
             activeGroups: [],
             activeCompanies: [],
+            table: {
+                fields: {},
+                items: [] 
+            }
         }),        
         methods: {
             onChange(id, item){
@@ -114,24 +99,42 @@
 
                     this.activeCompanies.length ? localStorage.setItem('activeCompanies', this.activeCompanies) : localStorage.removeItem('activeCompanies');
               
-                    this.personalInformation = response.data.data;                   
+                    this.sortTableData(response.data.data);                 
 
                     //pagination
                     this.paginationDataChange(response.data)
+                    
                 })
                 .catch(e=> {
                     console.log(e);
                     
                 })
 
-            }      
+            },
+            sortTableData(data){
+                
+                this.table.fields = {
+                    index: {label: '#'},
+                    firstName: {label: 'Имя Фамилия'},
+                    email: {label: 'E-mail'},
+                    coefficient: {label: 'К'},
+                    closedHours: {label: 'Закрыто ч.', sortable: true},
+                    previousWeeksCloseHours: {label: 'Закрыто ч. неделя', sortable: true},
+                    company: {key: 'company.name', label: 'Компания'},
+                    group: {key: 'group.name', label: 'Группа'},
+                    fine: {label: 'Штрафы', sortable: true},
+                    salary: {label: 'ЗП', sortable: true},
+                }
+                this.table.items = data
+            },
+
         },
         mounted(){
             if(!localStorage.length){
                 
                 axios.get('/api/personal')
                     .then(response => {
-                        this.personalInformation = response.data.data;   
+                        this.sortTableData(response.data.data);
 
                         //pagination
                         this.paginationDataChange(response.data)
@@ -140,7 +143,7 @@
                         console.log(e);
                     })
             } else {      
-                
+
                 var localGroup = localStorage.getItem('activeGroup');
                 var localCompany = localStorage.getItem('activeCompanies');
                  

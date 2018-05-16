@@ -34,20 +34,24 @@ class PersonalController extends Controller
         $date = input_date($request->filled('date'), $request->date);
 
         //Достаем все что вообще можно
-        $first = Personal::where('is_active', 1)->where('pers_id', $id)
-        ->with(['times' => function ($query) use ($date) {
-            $query->select(DB::raw('sum(worktime) as totaltime'), 'worktime', 'pers_id', 'task_id')
-                ->whereYear('date', (int)$date[0])
-                ->whereMonth('date', (int)$date[1])
-                ->groupBy('task_id')->with(['tasks' => function ($query) {
-                    $query->with('projects');
-                }]);
-        }])->with(['salary' => function ($query) use ($date) {
-                $query->whereYear('date', (int)$date[0])
-                ->whereMonth('date', (int)$date[1])
-                ->orderBy('date', 'desc');
-        }])
+        $first = Personal::where('is_active', true)
+            ->where('pers_id', $id)
+            ->with(['times' => function ($query) use ($date) {
+                $query->select(DB::raw('sum(worktime) as totaltime'), 'worktime', 'pers_id', 'task_id')
+                    ->whereYear('date', (int)$date[0])
+                    ->whereMonth('date', (int)$date[1])
+                    ->groupBy('task_id')
+                    ->with(['tasks' => function ($query) {
+                        $query->with('projects');
+                    }]);
+            }])->with(['salary' => function ($query) use ($date) {
+                    $query->whereYear('date', (int)$date[0])
+                        ->whereMonth('date', (int)$date[1])
+                        ->orderBy('date', 'desc');
+            }])
             ->firstOrFail();
+
+        $salary = $first->salary->first();
 
         //Достаем и групируем по месячно все даты
         $dates = PersonalTime::orderBy('date', 'DESC')->select('date')->get()
@@ -58,7 +62,7 @@ class PersonalController extends Controller
         //Вывод красивой даты
         $dates = rus_date($dates);
 
-        return view('personal.show', compact('dates', 'first'));
+        return view('personal.show', compact('dates', 'first', 'salary'));
     }
 
     /**
