@@ -35,7 +35,8 @@ class ProjectCostController extends Controller
 
         $personalTimes = PersonalTime::select(
             DB::raw('sum(worktime) as worktime'),
-            'projects.name'
+            'projects.name',
+            'projects.project_id'
         )
             ->where('personal_times.pers_id', $id)
             ->groupBy('tasks.project_id')

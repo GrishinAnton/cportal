@@ -70,43 +70,7 @@
             </div>
         </div>
         <div class="box">
-                <div class="box-header">
-                    <h3 class="box-title">
-                        Расходы по проектам
-                    </h3>
-                </div>
-                <div class="box-body">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>Проект</th>
-                                <th>Часы</th>
-                                <th>% от проекта</th>
-                                <th>Расход по проекту</th>
-                                <th>Расход в ручную</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td> %</td>                           
-                                <td>123</td>
-                                <td><input type="text" class="form-control w-50"></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <button type="button"  class="btn btn-primary">Списать</button>
-                </div>
-            </div>
-
-
-
-
-
-
-        <!-- <div class="box">
-            <div class="box-header with-border">
+            <div class="box-header">
                 <h3 class="box-title">
                     Расходы по проектам
                 </h3>
@@ -123,24 +87,18 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="timeRecord in get.timeRecords" v-if="timeRecord.worktime !== null">
-                            <td>{{ timeRecord.name }}</td>
-                            <td>{{ timeRecord.worktime }}</td>
-                            <td>{{ parseFloat(timeRecord.worktime/get.trackedTime).toFixed(3) * 100 }} %</td>
-                            
-                                <td v-if = "Number(form.editSalary) !== 0">{{ ((form.editSalary * parseFloat(timeRecord.worktime/get.trackedTime)) + (get.costs * parseFloat(timeRecord.worktime/get.trackedTime))).toFixed(2) }}</td>
-                         
-
-                                <td v-else> {{ ((salary * parseFloat(timeRecord.worktime/get.trackedTime)) + (get.costs * parseFloat(timeRecord.worktime/get.trackedTime))).toFixed(2) }}</td>
-                           
-                            <td><input v-model = "form.editCosts[timeRecord.project_id]" type = "text" class = "form-control"></td>
+                        <tr v-for="(item, index) in costsProject.data">
+                            <td>{{ item.project }}</td>
+                            <td>{{ item.worktime }}</td>
+                            <td>{{ item.percent }} %</td>                           
+                            <td>{{ costsProjectSalaryPercent(item.percent, item) }}</td>
+                            <td><input type="text" class="form-control w-50"></td>
                         </tr>
                     </tbody>
                 </table>
-                <br>
-                <button v-if = "post.costs === false" type = "button" v-on:click = "costs" class = "btn btn-primary">Списать</button>
+                <button type="button"  class="btn btn-primary">Списать</button>
             </div>
-        </div> -->
+        </div>
     </div>
 
 </template>
@@ -184,6 +142,10 @@
         postData: {
             salaryId: ''
         },
+        costsProject: {
+            data: '',
+            sum: ''
+        },
         dismissSecs: 5,
         dismissCountDown: 0,
         alertVariant: '',
@@ -192,13 +154,15 @@
     methods: {
         onChangeSalaryHour(){
             this.staticData.salary = this.changeData.salaryHour * ((this.changeData.closeHours || this.staticData.closeHours) - (this.changeData.penaltyTime || this.staticData.penaltyTime))    
-            this.flagHours = true;  
+            this.flagHours = true; 
+            // costsProjectSalaryPercent() 
         },
         onChangeSalary(){
             this.staticData.salary = this.changeData.salary;
             
             this.staticData.salaryHour = Math.trunc(this.changeData.salary / (this.changeData.closeHours || this.staticData.closeHours))
-            this.flagHours = false;  
+            this.flagHours = false; 
+            // costsProjectSalaryPercent() 
         },
         onChangeCloseHour(){
             if(this.flagHours){
@@ -275,12 +239,22 @@
             .catch(e => {
                 console.log(e);
             })
-        }
+        },
+        costsProjectPercent(data){
+            for (let item of data) {
+                item.percent = (100 / (this.costsProject.sum / item.worktime)).toFixed(2)          
+            }  
+         },
+        costsProjectSalaryPercent(per, obj){
+            //прибывать еще общую сумму перед делением на 100
+            var persentSalary = (((this.changeData.salary || this.staticData.salary) / 100) * per).toFixed(2)
+            obj.persentSalary = persentSalary;  
+            
+            return persentSalary
+        }      
     },
     created() {
         this.salary();
-        console.log(this.date);
-        
 
         axios.get(`/api/personal/9/project-costs`, {
             params: {
@@ -288,7 +262,11 @@
             }
         })
         .then(response => {
-            console.log(response);
+            this.costsProject.data = response.data.data.reverse();
+            this.costsProject.sum = _.sumBy(this.costsProject.data, 'worktime');
+
+            this.costsProjectPercent(this.costsProject.data);
+            
             
         })
         .catch(e => {
@@ -300,197 +278,5 @@
 </script>  
 
 <style>
-/*
-    // export default {
-    //     props: {
-    //         personalId: {
-    //             type: Number,
-    //             required: true
-    //         },
-    //         date: {
-    //             type: String,
-    //             required: true
-    //         }
-    //     },
-    //     data() {
-    //         return {
-    //             post: {
-    //                 validSalary: null,
-    //                 costs: false
-    //             },
 
-    //             form: {
-    //                 fix: null,
-    //                 closeHours: null,
-    //                 addHours: null,
-    //                 estimatedTime: null,
-    //                 salary: null,
-    //                 posts: null,
-    //                 coef: 1.1,
-    //                 salaryHours: null,
-    //                 editSalary: null,
-    //                 costs: null,
-    //                 editCosts: []
-    //             },
-
-    //             get: {
-    //                 info: null,
-    //                 salary: null,
-    //                 trackedTime: null,
-    //                 times: null,
-    //                 fullEstimatedTime: 0,
-    //                 timeRecords: null,
-    //                 costs: null,
-    //             }
-    //         }
-    //     },
-    //     created() {
-    //         axios.get('/api/personal/'+this.personalId+'?date='+this.date)
-    //             .then(response => {
-                
-    //                 this.get.info = response.data.first;
-    //                 this.get.salary = response.data.salary;
-    //                 this.get.trackedTime = _.sumBy(this.get.info.times, 'totaltime').toFixed(2);
-    //                 this.get.times = this.get.info.times;
-    //                 this.get.timeRecords = response.data.timeRecords;
-    //                 this.get.costs = response.data.costs.cost;
-    //                 this.post.costs = response.data.projectCosts; 
-
-    //                 this.$store.commit('personal/personalInformation', response.data)
-
-    //                 if (this.get.salary !== null) {
-    //                     this.validSalary = '/'+this.get.salary.id;
-    //                 } else {
-    //                     this.validSalary = '';
-    //                 }
-
-    //                 if (this.get.salary !== null) {
-    //                     this.form.salaryHours = this.get.salary.hour;
-    //                     this.form.fix = this.get.salary.salary_fix;
-    //                     this.form.coef = this.get.salary.coefficient;
-    //                     this.form.salary = this.get.salary.salary;
-    //                     this.form.addHours = this.get.salary.edit_hours;
-    //                     this.form.editSalary = this.get.salary.edit_salary;
-    //                 }
-                  
-                     
-    //             })
-    //             .catch(e => {
-    //                 console.log(e);
-    //             })
-    //     },
-    //     methods: {
-    //         costs : function () {               
-    //             for (var timeRecord in this.get.timeRecords) {
-    //                 if (this.get.timeRecords[timeRecord]['worktime'] !== null) {
-    //                     if (this.get.timeRecords[timeRecord]['project_id'] in this.form.editCosts) {
-    //                         var projectCost = this.form.editCosts[this.get.timeRecords[timeRecord]['project_id']];
-    //                     } else {
-    //                         if (_.get(this.get.salary, 'edit_salary') && this.get.salary.edit_salary !== '0.00') {
-    //                             var projectCost = ((this.get.salary.edit_salary * parseFloat(this.get.timeRecords[timeRecord]['worktime']/this.get.trackedTime)) + (this.get.costs * parseFloat(this.get.timeRecords[timeRecord]['worktime']/this.get.trackedTime))).toFixed(2);
-    //                         } else {
-    //                             var projectCost = ((this.salary * parseFloat(this.get.timeRecords[timeRecord]['worktime']/this.get.trackedTime)) + (this.get.costs * parseFloat(this.get.timeRecords[timeRecord]['worktime']/this.get.trackedTime))).toFixed(2);
-    //                         }
-    //                     }
-                        
-    //                     axios.post('/api/personal/'+this.personalId+'/costs/store', {
-    //                         projectId: this.get.timeRecords[timeRecord]['project_id'],
-    //                         projectCost: projectCost,
-    //                         date: this.date,
-    //                         workTime: this.get.timeRecords[timeRecord]['worktime']
-    //                     })
-    //                     .then(response => {
-    //                         this.post.costs = true;
-    //                         //return console.log(response);
-    //                     })
-    //                     .catch(function (error) {
-    //                         return console.log(error);
-    //                     });
-    //                 }
-    //             }
-    //         },
-    //         postSalary: function () {
-    //             var day = new Date();
-               
-
-    //             axios.post('/api/personal/'+this.personalId+'/salary/store'+this.validSalary, {
-    //                 salaryFix: this.isSalaryFixed,
-    //                 salary: this.salary,
-    //                 coef: this.form.coef,
-    //                 hour: this.valueHours,
-    //                 date: this.date+'-'+day.getDay(),
-    //                 editHours: this.form.addHours ,
-    //                 editSalary: this.form.editSalary
-    //             })
-    //             .then(response => {
-    //                 this.get.salary = response.data;
-
-    //                 if (this.get.salary !== null) {
-    //                     this.validSalary = '/'+this.get.salary.id;
-    //                 } else {
-    //                     this.validSalary = '';
-    //                 }
-
-    //                     this.form.salaryHours = this.get.salary.hour;
-    //                     this.form.fix = this.get.salary.salary_fix;
-    //                     this.form.coef = this.get.salary.coefficient;
-    //                     this.form.salary = this.get.salary.salary;
-    //                     this.form.addHours = this.get.salary.edit_hours;
-    //                     this.form.editSalary = this.get.salary.edit_salary;
-    //             })
-    //             .catch(function (error) {
-    //                 return console.log(error);
-    //             });
-    //         }
-    //     },
-    //     computed: {
-    //         isSalaryFixed() {
-    //             return this.form.fix;
-    //         },
-    //         fineHours() {               
-    //             for (var task in this.get.times) {                                 
-    //                 this.get.fullEstimatedTime += parseFloat(this.get.times[task].tasks.estimated_time);
-    //             }
-    //         },
-    //         salary() {
-    //             if (Number(this.form.fix) === 0) { 
-                        
-    //                 if (isNaN(parseFloat(this.form.addHours))) {
-                        
-    //                     return (this.closeHours - this.fineHours) * this.form.salaryHours;
-
-    //                 } else {
-
-    //                     return ((parseFloat(this.closeHours) + parseFloat(this.form.addHours)) - this.fineHours) * this.form.salaryHours;
-    //                 }
-
-    //             } else {
-    //                 return this.form.salary;
-    //             } 
-    //         },
-    //         closeHours() {
-    //                 console.log(this.get.trackedTime)
-    //                 return this.get.trackedTime;
-                
-    //         },
-    //         valueHours() {
-    //             if (this.form.fix !== 0) {
-    //                 return this.salary / (this.get.trackedTime - this.fineHours);
-    //             }
-
-    //             return this.form.salaryHours;
-
-    //         },
-    //         valueHoursWithoutFine() {
-    //             if (isNaN(parseFloat(this.form.addHours))) {     
-    //                 return parseFloat(this.closeHours) * parseFloat(this.form.salaryHours);
-    //             } 
-
-    //             return parseFloat(this.closeHours + this.form.addHours) * parseFloat(this.form.salaryHours);
-                
-    //         }
-    //     }
-    // }
-    
-*/
 </style>

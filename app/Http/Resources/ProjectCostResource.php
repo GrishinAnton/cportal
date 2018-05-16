@@ -16,7 +16,8 @@ class ProjectCostResource extends JsonResource
     {
         return [
             'worktime' => round($this->worktime, 2),
-            'project' => $this->name
+            'project' => $this->name,
+            'projecId' => $this->project_id,
         ];
     }
 }
