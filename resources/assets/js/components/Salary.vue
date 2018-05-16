@@ -65,40 +65,40 @@
                     @dismissed="dismissCountdown=0"
                     @dismiss-count-down="countDownChanged"
                     class="w-50">
-                    <p>Данные обновлены. Закроюсь через {{dismissCountDown}} сукунд.</p>                 
+                    <p>{{ alertMessage }}. Закроюсь через {{dismissCountDown}} сукунд.</p>                 
                 </b-alert>
             </div>
         </div>
-    <div class="box">
-            <div class="box-header">
-                <h3 class="box-title">
-                    Расходы по проектам
-                </h3>
+        <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">
+                        Расходы по проектам
+                    </h3>
+                </div>
+                <div class="box-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Проект</th>
+                                <th>Часы</th>
+                                <th>% от проекта</th>
+                                <th>Расход по проекту</th>
+                                <th>Расход в ручную</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td> %</td>                           
+                                <td>123</td>
+                                <td><input type="text" class="form-control w-50"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <button type="button"  class="btn btn-primary">Списать</button>
+                </div>
             </div>
-            <div class="box-body">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Проект</th>
-                            <th>Часы</th>
-                            <th>% от проекта</th>
-                            <th>Расход по проекту</th>
-                            <th>Расход в ручную</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td> %</td>                           
-                            <td>123</td>
-                            <td><input type="text" class="form-control w-50"></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <button type="button"  class="btn btn-primary">Списать</button>
-            </div>
-        </div>
 
 
 
@@ -186,7 +186,8 @@
         },
         dismissSecs: 5,
         dismissCountDown: 0,
-        alertVariant: ''
+        alertVariant: '',
+        alertMessage: ''
     }),
     methods: {
         onChangeSalaryHour(){
@@ -209,9 +210,7 @@
         saveSalary(){
             var day = new Date();
             var url; 
-
-            console.log(this.postData.salaryId);
-            
+          
             if (this.postData.salaryId) {
                 url = `/api/personal/salary/${this.postData.salaryId}/update`;
             } else {
@@ -231,12 +230,17 @@
                 if(response.data.success){
                     this.alertVariant = 'success';
                     this.dismissCountDown = 5;
+                    this.alertMessage = 'Данные обновлены'
                 }
 
                 this.salary();
             })
             .catch(e=> {
+                this.alertVariant = 'danger';
+                this.dismissCountDown = 5;
+                this.alertMessage = 'Ошибка'
                 console.log(e);
+                
             });
         },
         countDownChanged (dismissCountDown) {
@@ -252,17 +256,21 @@
                 }
             })
             .then(response => {
+
+                if(response.data.success){
+                    var data = response.data.data;
                 
-                var data = response.data.data;
+                    this.changeData.fixSalary = data.fix;
+                    this.changeData.coef = data.coefficient;
+                    this.staticData.salaryHour = data.salaryHours;
+                    this.changeData.closeHours = data.closeHours;
+                    this.staticData.salary = data.salary;
+                    this.changeData.penaltyTime = data.penaltyHours;
 
-                this.changeData.fixSalary = data.fix;
-                this.changeData.coef = data.coefficient;
-                this.staticData.salaryHour = data.salaryHours;
-                this.changeData.closeHours = data.closeHours;
-                this.staticData.salary = data.salary;
-                this.changeData.penaltyTime = data.penaltyHours;
-
-                this.postData.salaryId = data.id ;
+                    this.postData.salaryId = data.id ;
+                }
+                
+                
             })
             .catch(e => {
                 console.log(e);
@@ -271,6 +279,21 @@
     },
     created() {
         this.salary();
+
+
+        axios.get(`/api/personal/9/project-costs`, {
+            params: {
+                data: this.date
+            }
+        })
+        .then(response => {
+            console.log(response);
+            
+        })
+        .catch(e => {
+            console.log(e);
+            
+        })
     }
  }   
 </script>  

@@ -20,9 +20,13 @@
                 </div>
             </div>
         </div>
-        
 
         <div class="box-body">
+            <b-table bordered hover :items="table.items" :fields="table.fields"></b-table>
+        </div>
+        
+
+        <!-- <div class="box-body">
             <table class="table table-hover table-bordered">
                 <tbody>
                     <tr>
@@ -51,7 +55,7 @@
                        </tr>
                 </tbody>
             </table>
-        </div>
+        </div> -->
 
         <div class="box-footer">
             <b-pagination align="right" 
@@ -76,6 +80,10 @@
             personalInformation: [],
             activeGroups: [],
             activeCompanies: [],
+            table: {
+                fields: {},
+                items: []
+            }
         }),        
         methods: {
             onChange(id, item){
@@ -114,24 +122,43 @@
 
                     this.activeCompanies.length ? localStorage.setItem('activeCompanies', this.activeCompanies) : localStorage.removeItem('activeCompanies');
               
-                    this.personalInformation = response.data.data;                   
+                    this.sortTableData(response.data.data);                 
 
                     //pagination
                     this.paginationDataChange(response.data)
+                    
                 })
                 .catch(e=> {
                     console.log(e);
                     
                 })
 
-            }      
+            },
+            sortTableData(data){
+                console.log(data);
+                
+                this.table.fields = {
+                    id: {label: '#'},
+                    firstName: {label: 'Имя Фамилия', formatter: 'fullName'},
+                    email: {label: 'E-mail'},
+                    coefficient: {label: 'К'},
+                    closedHours: {label: 'Закрыто ч.', sortable: true},
+                    previousWeeksCloseHours: {label: 'Закрыто ч. неделя', sortable: true},
+                    company: {key: 'company.name', label: 'Компания'},
+                    group: {key: 'group.name', label: 'Группа'},
+                    fine: {label: 'Штрафы', sortable: true},
+                    salary: {label: 'ЗП', sortable: true},
+                }
+                this.table.items = data
+            },
+
         },
         mounted(){
             if(!localStorage.length){
                 
                 axios.get('/api/personal')
                     .then(response => {
-                        this.personalInformation = response.data.data;   
+                        this.sortTableData(response.data.data);
 
                         //pagination
                         this.paginationDataChange(response.data)
@@ -140,7 +167,7 @@
                         console.log(e);
                     })
             } else {      
-                
+
                 var localGroup = localStorage.getItem('activeGroup');
                 var localCompany = localStorage.getItem('activeCompanies');
                  

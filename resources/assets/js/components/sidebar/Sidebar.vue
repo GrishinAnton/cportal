@@ -2,7 +2,7 @@
     <div>
         <ul class="nav flex-column">
             <li v-for="item in navItems" :key="item.id" class="nav-item" :class="{'active': item.href == url}">
-                <a :href="item.href" class="nav-link">
+                <a @click.prevent="menuClick($event)" :href="item.href" class="nav-link">
                     <i :class="item.icon"></i>
                     <span>{{ item.name }}</span>
                 </a>
@@ -44,7 +44,7 @@
                 {
                     icon: "fa fa-fw fa-file",
                     name: "Отчет",
-                    href: '/report',
+                    href: '#',
                     subMenu: [
                         {
                             icon: "fa fa-fw fa-money",
@@ -63,6 +63,12 @@
                             name: "Выработка",
                             href: '/productivity',
                             id: 3.3
+                        },
+                        {
+                            icon: "fa fa-fw fa-user-md",
+                            name: "Сводный",
+                            href: '/report',
+                            id: 3.4
                         }
                     ],
                     id: 3
@@ -76,10 +82,29 @@
             ]
         }),
         methods: {
-            openMnu(e){
-               
+            openMnu(e){               
                 e.srcElement.nextElementSibling.classList.toggle('nav-submenu-show');                
             },
+            menuClick(e){
+                var elemLink;                
+
+                if(e.srcElement.tagName === 'A'){
+                    elemLink = e.srcElement;
+                } else {
+                    var elem = e.srcElement;
+
+                    while (elem.tagName !== 'A'){                        
+                        elem = e.srcElement.parentNode;
+                    }
+                    elemLink = elem;
+                }
+
+                if(elemLink.attributes.href.value !== '#'){
+                    window.location.href =  elemLink.attributes.href.value;        
+                } else {
+                    elemLink.nextElementSibling.nextElementSibling.classList.toggle('nav-submenu-show'); 
+                }
+            }
             
         },
         mounted(){            

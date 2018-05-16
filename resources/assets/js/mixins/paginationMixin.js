@@ -26,7 +26,7 @@ export const paginationMixin = {
                 }
             })
                 .then(response => {
-                    this.personalInformation = response.data.data;   
+                    this.sortTableData(response.data.data);
 
                     //pagination
                     this.paginationDataChange(response.data);
