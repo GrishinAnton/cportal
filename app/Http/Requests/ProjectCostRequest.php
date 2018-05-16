@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class WriteOffCostsRequest extends FormRequest
+class ProjectCostRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,10 +24,12 @@ class WriteOffCostsRequest extends FormRequest
     public function rules()
     {
         return [
-            'projectId' => 'required|numeric',
-            'projectCost' => 'required|numeric',
-            'workTime' => 'required|numeric',
-            'date' => 'required|string'
+            'projectId' => 'required|exists:projects,project_id',
+            'projectCost' => 'required|integer',
+            'hours' => 'required|integer',
+            'percent' => 'required|numeric|max:100',
+            'costOverride' => 'required|integer',
+            'date' => 'required|date_format:Y-m-d',
         ];
     }
 }

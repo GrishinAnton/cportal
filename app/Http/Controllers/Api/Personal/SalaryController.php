@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\Personal;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SalaryRequest;
-use App\Http\Requests\ShowSalaryRequest;
+use App\Http\Requests\DateRequest;
 use App\Http\Resources\SalaryResource;
 use App\Salary;
 use App\Personal;
@@ -25,10 +25,10 @@ class SalaryController extends Controller
      * Show salary for month and year
      *
      * @param $persId
-     * @param ShowSalaryRequest $request
+     * @param DateRequest $request
      * @return SalaryResource
      */
-    public function show($persId, ShowSalaryRequest $request)
+    public function show($persId, DateRequest $request)
     {
         $date = explode('-', $request->date);
 

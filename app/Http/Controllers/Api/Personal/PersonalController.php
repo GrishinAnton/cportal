@@ -11,7 +11,6 @@ use App\Personal;
 use DB;
 use App\ProjectCost;
 use App\Cost;
-use App\Http\Requests\WriteOffCostsRequest;
 use DateTime;
 
 class PersonalController extends Controller
@@ -19,6 +18,7 @@ class PersonalController extends Controller
     /**
      * Index
      *
+     * @param PersonalFilterRequest $request
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(PersonalFilterRequest $request)
@@ -67,19 +67,13 @@ class PersonalController extends Controller
         $year = $date->format('Y');
         $month = $date->format('m');
 
-        $personal = Personal::where('is_active', 1)
+        $personal = Personal::where('is_active', true)
             ->with(['times' => function ($query) use ($month, $year) {
                 $query->select(DB::raw('sum(worktime) as totaltime'), 'worktime', 'pers_id', 'task_id')
                     ->whereYear('date', $year)
                     ->whereMonth('date', $month)
                     ->groupBy('task_id')
                     ->groupBy('pers_id');
-            }])->with(['tasks' => function ($query) use ($month, $year) {
-                $query->groupBy('task_id')
-                    ->groupBy('personal_times.pers_id')
-                    ->groupBy('personal_times.task_id')
-                    ->whereMonth('personal_times.date', $month)
-                    ->whereYear('personal_times.date', $year);
             }])->with(['salary' => function ($query) use ($month, $year) {
                 $query->whereYear('date', $year)
                     ->whereMonth('date', $month)
@@ -87,37 +81,6 @@ class PersonalController extends Controller
             }])->with(['company', 'group']);
 
         return $personal;
-    }
-
-    /**
-     * Add costs for projects first worker
-     *
-     * @param $pers_id
-     * @param WriteOffCostsRequest $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function storeCosts($pers_id, WriteOffCostsRequest $request)
-    {
-        if ($request->filled('date')) {
-            $date = rus_date([$request->date => $request->date]);
-
-            $date = $date[$request->date];
-        } else {
-            $date = rus_date([date('Y-m') => date('Y-m')]);
-
-            $date = $date[date('Y-m')];
-        }
-
-        ProjectCost::create([
-            'pers_id' => $pers_id,
-            'project_id' => $request->projectId,
-            'project_cost' => $request->projectCost,
-            'hours' => $request->workTime,
-            'rus_date' => $date,
-            'year_month' => $request->date
-        ]);
-
-        return response()->json('helloworld');
     }
 
     /**

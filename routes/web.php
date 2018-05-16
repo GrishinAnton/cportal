@@ -45,6 +45,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('api/personal/salary/{salaryId}/update', 'Api\Personal\SalaryController@update')->name('api.personal.salary.update');
     Route::get('api/personal/{persId}/salary', 'Api\Personal\SalaryController@show')->name('api.personal.salary.show');
 
+    //Resource Personal Project Costs
+    Route::get('api/personal/{persId}/project-costs', 'Api\Personal\ProjectCostController@index')->name('api.personal.project-costs.index');
+    Route::post('api/personal/{persId}/project-costs/store')->name('api.personal.project-costs.store');
+
     //Personal
     Route::get('personal', 'PersonalController@index')->name('web.personal.index');
     Route::get('personal/{id}', 'PersonalController@show')->name('web.personal.show');
