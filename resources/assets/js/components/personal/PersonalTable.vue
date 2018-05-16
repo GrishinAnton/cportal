@@ -22,40 +22,14 @@
         </div>
 
         <div class="box-body">
-            <b-table bordered hover :items="table.items" :fields="table.fields"></b-table>
+            <b-table bordered hover :items="table.items" :fields="table.fields">
+                <template slot="firstName" slot-scope="data">
+                    <a :href="data.item.url">
+                        {{data.item.firstName}} {{data.item.lastName}}
+                    </a>
+                </template>
+            </b-table>
         </div>
-        
-
-        <!-- <div class="box-body">
-            <table class="table table-hover table-bordered">
-                <tbody>
-                    <tr>
-                        <th style="width: 10px">#</th>
-                        <th>Имя Фамилия</th>
-                        <th>E-mail</th>
-                        <th>К</th>
-                        <th>Закрыто ч.</th>
-                        <th>Закрыто ч. неделя</th>
-                        <th>Компания</th>
-                        <th>Группа</th>
-                        <th>Штрафы</th>
-                        <th>ЗП</th>
-                    </tr>
-                    <tr v-for="item in personalInformation" :key="item.id">
-                        <td>{{ item.id }}</td>
-                        <td><a :href="item.url">{{ item.firstName }} {{ item.lastName }}</a></td>
-                        <td>{{ item.email }}</td>
-                        <td>{{ item.coefficient }}</td>
-                        <td>{{ item.closedHours }}</td>
-                        <td>{{ item.previousWeeksCloseHours }}</td>
-                        <td>{{ item.company ? item.company.name : '' }}</td>
-                        <td>{{ item.group ? item.group.name : ''}}</td>
-                        <td>{{ item.fine }}</td>
-                        <td>{{ item.solary }}</td>
-                       </tr>
-                </tbody>
-            </table>
-        </div> -->
 
         <div class="box-footer">
             <b-pagination align="right" 
@@ -139,7 +113,7 @@
                 
                 this.table.fields = {
                     id: {label: '#'},
-                    firstName: {label: 'Имя Фамилия', formatter: 'fullName'},
+                    firstName: {label: 'Имя Фамилия'},
                     email: {label: 'E-mail'},
                     coefficient: {label: 'К'},
                     closedHours: {label: 'Закрыто ч.', sortable: true},

@@ -67,19 +67,13 @@ class PersonalController extends Controller
         $year = $date->format('Y');
         $month = $date->format('m');
 
-        $personal = Personal::where('is_active', 1)
+        $personal = Personal::where('is_active', true)
             ->with(['times' => function ($query) use ($month, $year) {
                 $query->select(DB::raw('sum(worktime) as totaltime'), 'worktime', 'pers_id', 'task_id')
                     ->whereYear('date', $year)
                     ->whereMonth('date', $month)
                     ->groupBy('task_id')
                     ->groupBy('pers_id');
-            }])->with(['tasks' => function ($query) use ($month, $year) {
-                $query->groupBy('task_id')
-                    ->groupBy('personal_times.pers_id')
-                    ->groupBy('personal_times.task_id')
-                    ->whereMonth('personal_times.date', $month)
-                    ->whereYear('personal_times.date', $year);
             }])->with(['salary' => function ($query) use ($month, $year) {
                 $query->whereYear('date', $year)
                     ->whereMonth('date', $month)

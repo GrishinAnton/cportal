@@ -279,11 +279,12 @@
     },
     created() {
         this.salary();
-
+        console.log(this.date);
+        
 
         axios.get(`/api/personal/9/project-costs`, {
             params: {
-                data: this.date
+                date: this.date
             }
         })
         .then(response => {

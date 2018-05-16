@@ -15,7 +15,7 @@ class ProjectCostResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'worktime' => $this->worktime,
+            'worktime' => round($this->worktime, 2),
             'project' => $this->name
         ];
     }
