@@ -247,7 +247,7 @@
          },
         costsProjectSalaryPercent(per, obj){
             //прибывать еще общую сумму перед делением на 100
-            var persentSalary = (((this.changeData.salary || this.staticData.salary) / 100) * per).toFixed(2)
+            var persentSalary = (((this.flagHours ? this.staticData.salary : this.changeData.salary) / 100) * per).toFixed(2)
             obj.persentSalary = persentSalary;  
             
             return persentSalary
