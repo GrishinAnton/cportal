@@ -23,6 +23,9 @@
 
         <div class="box-body">
             <b-table bordered hover :items="table.items" :fields="table.fields">
+                <template slot="index" slot-scope="data">
+                    {{data.index + 1}}
+                </template>
                 <template slot="firstName" slot-scope="data">
                     <a :href="data.item.url">
                         {{data.item.firstName}} {{data.item.lastName}}
@@ -56,7 +59,7 @@
             activeCompanies: [],
             table: {
                 fields: {},
-                items: []
+                items: [] 
             }
         }),        
         methods: {
@@ -109,10 +112,9 @@
 
             },
             sortTableData(data){
-                console.log(data);
                 
                 this.table.fields = {
-                    id: {label: '#'},
+                    index: {label: '#'},
                     firstName: {label: 'Имя Фамилия'},
                     email: {label: 'E-mail'},
                     coefficient: {label: 'К'},

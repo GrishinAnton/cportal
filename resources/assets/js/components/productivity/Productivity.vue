@@ -22,33 +22,16 @@
         </div>
 
         <div class="box-body">
-            <table class="table table-hover table-bordered">
-                <tbody>
-                    <tr>
-                        <th style="width: 10px">#</th>
-                        <th>Имя Фамилия</th>
-                        <th>E-mail</th>
-                        <th>Неделя 1 14.05-20.05</th>
-                        <th>Неделя 2 7.05-13.05</th>
-                        <th>Неделя 3 30.04-6.05</th>
-                        <th>Неделя 4 23.04-29.04</th>
-                        <th>Неделя 5 16.04-22.04</th>
-                        <th>Неделя 6 9.04-15.04</th>
-                    </tr>
-                    <tr v-for="item in personalInformation" :key="item.id">
-                        <td>{{ item.id }}</td>
-                        <td><a :href="item.url">{{ item.firstName }} {{ item.lastName }}</a></td>
-                        <td>{{ item.email }}</td>
-                        <td>{{ item.coefficient }}</td>
-                        <td>{{ item.closedHours }}</td>
-                        <td>{{ item.previousWeeksCloseHours }}</td>
-                        <td>{{ item.company ? item.company.name : '' }}</td>
-                        <td>{{ item.group ? item.group.name : ''}}</td>
-                        <td>{{ item.fine }}</td>
-
-                       </tr>
-                </tbody>
-            </table>
+            <b-table bordered hover :items="table.items" :fields="table.fields">
+                <template slot="index" slot-scope="data">
+                    {{data.index + 1}}
+                </template>
+                <template slot="firstName" slot-scope="data">
+                    <a :href="data.item.url">
+                        {{data.item.firstName}} {{data.item.lastName}}
+                    </a>
+                </template>
+            </b-table>
         </div>
 
         <div class="box-footer">
@@ -75,6 +58,10 @@
             personalInformation: [],
             activeGroups: [],
             activeCompanies: [],
+            table: {
+                fields: {},
+                items: [] 
+            }
         }),        
         methods: {
             onChange(id, item){
@@ -113,7 +100,9 @@
 
                     this.activeCompanies.length ? localStorage.setItem('activeCompanies', this.activeCompanies) : localStorage.removeItem('activeCompanies');
               
-                    this.personalInformation = response.data.data;                   
+                    this.personalInformation = response.data.data;    
+                    
+                    this.sortTableData(response.data.data);
 
                     //pagination
                     this.paginationDataChange(response.data)
@@ -123,14 +112,30 @@
                     
                 })
 
-            }      
+            },
+            sortTableData(data){
+                
+                this.table.fields = {
+                    index: {label: '#'},
+                    firstName: {label: 'Имя Фамилия'},
+                    email: {label: 'E-mail'},
+                    coefficient: {label: '14.05-20.05', sortable: true},
+                    closedHours: {label: '7.05-13.05', sortable: true},
+                    previousWeeksCloseHours: {label: '30.04-6.05', sortable: true},
+                    fine: {label: '23.04-29.04', sortable: true},
+                    salary: {label: '16.04-22.04', sortable: true},
+                }
+                this.table.items = data
+            },      
         },
         mounted(){
             if(!localStorage.length){
                 
                 axios.get('/api/personal')
                     .then(response => {
-                        this.personalInformation = response.data.data;   
+                        this.personalInformation = response.data.data;  
+                        
+                        this.sortTableData(response.data.data);
 
                         //pagination
                         this.paginationDataChange(response.data)
