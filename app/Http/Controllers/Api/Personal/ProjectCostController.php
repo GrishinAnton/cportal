@@ -13,6 +13,16 @@ use DB;
 class ProjectCostController extends Controller
 {
     /**
+     * Date year
+     */
+    private const DATE_YEAR = 0;
+
+    /**
+     * Date month
+     */
+    private const DATE_MONTH = 1;
+
+    /**
      * Project costs personal
      *
      * @param $id
@@ -29,8 +39,8 @@ class ProjectCostController extends Controller
         )
             ->where('personal_times.pers_id', $id)
             ->groupBy('tasks.project_id')
-            ->whereMonth('personal_times.date', $date[1])
-            ->whereYear('personal_times.date', $date[0])
+            ->whereMonth('personal_times.date', $date[self::DATE_MONTH])
+            ->whereYear('personal_times.date', $date[self::DATE_YEAR])
             ->join('tasks', function ($join) {
                 $join->on('tasks.task_id', '=', 'personal_times.task_id');
             })
