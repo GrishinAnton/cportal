@@ -53,7 +53,7 @@ Route::group(['middleware' => 'auth'], function () {
     //Resource Report Costs
     Route::get('api/report/costs', 'Api\Report\CostController@index')->name('api.report.costs.index');
     Route::post('api/report/costs', 'Api\Report\CostController@store')->name('api.report.costs.store');
-    Route::post('api/report/costs/{costId}', 'Api\Repost\CostController@update')->name('api.report.costs.update');
+    Route::post('api/report/costs/{costId}', 'Api\Report\CostController@update')->name('api.report.costs.update');
 
     //----------------------------------------------------------------------------------------------------------------//
 
