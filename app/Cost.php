@@ -11,6 +11,6 @@ class Cost extends Model
      */
     protected $fillable = [
         'cost',
-        'date'
+        'date',
     ];
 }

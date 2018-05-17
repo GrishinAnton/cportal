@@ -9,7 +9,7 @@ class CostResource extends JsonResource
     /**
      * Date month
      */
-    private const DATE_MONTH = 0;
+    private const DATE_MONTH = 1;
 
     /**
      * Transform the resource into an array.

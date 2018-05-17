@@ -53,7 +53,7 @@
                         <label for="zp">ЗП</label>
                         <div class="flex">
                             <input type="text" :value="Math.trunc(staticData.salary)" class="form-control mr-1" placeholder="Зарплата" disabled>
-                            <input type="text" id="zp" @input="onChangeSalary()" v-model="changeData.salary" class="form-control" placeholder="Зарплата">
+                            <input type="text" id="zp" @input="onChangeSalary()" v-model.number="changeData.salary" class="form-control" placeholder="Зарплата">
                         </div> 
                     </div>
                 </div>
@@ -69,7 +69,7 @@
                 </b-alert>
             </div>
         </div>
-        <div class="box">
+        <div class="box" v-if="noCosts">
             <div class="box-header">
                 <h3 class="box-title">
                     Расходы по проектам
@@ -87,16 +87,21 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(item, index) in costsProject.data">
+                        <tr v-for="(item, index) in costsProject.data" :key="index">
                             <td>{{ item.project }}</td>
                             <td>{{ item.worktime }}</td>
                             <td>{{ item.percent }} %</td>                           
                             <td>{{ costsProjectSalaryPercent(item.percent, item) }}</td>
-                            <td><input type="text" class="form-control w-50"></td>
+                            <td>       
+
+                                <span v-if="costsProject.costProject">{{ item.costOverride }}</span>
+                                <input type="text" class="form-control w-25" else v-model="item.costOverride">
+                                
+                            </td>
                         </tr>
                     </tbody>
                 </table>
-                <button type="button"  class="btn btn-primary">Списать</button>
+                <button type="button" v-if="!flagcostOverride" class="btn btn-primary" @click="saveCosts()">Списать</button>
             </div>
         </div>
     </div>
@@ -111,7 +116,6 @@
             type: Number,
             required: true
         },
-
         date: {
             type: String,
             required: true
@@ -121,6 +125,10 @@
         },
         closeHours: {
             type: String
+        },
+        noCosts: {
+            type: Boolean,
+            default: true
         }
     },
     data: () => ({
@@ -144,7 +152,9 @@
         },
         costsProject: {
             data: '',
-            sum: ''
+            sum: '', 
+            costsMonth: '',
+            costProject: ''
         },
         dismissSecs: 5,
         dismissCountDown: 0,
@@ -155,14 +165,11 @@
         onChangeSalaryHour(){
             this.staticData.salary = this.changeData.salaryHour * ((this.changeData.closeHours || this.staticData.closeHours) - (this.changeData.penaltyTime || this.staticData.penaltyTime))    
             this.flagHours = true; 
-            // costsProjectSalaryPercent() 
         },
         onChangeSalary(){
-            this.staticData.salary = this.changeData.salary;
-            
-            this.staticData.salaryHour = Math.trunc(this.changeData.salary / (this.changeData.closeHours || this.staticData.closeHours))
+            this.staticData.salary = this.changeData.salary;           
+            this.staticData.salaryHour = Number(this.changeData.closeHours || this.staticData.closeHours) ? Math.trunc(this.changeData.salary / (this.changeData.closeHours || this.staticData.closeHours)) : 0;
             this.flagHours = false; 
-            // costsProjectSalaryPercent() 
         },
         onChangeCloseHour(){
             if(this.flagHours){
@@ -207,6 +214,19 @@
                 
             });
         },
+        saveCosts(){
+            var data = this.costsProject.data
+            console.log(data);
+            
+            axios.post(`/api/personal/${this.personalId}/project-costs/store`, data)
+            .then(rsponse => {
+                console.log(response);
+                
+            })
+            .catch(e => {
+                console.log(e)
+            })
+        },
         countDownChanged (dismissCountDown) {
             this.dismissCountDown = dismissCountDown
         },
@@ -246,9 +266,8 @@
             }  
          },
         costsProjectSalaryPercent(per, obj){
-            //прибывать еще общую сумму перед делением на 100
-            var persentSalary = (((this.flagHours ? this.staticData.salary : this.changeData.salary) / 100) * per).toFixed(2)
-            obj.persentSalary = persentSalary;  
+            var persentSalary = ((((this.flagHours ? this.staticData.salary : this.changeData.salary) + this.costsProject.costsMonth.cost) / 100) * per).toFixed(2)
+            obj.projectCost = persentSalary;  
             
             return persentSalary
         }      
@@ -264,15 +283,30 @@
         .then(response => {
             this.costsProject.data = response.data.data.reverse();
             this.costsProject.sum = _.sumBy(this.costsProject.data, 'worktime');
+            this.costsProject.costProject = response.data.costProject;
 
-            this.costsProjectPercent(this.costsProject.data);
-            
+            this.costsProjectPercent(this.costsProject.data);           
+
+           
             
         })
         .catch(e => {
             console.log(e);
             
         })
+
+
+        axios.get(`/api/personal/costs`, {
+            params: {
+                date: this.date
+            }
+        })
+        .then(response => {
+            this.costsProject.costsMonth = response.data.data
+        })
+        .catch(errors => {
+            console.log(errors)
+        });
     }
  }   
 </script>  

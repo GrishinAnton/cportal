@@ -43,7 +43,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     //Resource Personal Project Costs
     Route::get('api/personal/{persId}/project-costs', 'Api\Personal\ProjectCostController@index')->name('api.personal.project-costs.index');
-    Route::post('api/personal/{persId}/project-costs/store')->name('api.personal.project-costs.store')->name('api.personal.project-costs.store');
+    Route::post('api/personal/{persId}/project-costs/store', 'Api\Personal\ProjectCostController@store')->name('api.personal.project-costs.store');
 
     //Resourse Report
     Route::get('api/report/personal', 'Api\Report\PersonalController@index');
