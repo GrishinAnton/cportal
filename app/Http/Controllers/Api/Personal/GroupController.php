@@ -7,7 +7,6 @@ use App\Http\Resources\GroupResource;
 use App\Personal;
 use App\PersonalGroup;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\DB;
 
 class GroupController extends Controller
 {
