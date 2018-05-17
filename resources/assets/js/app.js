@@ -17,7 +17,7 @@ window.Vue = require('vue');
  */
 
 Vue.component('salary', function (resolve) {require(['./components/Salary'], resolve)});
-Vue.component('report-index', function (resolve) { require(['./components/Report'], resolve)});
+Vue.component('report', function (resolve) { require(['./components/Report'], resolve)});
 Vue.component('costs', function (resolve) { require(['./components/finance/Costs'], resolve)});
 Vue.component('sidebar', function (resolve) { require(['./components/sidebar/Sidebar'], resolve)});
 Vue.component('personal-position', function (resolve) { require(['./components/personal/PersonalPosition'], resolve)});
