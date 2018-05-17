@@ -1,16 +1,15 @@
 <template>
     <div class="box">
-        <div class="box-header">
+        <div class="box-header flex flex_jc-sb">
             <h3 class="box-title">Издержки</h3>
-            <div class="pull-right">
-                <select class="form-control" v-model="year" @change="renderTableByYaer">
+            <div class="col-1 flex flex_jc-fe">
+                <select class="form-control" v-model="date" @change="renderTableByYaer">
                     <option value="2017">2017</option>
                     <option value="2018">2018</option>
                 </select>
             </div>
         </div>
         <div class="box-body">
-            <template v-if="! success"><h3>Упс, что - то сломалось :(</h3></template>
             <table class="table table-hover table-bordered">
                 <thead>
                     <tr>
@@ -32,7 +31,7 @@
                 <tbody>
                      <tr>
                         <td>Издержки</td>
-                        <td class="text-center" @click="openmodal()">
+                        <td class="text-center" @click="openModal()">
                             <span>0</span>
                             <i class="fa fa-pencil"></i>
                         </td>
@@ -51,33 +50,25 @@
 </template>
 <script>
     export default {
+        props: {
+            date: {
+                type: String
+            }
+        },
         data: () => ({
             costs: [],
             input: {
                 cost: 0
             },
             modalOpen: false,
-            year: 2018,
-            success: true, 
         }),
         methods: {
-            openmodal(){
+            openModal(){
                 this.$refs.modal.show()
             },
             closeModal(){
                 this.$refs.modal.hide()
-            },
-            // salaries(persId, month) {
-            //     axios.get('/api/report/personal/'+persId+'/salaries/'+this.year+'/'+month)
-            //         .then(response => {
-            //             this.salary = response.data.data;
-            //         })
-            //         .catch();
-
-            //     if (! this.salary) {
-            //         this.modal(true);
-            //     }
-            // },            
+            },          
             renderTableByYaer() {
                 axios.get('/api/report/worktime/'+this.year)
                     .then(response => {
@@ -85,43 +76,33 @@
                     })
                     .catch();
             },
-            submit() {
+            // submit() {
 
-                var data = this.input.cost;
-                var url = '';
-                axios.post(url, data)
-                    .then(response => {
-                        console.log(response.data)
-                    })
-                    .catch(errors => {
-                    console.log(errors)
-                });
-            }
+            //     var data = this.input.cost;
+            //     var url = '';
+            //     axios.post(url, data)
+            //         .then(response => {
+            //             console.log(response.data)
+            //         })
+            //         .catch(errors => {
+            //         console.log(errors)
+            //     });
+            // }
         },
         mounted() {
-            // var url = '';
-            // axios.get(url)
-            // .then(response => {
-            //     console.log(response.data)
-            // })
-            // .catch(errors => {
-            //     console.log(errors)
-            // })
-            // axios.get('/api/report/personal/all')
-            //     .then(response => {
-            //         if (response.data.success) {
-            //             this.personals = response.data.data;
-            //             console.log(this.personals);
-                        
 
-            //             return;
-            //         }
+            axios.get(`/api/report/costs`, {
+                params: {
+                    date: this.date
+                }
+            })
+            .then(response => {
+                console.log(response)
+            })
+            .catch(errors => {
+                console.log(errors)
+            });
 
-            //         this.success = true;
-            //     })
-            //     .catch(errors => {
-            //         this.success = true;
-            //     });
         }
     }
 </script>

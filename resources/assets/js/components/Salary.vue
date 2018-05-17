@@ -69,7 +69,7 @@
                 </b-alert>
             </div>
         </div>
-        <div class="box">
+        <div class="box" v-if="noCosts">
             <div class="box-header">
                 <h3 class="box-title">
                     Расходы по проектам
@@ -87,16 +87,21 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(item, index) in costsProject.data">
+                        <tr v-for="(item, index) in costsProject.data" :key="index">
                             <td>{{ item.project }}</td>
                             <td>{{ item.worktime }}</td>
                             <td>{{ item.percent }} %</td>                           
                             <td>{{ costsProjectSalaryPercent(item.percent, item) }}</td>
-                            <td><input type="text" class="form-control w-50"></td>
+                            <td>       
+
+                                <span v-if="flagcostOverride">{{ item.costOverride }}</span>
+                                <input type="text" class="form-control w-25" else v-model="item.costOverride">
+                                
+                            </td>
                         </tr>
                     </tbody>
                 </table>
-                <button type="button"  class="btn btn-primary">Списать</button>
+                <button type="button" v-if="flagcostOverride" class="btn btn-primary" @click="saveCosts()">Списать</button>
             </div>
         </div>
     </div>
@@ -111,7 +116,6 @@
             type: Number,
             required: true
         },
-
         date: {
             type: String,
             required: true
@@ -121,10 +125,15 @@
         },
         closeHours: {
             type: String
+        },
+        noCosts: {
+            type: Boolean,
+            default: true
         }
     },
     data: () => ({
         flagHours: '',
+        flagcostOverride: false,
         changeData: {
             fixSalary: false,
             coef: '',
@@ -144,7 +153,8 @@
         },
         costsProject: {
             data: '',
-            sum: ''
+            sum: '',
+            costOverride: 10
         },
         dismissSecs: 5,
         dismissCountDown: 0,
@@ -155,14 +165,11 @@
         onChangeSalaryHour(){
             this.staticData.salary = this.changeData.salaryHour * ((this.changeData.closeHours || this.staticData.closeHours) - (this.changeData.penaltyTime || this.staticData.penaltyTime))    
             this.flagHours = true; 
-            // costsProjectSalaryPercent() 
         },
         onChangeSalary(){
-            this.staticData.salary = this.changeData.salary;
-            
-            this.staticData.salaryHour = Math.trunc(this.changeData.salary / (this.changeData.closeHours || this.staticData.closeHours))
+            this.staticData.salary = this.changeData.salary;           
+            this.staticData.salaryHour = Number(this.changeData.closeHours || this.staticData.closeHours) ? Math.trunc(this.changeData.salary / (this.changeData.closeHours || this.staticData.closeHours)) : 0;
             this.flagHours = false; 
-            // costsProjectSalaryPercent() 
         },
         onChangeCloseHour(){
             if(this.flagHours){
@@ -206,6 +213,19 @@
                 console.log(e);
                 
             });
+        },
+        saveCosts(){
+            var data = this.costsProject.data
+            console.log(data);
+            
+            axios.post(`/api/personal/${this.personalId}/project-costs/store`, data)
+            .then(rsponse => {
+                console.log(response);
+                
+            })
+            .catch(e => {
+                console.log(e)
+            })
         },
         countDownChanged (dismissCountDown) {
             this.dismissCountDown = dismissCountDown
@@ -266,6 +286,10 @@
             this.costsProject.sum = _.sumBy(this.costsProject.data, 'worktime');
 
             this.costsProjectPercent(this.costsProject.data);
+
+            if(this.costsProject.data.costOverride){
+                this.flagcostOverride = true
+            }
             
             
         })

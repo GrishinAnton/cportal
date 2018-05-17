@@ -5,5 +5,5 @@
 @stop
 
 @section('content')
-    <costs></costs>
+    <costs date="{{ date('Y') }}"></costs>
 @stop
