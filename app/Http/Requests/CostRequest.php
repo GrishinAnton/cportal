@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class SalaryRequest extends FormRequest
+class CostRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,9 +24,8 @@ class SalaryRequest extends FormRequest
     public function rules()
     {
         return [
-            'fix' => 'required|boolean',
-            'salary' => 'required',
             'date' => 'required|date_format:Y-m-d',
+            'cost' => 'required|integer',
         ];
     }
 }
