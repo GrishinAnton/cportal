@@ -256,7 +256,7 @@
     created() {
         this.salary();
 
-        axios.get(`/api/personal/9/project-costs`, {
+        axios.get(`/api/personal/${this.personalId}/project-costs`, {
             params: {
                 date: this.date
             }
