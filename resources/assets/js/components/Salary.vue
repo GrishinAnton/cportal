@@ -101,7 +101,7 @@
                         </tr>
                     </tbody>
                 </table>
-                <button type="button" v-if="flagcostOverride" class="btn btn-primary" @click="saveCosts()">Списать</button>
+                <button type="button" v-if="!flagcostOverride" class="btn btn-primary" @click="saveCosts()">Списать</button>
             </div>
         </div>
     </div>
@@ -156,6 +156,7 @@
             sum: '',
             costOverride: 10
         },
+        costsMonth: '',
         dismissSecs: 5,
         dismissCountDown: 0,
         alertVariant: '',
@@ -268,7 +269,7 @@
         costsProjectSalaryPercent(per, obj){
             //прибывать еще общую сумму перед делением на 100
             var persentSalary = (((this.flagHours ? this.staticData.salary : this.changeData.salary) / 100) * per).toFixed(2)
-            obj.persentSalary = persentSalary;  
+            obj.projectCost = persentSalary;  
             
             return persentSalary
         }      
@@ -297,6 +298,20 @@
             console.log(e);
             
         })
+
+
+        axios.get(`/api/personal/costs`, {
+            params: {
+                date: this.date
+            }
+        })
+        .then(response => {
+            this.costsMonth = response.data.data
+            console.log(response.data.data)
+        })
+        .catch(errors => {
+            console.log(errors)
+        });
     }
  }   
 </script>  
