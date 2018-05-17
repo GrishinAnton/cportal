@@ -49,7 +49,7 @@
                         {
                             icon: "fa fa-fw fa-money",
                             name: "Финансы",
-                            href: '/finance/costs',
+                            href: '/report/costs',
                             id: 3.1
                         },
                         {
