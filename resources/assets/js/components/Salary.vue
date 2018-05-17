@@ -53,7 +53,7 @@
                         <label for="zp">ЗП</label>
                         <div class="flex">
                             <input type="text" :value="Math.trunc(staticData.salary)" class="form-control mr-1" placeholder="Зарплата" disabled>
-                            <input type="text" id="zp" @input="onChangeSalary()" v-model="changeData.salary" class="form-control" placeholder="Зарплата">
+                            <input type="text" id="zp" @input="onChangeSalary()" v-model.number="changeData.salary" class="form-control" placeholder="Зарплата">
                         </div> 
                     </div>
                 </div>
@@ -94,7 +94,7 @@
                             <td>{{ costsProjectSalaryPercent(item.percent, item) }}</td>
                             <td>       
 
-                                <span v-if="flagcostOverride">{{ item.costOverride }}</span>
+                                <span v-if="costsProject.costProject">{{ item.costOverride }}</span>
                                 <input type="text" class="form-control w-25" else v-model="item.costOverride">
                                 
                             </td>
@@ -133,7 +133,6 @@
     },
     data: () => ({
         flagHours: '',
-        flagcostOverride: false,
         changeData: {
             fixSalary: false,
             coef: '',
@@ -153,10 +152,10 @@
         },
         costsProject: {
             data: '',
-            sum: '',
-            costOverride: 10
+            sum: '', 
+            costsMonth: '',
+            costProject: ''
         },
-        costsMonth: '',
         dismissSecs: 5,
         dismissCountDown: 0,
         alertVariant: '',
@@ -267,8 +266,7 @@
             }  
          },
         costsProjectSalaryPercent(per, obj){
-            //прибывать еще общую сумму перед делением на 100
-            var persentSalary = (((this.flagHours ? this.staticData.salary : this.changeData.salary) / 100) * per).toFixed(2)
+            var persentSalary = ((((this.flagHours ? this.staticData.salary : this.changeData.salary) + this.costsProject.costsMonth.cost) / 100) * per).toFixed(2)
             obj.projectCost = persentSalary;  
             
             return persentSalary
@@ -285,13 +283,11 @@
         .then(response => {
             this.costsProject.data = response.data.data.reverse();
             this.costsProject.sum = _.sumBy(this.costsProject.data, 'worktime');
+            this.costsProject.costProject = response.data.costProject;
 
-            this.costsProjectPercent(this.costsProject.data);
+            this.costsProjectPercent(this.costsProject.data);           
 
-            if(this.costsProject.data.costOverride){
-                this.flagcostOverride = true
-            }
-            
+           
             
         })
         .catch(e => {
@@ -306,8 +302,7 @@
             }
         })
         .then(response => {
-            this.costsMonth = response.data.data
-            console.log(response.data.data)
+            this.costsProject.costsMonth = response.data.data
         })
         .catch(errors => {
             console.log(errors)
