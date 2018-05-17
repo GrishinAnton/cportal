@@ -101,7 +101,7 @@
                         </tr>
                     </tbody>
                 </table>
-                <button type="button" v-if="!flagcostOverride" class="btn btn-primary" @click="saveCosts()">Списать</button>
+                <button type="button" v-if="costsProject.costProject" class="btn btn-primary" @click="saveCosts()">Списать</button>
             </div>
         </div>
     </div>
@@ -281,6 +281,7 @@
             }
         })
         .then(response => {
+            
             this.costsProject.data = response.data.data.reverse();
             this.costsProject.sum = _.sumBy(this.costsProject.data, 'worktime');
             this.costsProject.costProject = response.data.costProject;

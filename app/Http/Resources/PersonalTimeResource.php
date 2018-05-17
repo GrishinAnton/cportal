@@ -17,7 +17,7 @@ class PersonalTimeResource extends JsonResource
         return [
             'worktime' => round($this->worktime, 2),
             'project' => $this->name,
-            'projecId' => $this->project_id,
+            'projectId' => $this->project_id,
             'costOverride' => 0,
         ];
     }
