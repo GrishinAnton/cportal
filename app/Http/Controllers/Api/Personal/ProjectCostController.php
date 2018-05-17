@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Personal;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DateRequest;
 use App\Http\Requests\ProjectCostRequest;
+use App\Http\Resources\PersonalTimeResource;
 use App\Http\Resources\ProjectCostResource;
 use App\PersonalTime;
 use App\ProjectCost;
@@ -25,15 +26,60 @@ class ProjectCostController extends Controller
     /**
      * Project costs personal
      *
-     * @param $id
+     * @param $persId
      * @param DateRequest $request
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function index($id, DateRequest $request)
+    public function index($persId, DateRequest $request)
     {
         $date = explode('-', $request->date);
 
-        $personalTimes = PersonalTime::select(
+        $projectCosts = $this->getProjectCost($persId, $date);
+
+        if ($projectCosts->isNotEmpty()) {
+            return ProjectCostResource::collection($projectCosts)
+                ->additional([
+                    'success' => true,
+                    'costProject' => true,
+                ]);
+        }
+
+        $personalTimes = $this->getPersonalTime($persId, $date);
+
+        return PersonalTimeResource::collection($personalTimes)
+            ->additional([
+                'success' => true,
+                'costProject' => false,
+            ]);
+    }
+
+    /**
+     * Get project costs
+     *
+     * @param $persId
+     * @param $date
+     * @return mixed
+     */
+    private function getProjectCost($persId, $date)
+    {
+        return ProjectCost::select('hours', 'project_id', 'percent', 'cost_override', 'project_cost')
+            ->whereYear('date', $date[self::DATE_YEAR])
+            ->whereMonth('date', $date[self::DATE_MONTH])
+            ->with('projects')
+            ->where('pers_id', $persId)
+            ->get();
+    }
+
+    /**
+     * Get personal time
+     *
+     * @param $id
+     * @param $date
+     * @return mixed
+     */
+    private function getPersonalTime($id, $date)
+    {
+        return PersonalTime::select(
             DB::raw('sum(worktime) as worktime'),
             'projects.name',
             'projects.project_id'
@@ -49,9 +95,6 @@ class ProjectCostController extends Controller
                 $join->on('projects.project_id', '=', 'tasks.project_id');
             })
             ->get();
-
-        return ProjectCostResource::collection($personalTimes)
-            ->additional(['success' => true]);
     }
 
     /**

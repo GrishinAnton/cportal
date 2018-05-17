@@ -28,4 +28,14 @@ class ProjectCost extends Model
     {
         return $this->belongsTo('App\Personal', 'pers_id', 'pers_id');
     }
+
+    /**
+     * Project
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function projects()
+    {
+        return $this->belongsTo('App\Project', 'project_id', 'project_id');
+    }
 }
