@@ -1,20 +1,19 @@
 <template>
     <div class="box">
-        <div class="box-header">
+        <div class="box-header flex flex_jc-sb">
             <h3 class="box-title">Издержки</h3>
-            <div class="pull-right">
-                <select class="form-control" v-model="year" @change="renderTableByYaer">
+            <div class="col-1 flex flex_jc-fe">
+                <select class="form-control" v-model="renderYear" @change="renderTableByYaer">
                     <option value="2017">2017</option>
                     <option value="2018">2018</option>
                 </select>
             </div>
         </div>
         <div class="box-body">
-            <template v-if="! success"><h3>Упс, что - то сломалось :(</h3></template>
             <table class="table table-hover table-bordered">
                 <thead>
                     <tr>
-                        <th style="width: 10px">2018</th>
+                        <th style="width: 10px">{{ renderYear }}</th>
                         <th class="text-center">Январь</th>
                         <th class="text-center">Февраль</th>
                         <th class="text-center">Март</th>
@@ -32,18 +31,20 @@
                 <tbody>
                      <tr>
                         <td>Издержки</td>
-                        <td class="text-center" @click="openmodal()">
-                            <span>0</span>
-                            <i class="fa fa-pencil"></i>
+                        <td v-for="n in costsOverride.data" :key="n.month" class="text-center" @click="openModal(n)">
+                            <template>
+                                <span>{{ n.cost || 0 }}</span> 
+                                <i v-if="n.cost != '-'" class="fa fa-pencil"></i>
+                            </template>
                         </td>
                     </tr>
                 </tbody>
             </table>
             <b-modal ref="modal" title="Издержки">
-                <input type="text" class="form-control">
+                <input ref="modalInput" type="text" class="form-control">
                 <div slot="modal-footer" class="w-100 d-flex justify-content-between">
                     <button type="button" class="btn btn-default pull-left" @click="closeModal()">Закрыть</button>
-                    <button type="button" class="btn btn-primary">Сохранить</button>
+                    <button type="button" class="btn btn-primary" @click="saveModal($event)">Сохранить</button>
                 </div>
             </b-modal>  
         </div>
@@ -52,76 +53,117 @@
 <script>
     export default {
         data: () => ({
-            costs: [],
-            input: {
-                cost: 0
-            },
-            modalOpen: false,
-            year: 2018,
-            success: true, 
+            currentYear: new Date().getFullYear(),
+            currentMonth: new Date().getMonth()+1,
+            renderYear: new Date().getFullYear(),
+            costsOverride: {
+                data: [],
+            },        
+            currentObj: '',    
         }),
         methods: {
-            openmodal(){
+            openModal(obj){                
+                if(obj.cost == '-'){
+                    return false
+                }
+                
+                this.currentObj = obj         
+                this.$refs.modalInput.value = obj.cost
                 this.$refs.modal.show()
             },
             closeModal(){
                 this.$refs.modal.hide()
-            },
-            // salaries(persId, month) {
-            //     axios.get('/api/report/personal/'+persId+'/salaries/'+this.year+'/'+month)
-            //         .then(response => {
-            //             this.salary = response.data.data;
-            //         })
-            //         .catch();
+            },    
+            saveModal(evt){
+                evt.preventDefault()
 
-            //     if (! this.salary) {
-            //         this.modal(true);
-            //     }
-            // },            
-            renderTableByYaer() {
-                axios.get('/api/report/worktime/'+this.year)
-                    .then(response => {
-                        console.log(response);
-                    })
-                    .catch();
-            },
-            submit() {
+                if (!this.$refs.modalInput.value) {
+                    alert('А сумму?')
+                } else {
+                    this.currentObj.cost = this.$refs.modalInput.value
+                    this.saveCost()
+                    this.closeModal()
+                }
+                             
+            },   
+            renderTableByYaer(e) {
+                var monthFormat = (`0${this.currentMonth}`).slice(-2);
 
-                var data = this.input.cost;
-                var url = '';
-                axios.post(url, data)
-                    .then(response => {
-                        console.log(response.data)
-                    })
-                    .catch(errors => {
+                axios.get(`/api/report/costs`, {
+                    params: {
+                        date: `${e.target.value}-${monthFormat}`
+                    }
+                })
+                .then(response => {                   
+                    this.costsOverride.data =  this.createCostData(response.data.data); 
+                })
+                .catch(errors => {
                     console.log(errors)
                 });
+            },
+            saveCost(){
+
+                var url;
+                this.currentObj.id !== undefined ? url = `/api/report/costs/${this.currentObj.id}` : url = `/api/report/costs`;               
+                this.currentObj.date = `${this.renderYear}-${this.currentObj.month}-07`
+
+                axios.post(url, this.currentObj)
+                .then(response => {
+                    console.log(response);
+                    
+                })
+                .catch(e => {
+                    console.log(e);
+                    
+                })
+                
+            },
+            createCostData(response){
+
+                var arr = [];
+
+                for(var i = 1; i <= 12; i++){
+                    var month = (`0${i}`).slice(-2);
+                   
+
+                    if (this.renderYear < this.currentYear) {
+                        arr.push({month: month, cost: 0})
+                        continue
+                    }
+
+                    
+                    if (i <= this.currentMonth) {
+                        arr.push({month: month, cost: 0})
+                    } else {
+                        arr.push({month: month, cost: '-'})
+                    }      
+                }
+
+                for (var k = 0; k <= response.length; k++) {  
+                    for (var t in response[k]) {
+                        arr[response[k]['month'].replace('0', '') -1] = response[k]   
+                    }                        
+                }
+
+                return arr;
             }
         },
         mounted() {
-            // var url = '';
-            // axios.get(url)
-            // .then(response => {
-            //     console.log(response.data)
-            // })
-            // .catch(errors => {
-            //     console.log(errors)
-            // })
-            // axios.get('/api/report/personal/all')
-            //     .then(response => {
-            //         if (response.data.success) {
-            //             this.personals = response.data.data;
-            //             console.log(this.personals);
-                        
 
-            //             return;
-            //         }
+            var monthFormat = (`0${this.currentMonth}`).slice(-2);
 
-            //         this.success = true;
-            //     })
-            //     .catch(errors => {
-            //         this.success = true;
-            //     });
+            axios.get(`/api/report/costs`, {
+                params: {
+                    date: `${this.currentYear}-${monthFormat}`
+                }
+            })
+            .then(response => {
+                this.costsOverride.data =  this.createCostData(response.data.data);   
+            })
+            .catch(errors => {
+                console.log(errors)
+            });
+
         }
     }
 </script>

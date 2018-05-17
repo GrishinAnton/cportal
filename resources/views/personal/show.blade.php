@@ -156,9 +156,8 @@
 
                 <personal-position :personal-id = "{{ $first->pers_id }}"></personal-position>          
             </div>
-            <div class="box-body">
-                <h4>Данных нет</h4>
-            </div>
         </div>
+
+        <salary date="{{ Request::filled('date') ? Request::get('date') : date('Y-m') }}" :personal-id="{{ $first->pers_id }}" penalty-time="0" close-hours="0" :no-costs="false"></salary>
     @endif
 @stop

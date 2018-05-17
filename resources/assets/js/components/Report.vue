@@ -27,7 +27,7 @@
             </div>
         </div>
         <div class="box-body">
-            <!-- <table class="table table-hover table-bordered">
+            <table class="table table-hover table-bordered">
                 <thead>
                     <tr>
                         <th style="width: 10px">#</th>
@@ -46,10 +46,12 @@
                         <th class="text-center">Декабрь</th>
                     </tr>
                 </thead>
-                <tbody v-for="personal in personals" :key="personal.id">
+                <tbody v-for="(personal, index) in personalInformation" :key="index">
                     <tr>
-                        <td>{{ personal.id }}</td>
-                        <td v-b-toggle="personal.id">{{ personal.first_name }} {{ personal.last_name }}</td>
+                        <td>{{ ++index }}</td>
+                        <td v-b-toggle="personal.email">
+                            <a :href="personal.url">{{ personal.firstName }} {{ personal.lastName }}</a>
+                        </td>
                         <td @click="openmodal()"></td>
                         <td></td>
                         <td></td>
@@ -63,32 +65,14 @@
                         <td></td>
                         <td></td>
                     </tr>
-                    <b-collapse :id="personal.id" tag="tr">
+                    <b-collapse :id="personal.email" tag="tr">
                         <td></td>
                         <td class="text-right">проект</td>
                         <td>data 1</td>  
                         <td>data 1</td>
                     </b-collapse>
                 </tbody>
-            </table>     -->
-            <b-table bordered hover :items="table.items" :fields="table.fields">
-                <template slot="index" slot-scope="data">
-                    {{data.index + 1}}
-                </template>
-                <template slot="firstName" slot-scope="data">
-                    <a @click.stop="data.toggleDetails">
-                        {{data.item.firstName}} {{data.item.lastName}}
-                        
-                    </a>                   
-                </template>
-                <template slot="row-details" @change="rowChange()" slot-scope="data">
-                    <tr>
-                        <ul>
-                            <li >{{data.item.email}}</li>
-                        </ul>
-                    </tr>
-                </template>
-            </b-table>
+            </table>    
             <b-modal ref="modal" title="Фиксированная зарплата">
                 <input type="text" class="form-control">
                 <div slot="modal-footer" class="w-100 d-flex justify-content-between">
@@ -96,7 +80,7 @@
                     <button type="button" class="btn btn-primary">Сохранить</button>
                 </div>
             </b-modal>  
-        </div>   
+        </div>  
 
         <div class="box-footer">
             <b-pagination align="right" 
@@ -109,136 +93,49 @@
             </b-pagination>
         </div>
 
-
     </div>
 </template>
 <script>
     import { personalMixin } from './../mixins/personalMixin';
     import { paginationMixin } from './../mixins/paginationMixin';
+    import { personalFilter } from './../mixins/personalFilter';
 
     export default {
-        mixins: [paginationMixin, personalMixin],
-        data: ()=> ({
+        mixins: [paginationMixin, personalMixin, personalFilter],
+        data: () =>({
             personalInformation: [],
-            activeGroups: [],
-            activeCompanies: [],
-            table: {
-                fields: {},
-                items: [] 
-            },
             year: 2018,
-         }), 
+        }),
         methods: {
             openmodal(){
                 this.$refs.modal.show()
             },
             closeModal(){
                 this.$refs.modal.hide()
-            },
+            }, 
             renderTableByYaer() {
                 axios.get('/api/report/worktime/'+this.year)
                     .then(response => {
                         console.log(response);
                     })
                     .catch();
-            },
-            onChange(id, item){
-
-                var arrName;
-
-                if(item === 'group'){
-                    arrName = this.activeGroups;
-                }
-                if(item === 'company'){
-                    arrName = this.activeCompanies;      
-                }
-
-                var arrPosition = arrName.indexOf(id);
-
-                if(arrPosition === -1){
-                    arrName.push(id);
-                } else {         
-                    arrName.splice(arrPosition, 1);
-                } 
-
-                this.requestFilter()
-                
-            },
-            requestFilter(){
-
-                axios.get('/api/personal', {
-                    params: {
-                        group: this.activeGroups,
-                        company: this.activeCompanies
-                    }
-                })
-                .then(response => {
-
-                    this.activeGroups.length ? localStorage.setItem('activeGroup', this.activeGroups) : localStorage.removeItem('activeGroup');
-
-                    this.activeCompanies.length ? localStorage.setItem('activeCompanies', this.activeCompanies) : localStorage.removeItem('activeCompanies');
-              
-                    this.sortTableData(response.data.data);                 
-
-                    //pagination
-                    this.paginationDataChange(response.data)
-                    
-                })
-                .catch(e=> {
-                    console.log(e);
-                    
-                })
-
-            },
-            sortTableData(data){
-                
-                this.table.fields = {
-                    index: {label: '#'},
-                    firstName: {label: 'Имя Фамилия'},
-                    email: {label: 'E-mail'},
-                    coefficient: {label: 'К'},
-                    closedHours: {label: 'Закрыто ч.', sortable: true},
-                    previousWeeksCloseHours: {label: 'Закрыто ч. неделя', sortable: true},
-                    company: {key: 'company.name', label: 'Компания'},
-                    group: {key: 'group.name', label: 'Группа'},
-                    fine: {label: 'Штрафы', sortable: true},
-                    salary: {label: 'ЗП', sortable: true},
-                }
-                this.table.items = data
-            },
-            rowChange(){
-                console.log("++++");
-                
             }
-        },
-        mounted() {
-            if(!localStorage.length){
-                
-                axios.get('/api/personal')
-                    .then(response => {
-                        this.sortTableData(response.data.data);
-
-                        //pagination
-                        this.paginationDataChange(response.data)
-                    })
-                    .catch(e => {
-                        console.log(e);
-                    })
-            } else {      
-
-                var localGroup = localStorage.getItem('activeGroup');
-                var localCompany = localStorage.getItem('activeCompanies');
-                 
-                var arrGroup = localGroup ? localGroup.split(',') : localStorage.removeItem('activeGroup');
-                this.activeGroups = _.map(arrGroup, _.parseInt) 
-
-                var arrCompany = localCompany ? localCompany.split(',') : localStorage.removeItem('activeCompanies');     
-                this.activeCompanies = _.map(arrCompany, _.parseInt) 
-
-                this.requestFilter()
-
-            } 
         }
+        // mounted() {
+        //     axios.get('/api/report/personal')
+        //         .then(response => {
+        //             if (response.data.success) {
+        //                 this.personals = response.data.data;
+        //                 console.log(this.personals); 
+        //             }
+
+
+        //         })
+        //         .catch(e => {
+        //             console.log(e);
+                    
+        //         });
+        // }
     }
 </script>
 
@@ -248,6 +145,7 @@
         transition: none;
         display: table-row!important;
     }
+
 </style>
 
 

@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Project;
-use App\ProjectCost;
 use DateTime;
 
 class ProjectController extends Controller
@@ -22,12 +21,12 @@ class ProjectController extends Controller
         $month = $date->format('m');
 
         $projects = Project::with(['costs' => function ($query) use ($year, $month) {
-            $query->where('year_month', $year.'-'.$month);
+            $query->whereMonth('date', $month)
+            ->whereYear('date', $year);
         }])->with('fullInfoCosts')
             ->paginate(25);
 
         $fullInfoProjects = Project::with('costs');
-
 
         return view('projects.projects', compact('projects', 'fullInfoProjects'));
     }
@@ -41,22 +40,24 @@ class ProjectController extends Controller
      */
     public function show($id, Request $request)
     {
-        $dates = ProjectCost::select('rus_date', 'year_month')->where('project_id', $id)
-            ->orderBy('year_month', 'desc')->groupBy('rus_date')->get();
-
-        //Если есть дата делаем переменную для запроса
-        if ($request->filled('date')) {
-            $date = $request->date;
-        } else {
-            $date = $dates->first()->year_month ?? date('Y-m');
-        }
-
-        $project = Project::where('project_id', $id)
-            ->with(['costs' => function ($query) use ($date) {
-                $query->where('year_month', $date)->with('pers');
-            }])
-            ->firstOrFail();
-        
-        return view('projects.show', compact('project', 'dates'));
+//        $dates = ProjectCost::select('date')->where('project_id', $id)
+//            ->orderBy('date', 'desc')
+//            ->groupBy('date')
+//            ->get();
+//
+//        //Если есть дата делаем переменную для запроса
+//        if ($request->filled('date')) {
+//            $date = $request->date;
+//        } else {
+//            $date = $dates->first()->date ?? date('Y-m');
+//        }
+//
+//        $project = Project::where('project_id', $id)
+//            ->with(['costs' => function ($query) use ($date) {
+//                $query->whereMonth('year_month', $date)->with('pers');
+//            }])
+//            ->firstOrFail();
+//
+//        return view('projects.show', compact('project', 'dates'));
     }
 }
