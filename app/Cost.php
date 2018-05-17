@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Cost extends Model
 {
+    /**
+     * @var array
+     */
     protected $fillable = [
-        'year',
-        'month',
         'cost',
-        'rus_date'
+        'date'
     ];
 }
