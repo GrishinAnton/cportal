@@ -38,7 +38,7 @@ class TimeRecords extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
+     * @throws \ActiveCollab\SDK\Exceptions\Authentication
      */
     public function handle()
     {
@@ -94,28 +94,6 @@ class TimeRecords extends Command
                     }
                 }
             }
-        }
-
-        //Достаем и групируем по месячно все даты
-        $dates = PersonalTime::orderBy('date', 'DESC')->groupBy('date')->select('date')
-            ->get()->groupBy(function ($events) {
-                return Carbon::parse($events->date)->format('Y-m');
-            });
-
-        $rusDate = rus_date($dates);
-
-        foreach ($dates as $key => $date) {
-            $explode = explode('-', $key);
-
-            Cost::firstOrCreate(
-                [
-                    'year' => $explode[0],
-                    'month' => $explode[1]
-                ],
-                [
-                    'rus_date' => $rusDate[$key]
-                ]
-            );
         }
     }
 }
