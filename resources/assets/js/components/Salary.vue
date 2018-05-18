@@ -102,6 +102,14 @@
                     </tbody>
                 </table>
                 <button type="button" v-if="! costsProject.costProject" class="btn btn-primary" @click="saveCosts()">Списать</button>
+                <b-alert :show="costsProjectAlertCountDown"
+                    dismissible
+                    :variant="alertVariant"
+                    @dismissed="costsProjectAlertCountDown=0"
+                    @dismiss-count-down="countDownChangedCostsProgectCd"
+                    class="w-50">
+                    <p>{{ alertMessage }}. Закроюсь через {{costsProjectAlertCountDown}} сукунд.</p>                 
+                </b-alert>
             </div>
         </div>
     </div>
@@ -158,6 +166,7 @@
         },
         dismissSecs: 5,
         dismissCountDown: 0,
+        costsProjectAlertCountDown: 0,
         alertVariant: '',
         alertMessage: ''
     }),
@@ -201,7 +210,7 @@
                 if(response.data.success){
                     this.alertVariant = 'success';
                     this.dismissCountDown = 5;
-                    this.alertMessage = 'Данные обновлены'
+                    this.alertMessage = 'Данные обновлены';
                 }
 
                 this.salary();
@@ -209,7 +218,7 @@
             .catch(e=> {
                 this.alertVariant = 'danger';
                 this.dismissCountDown = 5;
-                this.alertMessage = 'Ошибка'
+                this.alertMessage = 'Ошибка';
                 console.log(e);
                 
             });
@@ -220,19 +229,27 @@
             this.costsProject.data.forEach((item) => {
                 item.date = `${this.date}-07`
             });
-
-            console.log(this.costsProject.data)
-            
+           
             axios.post(`/api/personal/${this.personalId}/project-costs/store`, data)
             .then(response => {
+                this.alertVariant = 'success';
+                this.costsProjectAlertCountDown = 5;
+                this.alertMessage = 'Данные обновлены'
+                
                 
             })
             .catch(e => {
-                console.log(e)
+                this.alertVariant = 'danger';
+                this.costsProjectAlertCountDown = 5;
+                this.alertMessage = 'Ошибка';                
+                console.log(e);
             })
         },
         countDownChanged (dismissCountDown) {
             this.dismissCountDown = dismissCountDown
+        },
+        countDownChangedCostsProgectCd (costsProjectAlertCountDown) {
+            this.costsProjectAlertCountDown = costsProjectAlertCountDown
         },
         salary() {
             this.staticData.penaltyTime = this.penaltyTime ? this.penaltyTime : 0;
@@ -260,9 +277,7 @@
                 
                 
             })
-            .catch(e => {
-                console.log(e);
-            })
+            .catch(e => console.log(e));
         },
         costsProjectPercent(data){
             for (let item of data) {
@@ -290,15 +305,9 @@
             this.costsProject.sum = _.sumBy(this.costsProject.data, 'worktime');
             this.costsProject.costProject = response.data.costProject;
 
-            this.costsProjectPercent(this.costsProject.data);           
-
-           
-            
+            this.costsProjectPercent(this.costsProject.data);  
         })
-        .catch(e => {
-            console.log(e);
-            
-        })
+        .catch(e => console.log(e));
 
 
         axios.get(`/api/personal/costs`, {
@@ -309,9 +318,7 @@
         .then(response => {
             this.costsProject.costsMonth = response.data.data
         })
-        .catch(errors => {
-            console.log(errors)
-        });
+        .catch(e => console.log(e));
     }
  }   
 </script>  
