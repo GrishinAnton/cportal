@@ -16,7 +16,7 @@ class ProjectCostResource extends JsonResource
     {
         return [
             'worktime' => $this->hours,
-            'project' => $this->project->name,
+            'project' => $this->projects->name,
             'percent' => $this->percent,
             'costOverride' => $this->cost_override,
             'projectCost' => $this->project_cost,

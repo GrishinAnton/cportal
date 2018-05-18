@@ -32,7 +32,12 @@ class CostController extends Controller
         $cost = Cost::select('cost')
             ->whereYear('date', $date[self::DATE_YEAR])
             ->whereMonth('date', $date[self::DATE_MONTH])
-            ->firstOrFail();
+            ->first();
+
+        if (! $cost) {
+            return (new CostResource($cost))
+                ->additional(['success' => false]);
+        }
 
         return (new CostResource($cost))
             ->additional(['success' => true]);

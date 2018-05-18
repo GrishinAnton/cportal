@@ -95,13 +95,13 @@
                             <td>       
 
                                 <span v-if="costsProject.costProject">{{ item.costOverride }}</span>
-                                <input type="text" class="form-control w-25" else v-model="item.costOverride">
+                                <input v-if="! costsProject.costProject" type="text" class="form-control w-25" v-model="item.costOverride">
                                 
                             </td>
                         </tr>
                     </tbody>
                 </table>
-                <button type="button" v-if="costsProject.costProject" class="btn btn-primary" @click="saveCosts()">Списать</button>
+                <button type="button" v-if="! costsProject.costProject" class="btn btn-primary" @click="saveCosts()">Списать</button>
             </div>
         </div>
     </div>
@@ -215,12 +215,16 @@
             });
         },
         saveCosts(){
-            var data = this.costsProject.data
-            console.log(data);
+            var data = this.costsProject.data;
+
+            this.costsProject.data.forEach((item) => {
+                item.date = `${this.date}-07`
+            });
+
+            console.log(this.costsProject.data)
             
             axios.post(`/api/personal/${this.personalId}/project-costs/store`, data)
-            .then(rsponse => {
-                console.log(response);
+            .then(response => {
                 
             })
             .catch(e => {

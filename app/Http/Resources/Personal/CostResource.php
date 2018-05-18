@@ -15,7 +15,7 @@ class CostResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'cost' => $this->cost
+            'cost' => isset($this->cost) ? $this->cost : 0,
         ];
     }
 }
