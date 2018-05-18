@@ -50,7 +50,7 @@
                     <tr>
                         <td>{{ ++index }}</td>
                         <td v-b-toggle="personal.email">
-                            <a :href="personal.url">{{ personal.firstName }} {{ personal.lastName }}</a>
+                            <a :href="personal.url" target="_black">{{ personal.firstName }} {{ personal.lastName }}</a>
                         </td>
                         <td @click="openmodal()"></td>
                         <td></td>
