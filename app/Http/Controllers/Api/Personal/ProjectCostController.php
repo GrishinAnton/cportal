@@ -106,15 +106,17 @@ class ProjectCostController extends Controller
      */
     public function store($persId, ProjectCostRequest $request)
     {
-        ProjectCost::create([
-            'pers_id' => $persId,
-            'project_id' => $request->projectId,
-            'project_cost' => $request->projectCost,
-            'hours' => $request->hours,
-            'cost_override' => $request->costOverride,
-            'date' => $request->date,
-            'percent' => $request->percent
-        ]);
+        foreach ($request->all() as $item) {
+            ProjectCost::create([
+                'pers_id' => $persId,
+                'project_id' => $item['projectId'],
+                'project_cost' => $item['projectCost'],
+                'hours' => $item['worktime'],
+                'cost_override' => $item['costOverride'],
+                'date' => $item['date'],
+                'percent' => $item['percent'],
+            ]);
+        }
 
         return response()->json(['success' => true]);
     }

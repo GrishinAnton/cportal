@@ -24,12 +24,12 @@ class ProjectCostRequest extends FormRequest
     public function rules()
     {
         return [
-            'projectId' => 'required|exists:projects,project_id',
-            'projectCost' => 'required|integer',
-            'hours' => 'required|integer',
-            'percent' => 'required|numeric|max:100',
-            'costOverride' => 'required|integer',
-            'date' => 'required|date_format:Y-m-d',
+            'projectId.*.' => 'required|exists:projects,project_id',
+            'projectCost.*.' => 'required|integer',
+            'worktime.*.' => 'required|integer',
+            'percent.*.' => 'required|numeric|max:100',
+            'costOverride.*.' => 'required|integer',
+            'date.*.' => 'required|date_format:Y-m-d',
         ];
     }
 }
