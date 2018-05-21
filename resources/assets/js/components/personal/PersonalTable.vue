@@ -22,7 +22,7 @@
 
         
             <b-button class="salary-hide__button" :size="'sm'" :variant="'danger'" @click="salaryShowToggle()">
-                {{ salaryShow ? 'Скрыть ЗП' : 'Показать ЗП' }}
+                {{ salaryShow ? 'Скрыть' : 'Показать' }}
             </b-button>
 
         </div>
