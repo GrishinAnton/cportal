@@ -49,8 +49,8 @@
                 <tbody v-for="(personal, index) in personalInformation" :key="index">
                     <tr>
                         <td>{{ ++index }}</td>
-                        <td v-b-toggle="personal.email">
-                            <a :href="personal.url" target="_black">{{ personal.firstName }} {{ personal.lastName }}</a>
+                        <td>
+                            <a :href="personal.url" target="_blank">{{ personal.firstName }} {{ personal.lastName }}</a>
                         </td>
                         <td @click="openmodal()"></td>
                         <td></td>
@@ -65,12 +65,12 @@
                         <td></td>
                         <td></td>
                     </tr>
-                    <b-collapse :id="personal.email" tag="tr">
+                    <tr :id="personal.email" >
                         <td></td>
                         <td class="text-right">проект</td>
                         <td>data 1</td>  
                         <td>data 1</td>
-                    </b-collapse>
+                    </tr>
                 </tbody>
             </table>    
             <b-modal ref="modal" title="Фиксированная зарплата">

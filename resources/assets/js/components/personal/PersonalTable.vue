@@ -19,6 +19,12 @@
                     </b-button>
                 </div>
             </div>
+
+        
+            <b-button class="salary-hide__button" :size="'sm'" :variant="'danger'" @click="salaryShowToggle()">
+                {{ salaryShow ? 'Скрыть ЗП' : 'Показать ЗП' }}
+            </b-button>
+
         </div>
 
         <div class="box-body">
@@ -30,6 +36,11 @@
                     <a :href="data.item.url">
                         {{data.item.firstName}} {{data.item.lastName}}
                     </a>
+                </template>
+                <template slot="salary" slot-scope="data">
+                    <span v-show="salaryShow">
+                        {{data.item.salary}}
+                    </span>
                 </template>
             </b-table>
         </div>
@@ -59,7 +70,9 @@
             table: {
                 fields: {},
                 items: []
-            }
+            },
+            salaryShow: true
+
         }),        
         methods: {         
             sortTableData(data){
@@ -77,6 +90,9 @@
                     salary: {label: 'ЗП', sortable: true},
                 }
                 this.table.items = data
+            },
+            salaryShowToggle(){
+                this.salaryShow = !this.salaryShow
             }
         }       
     }
