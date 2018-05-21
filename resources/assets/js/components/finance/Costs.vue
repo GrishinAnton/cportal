@@ -122,21 +122,19 @@
 
                 var arr = [];
 
-                for(var i = 1; i <= 12; i++){
+                for (var i = 1; i <= 12; i++) {
                     var month = (`0${i}`).slice(-2);
+                    var obj = {month: month, cost: 0}
                    
 
                     if (this.renderYear < this.currentYear) {
-                        arr.push({month: month, cost: 0})
-                        continue
-                    }
-
-                    
-                    if (i <= this.currentMonth) {
-                        arr.push({month: month, cost: 0})
+                        arr.push(obj)                        
+                    } else if (i <= this.currentMonth) {
+                        arr.push(obj)
                     } else {
-                        arr.push({month: month, cost: '-'})
-                    }      
+                        obj.cost = '-'
+                        arr.push(obj)
+                    } 
                 }
 
                 for (var k = 0; k <= response.length; k++) {  
