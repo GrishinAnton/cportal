@@ -30,8 +30,8 @@
                     <label for="mounth">Месяц</label>
                     <select class="custom-select" id="mounth" name="date"  onchange="this.form.submit()">
                         @foreach($dates as $key => $date)
-                                <option {{ Request::get('date') == $key ? 'selected' : '' }} value = "{{ $key }}">{{ $date }}</option>
-                            @endforeach
+                            <option {{ Request::get('date') == $key ? 'selected' : '' }} value = "{{ $key }}">{{ $date }}</option>
+                        @endforeach
                     </select>
                 </form>
             </div>

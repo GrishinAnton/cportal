@@ -96,9 +96,9 @@
     </div>
 </template>
 <script>
-    import { personalMixin } from './../mixins/personalMixin';
-    import { paginationMixin } from './../mixins/paginationMixin';
-    import { personalFilter } from './../mixins/personalFilter';
+    import { personalMixin } from '../../../mixins/personalMixin';
+    import { paginationMixin } from '../../../mixins/paginationMixin';
+    import { personalFilter } from '../../../mixins/personalFilter';
 
     export default {
         mixins: [paginationMixin, personalMixin, personalFilter],

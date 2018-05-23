@@ -6,8 +6,6 @@ use Illuminate\Console\Command;
 use App\Personal;
 use App\PersonalTime;
 use App\Task;
-use Carbon\Carbon;
-use App\Cost;
 
 class TimeRecords extends Command
 {
@@ -23,7 +21,7 @@ class TimeRecords extends Command
      *
      * @var string
      */
-    protected $description = 'Download time recorsd from api';
+    protected $description = 'Download time records from api';
 
     /**
      * Create a new command instance.

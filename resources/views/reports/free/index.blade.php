@@ -7,5 +7,5 @@
 @stop
 
 @section('content')
-    <report></report>    
+    <report-free></report-free>
 @stop
