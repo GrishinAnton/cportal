@@ -82,7 +82,7 @@
                     firstName: {label: 'Имя Фамилия'},
                     email: {label: 'E-mail'},
                     coefficient: {label: 'К'},
-                    closedHours: {label: 'Закрыто ч.', sortable: true},
+                    closedHours: {label: 'Закрыто ч.', sortable: true, tdClass: this.showHowWeekHours},
                     previousWeeksCloseHours: {label: 'Закрыто ч. неделя', sortable: true},
                     company: {key: 'company.name', label: 'Компания'},
                     group: {key: 'group.name', label: 'Группа'},
@@ -90,6 +90,10 @@
                     salary: {label: 'ЗП', sortable: true},
                 }
                 this.table.items = data
+            },
+            showHowWeekHours(value){
+                 return value <= 30 ? 'table-danger' : '';
+                 
             },
             salaryShowToggle(){
                 this.salaryShow = !this.salaryShow
