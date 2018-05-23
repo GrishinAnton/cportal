@@ -71,7 +71,7 @@
                 fields: {},
                 items: []
             },
-            salaryShow: true
+            salaryShow: ''
 
         }),        
         methods: {         
@@ -97,7 +97,12 @@
             },
             salaryShowToggle(){
                 this.salaryShow = !this.salaryShow
+                localStorage.setItem('showTableSalary', this.salaryShow)
             }
+        },
+        mounted() {
+            
+            this.salaryShow = localStorage.getItem('showTableSalary') ? JSON.parse(localStorage.getItem('showTableSalary')) : true;           
         }       
     }
 </script>
