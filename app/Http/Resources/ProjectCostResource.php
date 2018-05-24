@@ -23,4 +23,3 @@ class ProjectCostResource extends JsonResource
         ];
     }
 }
-+
