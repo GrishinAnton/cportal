@@ -118,6 +118,16 @@ class Personal extends Model
     }
 
     /**
+     * Get project costs
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function projectCosts()
+    {
+        return $this->hasMany('App\ProjectCost', 'pers_id', 'pers_id');
+    }
+
+    /**
      * Filter by companies
      *
      * @param $query

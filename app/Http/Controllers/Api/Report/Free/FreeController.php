@@ -3,18 +3,16 @@
 namespace App\Http\Controllers\Api\Report\Free;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Report\Free\PersonalResource;
-use App\Personal;
-use App\ProjectCost;
-use DB;
+use Illuminate\Http\Request;
 
 class FreeController extends Controller
 {
-    public function personal()
+    public function personal(Request $request)
     {
-//        $projectCost = ProjectCost::
+//        $projectCost = Personal::with('projectCosts')
+//            ->where('pers_id', 45)
+//            ->get();
 //
-//        return PersonalResource::collection($personal)
-//            ->additional(['success' => true]);
+//        dd($projectCost);
     }
 }

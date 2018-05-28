@@ -112,30 +112,21 @@
             },
             closeModal(){
                 this.$refs.modal.hide()
-            }, 
-            renderTableByYaer() {
-                axios.get('/api/report/worktime/'+this.year)
-                    .then(response => {
-                        console.log(response);
-                    })
-                    .catch();
             }
+        },
+        mounted() {
+            // axios.get('/api/reports/free/personal')
+            //     .then(response => {
+            //         if (response.data.success) {
+            //             this.personals = response.data.data;
+            //             console.log(this.personals);
+            //         }
+            //     })
+            //     .catch(e => {
+            //         console.log(e);
+            //
+            //     });
         }
-        // mounted() {
-        //     axios.get('/api/report/personal')
-        //         .then(response => {
-        //             if (response.data.success) {
-        //                 this.personals = response.data.data;
-        //                 console.log(this.personals); 
-        //             }
-
-
-        //         })
-        //         .catch(e => {
-        //             console.log(e);
-                    
-        //         });
-        // }
     }
 </script>
 

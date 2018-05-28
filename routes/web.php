@@ -50,6 +50,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('api/report/costs', 'Api\Report\CostController@store')->name('api.report.costs.store');
     Route::post('api/report/costs/{costId}', 'Api\Report\CostController@update')->name('api.report.costs.update');
 
+    Route::get('api/report/productivity', 'Api\Report\ProductivityController@index')->name('api.report.productivity');
+
     //Resource Report Free
     Route::get('api/reports/free/personal', 'Api\Report\Free\FreeController@personal')->name('api.report.free.personal');
 
