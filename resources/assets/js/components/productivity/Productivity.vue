@@ -54,7 +54,7 @@
     import { personalFilter } from './../../mixins/personalFilter';
 
      export default {
-        mixins: [paginationMixin, personalMixin, personalFilter],
+        mixins: [paginationMixin, personalMixin],
         data: ()=> ({
             personalInformation: [],
             table: {
@@ -77,6 +77,13 @@
                 }
                 this.table.items = data
             },      
-        }        
+        },
+        mounted() {
+            axios.get('/api/report/productivity')
+                .then(response => {
+                    
+                })
+                .catch();
+        }
     }
 </script>

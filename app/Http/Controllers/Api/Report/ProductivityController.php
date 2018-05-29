@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Report;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Report\ProductivityResource;
 use App\Personal;
 use Carbon\Carbon;
 use DB;
@@ -12,15 +13,15 @@ class ProductivityController extends Controller
     public function index()
     {
         $personal =  Personal::select(
-            'personal.id',
-            'personal.first_name',
-            'personal.last_name',
-            DB::raw('sum(t3.week1) as `' . $this->getWeekMonthDay('-1 week') . '`'),
-            DB::raw('sum(t3.week2) as `' . $this->getWeekMonthDay('-2 week') . '`'),
-            DB::raw('sum(t3.week3) as `' . $this->getWeekMonthDay('-3 week') . '`'),
-            DB::raw('sum(t3.week4) as `' . $this->getWeekMonthDay('-4 week') . '`'),
-            DB::raw('sum(t3.week5) as `' . $this->getWeekMonthDay('-5 week') . '`'),
-            DB::raw('sum(t3.week5) as `' . $this->getWeekMonthDay('-6 week') . '`')
+                'personal.id',
+                'personal.first_name',
+                'personal.last_name',
+                DB::raw('sum(t3.week1) as week1'),
+                DB::raw('sum(t3.week2) as week2'),
+                DB::raw('sum(t3.week3) as week3'),
+                DB::raw('sum(t3.week4) as week4'),
+                DB::raw('sum(t3.week5) as week5'),
+                DB::raw('sum(t3.week5) as week6')
             )
             ->leftJoin(DB::raw("(
                 SELECT
@@ -55,26 +56,12 @@ class ProductivityController extends Controller
                     ) as pt
                     WHERE weeks IS NOT NULL
                     GROUP BY pt.weeks, pt.pers_id
-                  ) as t2 ) as t3"), 't3.pers_id', '=', 'personal.pers_id')
+                ) as t2 ) as t3"), 't3.pers_id', '=', 'personal.pers_id')
             ->groupBy('personal.id')
-            ->where('personal.pers_id', 39)
-            ->get();
+            ->paginate(75);
 
-        dd($personal);
-    }
-
-    /**
-     * Get week day
-     *
-     * @param $modify
-     * @return string
-     */
-    private function getWeekMonthDay($modify)
-    {
-        $date = Carbon::now()->modify($modify)->startOfWeek()->format('d.m')
-            . '-' . Carbon::now()->modify($modify)->endOfWeek()->format('d.m');
-
-        return $date;
+        return ProductivityResource::collection($personal)
+            ->additional(['success' => true]);
     }
 
     /**
