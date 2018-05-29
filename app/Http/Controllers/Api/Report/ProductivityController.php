@@ -5,56 +5,97 @@ namespace App\Http\Controllers\Api\Report;
 use App\Http\Controllers\Controller;
 use App\Personal;
 use Carbon\Carbon;
+use DB;
 
 class ProductivityController extends Controller
 {
     public function index()
     {
-        $personal = Personal::with(['times' => function ($query) {
-            $query->whereBetween('date', [
-                Carbon::now()
-                    ->modify('-1 week')
-                    ->startOfWeek(),
-                Carbon::now()
-                    ->modify('-1 week')
-                    ->endOfWeek(),
-            ]);
-        }])
-            ->take(1)->get();
+        $personal =  Personal::select(
+            'personal.id',
+            'personal.first_name',
+            'personal.last_name',
+            DB::raw('sum(t3.week1) as `' . $this->getWeekMonthDay('-1 week') . '`'),
+            DB::raw('sum(t3.week2) as `' . $this->getWeekMonthDay('-2 week') . '`'),
+            DB::raw('sum(t3.week3) as `' . $this->getWeekMonthDay('-3 week') . '`'),
+            DB::raw('sum(t3.week4) as `' . $this->getWeekMonthDay('-4 week') . '`'),
+            DB::raw('sum(t3.week5) as `' . $this->getWeekMonthDay('-5 week') . '`'),
+            DB::raw('sum(t3.week5) as `' . $this->getWeekMonthDay('-6 week') . '`')
+            )
+            ->leftJoin(DB::raw("(
+                SELECT
+                    pers_id,
+                    IF(weeks = 1, sum, null) as week1,
+                    IF(weeks = 2, sum, null) as week2,
+                    IF(weeks = 3, sum, null) as week3,
+                    IF(weeks = 4, sum, null) as week4,
+                    IF(weeks = 5, sum, null) as week5,
+                    IF(weeks = 6, sum, null) as week6
+                FROM (
+                    SELECT
+                        sum(worktime) as sum,
+                        pers_id,
+                        weeks
+                    FROM (
+                        SELECT
+                            IF(date BETWEEN '{$this->getStartOfWeekDate('-1 week')}' AND '{$this->getEndOfWeekDate('-1 week')}', 1,
+                                IF(date BETWEEN '{$this->getStartOfWeekDate('-2 week')}' AND '{$this->getEndOfWeekDate('-2 week')}', 2,
+                                    IF(date BETWEEN '{$this->getStartOfWeekDate('-3 week')}' AND '{$this->getEndOfWeekDate('-3 week')}', 3,
+                                        IF(date BETWEEN '{$this->getStartOfWeekDate('-4 week')}' AND '{$this->getEndOfWeekDate('-4 week')}', 4,
+                                            IF(date BETWEEN '{$this->getStartOfWeekDate('-5 week')}' AND '{$this->getEndOfWeekDate('-5 week')}', 5,
+                                                IF(date BETWEEN '{$this->getStartOfWeekDate('-6 week')}' AND '{$this->getEndOfWeekDate('-6 week')}', 6, null)
+                                            )
+                                        )
+                                    )
+                                )
+                            ) as weeks,
+                            pers_id,
+                            worktime
+                        FROM personal_times
+                    ) as pt
+                    WHERE weeks IS NOT NULL
+                    GROUP BY pt.weeks, pt.pers_id
+                  ) as t2 ) as t3"), 't3.pers_id', '=', 'personal.pers_id')
+            ->groupBy('personal.id')
+            ->where('personal.pers_id', 39)
+            ->get();
 
         dd($personal);
+    }
 
-        return Carbon::now()
-            ->modify('-3 week')
-            ->startOfWeek();
+    /**
+     * Get week day
+     *
+     * @param $modify
+     * @return string
+     */
+    private function getWeekMonthDay($modify)
+    {
+        $date = Carbon::now()->modify($modify)->startOfWeek()->format('d.m')
+            . '-' . Carbon::now()->modify($modify)->endOfWeek()->format('d.m');
 
+        return $date;
+    }
+
+    /**
+     * Get start of week date
+     *
+     * @param $modify
+     * @return string
+     */
+    private function getStartOfWeekDate($modify)
+    {
+        return Carbon::now()->modify($modify)->startOfWeek()->format('Y-m-d');
+    }
+
+    /**
+     * Get end if week date
+     *
+     * @param $modify
+     * @return string
+     */
+    private function getEndOfWeekDate($modify)
+    {
+        return Carbon::now()->modify($modify)->endOfWeek()->format('Y-m-d');
     }
 }
-
-//SELECT p.id, p.email, sum(t3.week1), sum(t3.week2)
-//FROM personal as p
-//LEFT JOIN
-//(
-//    SELECT
-//		pers_id,
-//		IF(weeks = 1, sum, null) as week1,
-//		IF(weeks = 2, sum, null) as week2
-//	FROM (
-//        SELECT
-//    		sum(worktime) as sum,
-//    		pers_id,
-//        	weeks
-//    	FROM (
-//            SELECT
-//        		IF(`date` BETWEEN '2018-02-01' AND '2018-03-01', 1,
-//            		IF(`date` BETWEEN '2018-03-02' AND '2018-04-02', 2, null)
-//            	) as `weeks`,
-//        		pers_id,
-//        		worktime
-//        	FROM personal_times
-//    	) as pt
-//    	WHERE weeks IS NOT NULL
-//    	GROUP BY pt.weeks, pt.pers_id
-//   ) as t2
-//) AS t3 ON t3.pers_id=p.id
-//GROUP BY p.id
