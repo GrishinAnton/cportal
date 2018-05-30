@@ -20,10 +20,7 @@
                 </div>
             </div>
 
-        
-            <b-button class="salary-hide__button" :size="'sm'" :variant="'danger'" @click="salaryShowToggle()">
-                {{ salaryShow ? 'Скрыть' : 'Показать' }}
-            </b-button>
+            <button-toggle @toggle="salaryShowToggle" :toggleText="toggleText"></button-toggle>            
 
         </div>
 
@@ -38,7 +35,7 @@
                     </a>
                 </template>
                 <template slot="salary" slot-scope="data">
-                    <span v-show="salaryShow">
+                    <span v-show="toggleText">
                         {{data.item.salary}}
                     </span>
                 </template>
@@ -63,15 +60,20 @@
     import { paginationMixin } from './../../mixins/paginationMixin';
     import { personalFilter } from './../../mixins/personalFilter';
 
+    import buttonToggle from './../parts//buttonToggle'
+
     export default {
         mixins: [paginationMixin, personalMixin, personalFilter],
+        components: {
+            buttonToggle
+        },
         data: ()=> ({
             personalInformation: [],            
             table: {
                 fields: {},
                 items: []
             },
-            salaryShow: ''
+            toggleText: ''
 
         }),        
         methods: {         
@@ -95,14 +97,13 @@
                  return value <= 30 ? 'table-danger' : '';
                  
             },
-            salaryShowToggle(){
-                this.salaryShow = !this.salaryShow
-                localStorage.setItem('showTableSalary', this.salaryShow)
+            salaryShowToggle(){                
+                this.toggleText = !this.toggleText
+                localStorage.setItem('showTableSalary', this.toggleText)
             }
         },
-        mounted() {
-            
-            this.salaryShow = localStorage.getItem('showTableSalary') ? JSON.parse(localStorage.getItem('showTableSalary')) : true;           
+        mounted() {            
+            this.toggleText = localStorage.getItem('showTableSalary') ? JSON.parse(localStorage.getItem('showTableSalary')) : true;           
         }       
     }
 </script>
