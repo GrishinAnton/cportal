@@ -56,7 +56,7 @@ class Tasks extends Command
 
         $tasks = $client->get('/reports/run?type=AssignmentFilter&include_subtasks=false&include_tracking_data=true')
             ->getJson();
-        
+
         foreach ($tasks['all']['assignments'] as $task) {
             Task::updateOrCreate(
                 [
