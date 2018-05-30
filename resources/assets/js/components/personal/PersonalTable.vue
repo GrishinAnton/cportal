@@ -67,9 +67,6 @@
         }),        
         methods: {         
             sortTableData(data){
-
-                console.log(data);
-                
                 
                 this.table.fields = {
                     index: {label: '#'},
