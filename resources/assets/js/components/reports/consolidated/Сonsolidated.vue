@@ -88,7 +88,7 @@
     import { paginationMixin } from '../../../mixins/paginationMixin';
     import { personalFilter } from '../../../mixins/personalFilter';
 
-    import PersonalFilterButtons from './parts/PersonalFilterButtons'
+    import PersonalFilterButtons from './../../parts/PersonalFilterButtons'
 
     export default {
         mixins: [paginationMixin, personalFilter],
