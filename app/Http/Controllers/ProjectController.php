@@ -58,6 +58,6 @@ class ProjectController extends Controller
 //            }])
 //            ->firstOrFail();
 //
-//        return view('projects.show', compact('project', 'dates'));
+       return view('projects.show', compact('project', 'dates'));
     }
 }

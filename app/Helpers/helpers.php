@@ -4,8 +4,8 @@ if (! function_exists('rus_date')) {
     /**
      * Get russian date
      *
-     * @param  mixed $month
-     * @return string|array
+     * @param $dates
+     * @return array
      */
     function rus_date($dates)
     {
@@ -60,9 +60,9 @@ if (! function_exists('input_date')) {
     /**
      * Get date from input date
      *
-     * @param boolean $filled
-     * @param string $date
-     * @return $date
+     * @param bool $filled
+     * @param null $date
+     * @return array|null
      */
     function input_date($filled = false, $date = null)
     {

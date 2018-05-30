@@ -10,21 +10,9 @@
             </div>
         </div>
         <div class="box-header">
-            <div class="flex flex_jc-fs mr-2">
-                <div class="pb-2 pr-2" v-for="item in load.companies" :key="item.id">
-                    <b-button :size="'sm'" :variant="activeCompanies.indexOf(item.id) === -1 ? 'outline-success' : 'success'" @click.prevent="onChange(item.id, 'company')">
-                        {{ item.name }}
-                    </b-button>
-                </div>
-            </div>
 
-            <div class="flex flex_jc-fs mr-2">
-                <div class="pb-2 pr-2" v-for="item in load.groups" :key="item.id">
-                    <b-button :size="'sm'" :variant="activeGroups.indexOf(item.id) === -1 ? 'outline-success' : 'success'" @click.prevent="onChange(item.id, 'group')">
-                        {{ item.name }}
-                    </b-button>
-                </div>
-            </div>
+            <personal-filter-buttons @filterButtonChange="onChange" :activeGroups="activeGroups" :activeCompanies="activeCompanies"></personal-filter-buttons>
+
         </div>
         <div class="box-body">
             <table class="table table-hover table-bordered">
@@ -96,12 +84,17 @@
     </div>
 </template>
 <script>
-    import { personalMixin } from './../mixins/personalMixin';
-    import { paginationMixin } from './../mixins/paginationMixin';
-    import { personalFilter } from './../mixins/personalFilter';
+    import { personalMixin } from '../../../mixins/personalMixin';
+    import { paginationMixin } from '../../../mixins/paginationMixin';
+    import { personalFilter } from '../../../mixins/personalFilter';
+
+    import PersonalFilterButtons from './../../parts/PersonalFilterButtons'
 
     export default {
-        mixins: [paginationMixin, personalMixin, personalFilter],
+        mixins: [paginationMixin, personalFilter],
+        components: {
+            PersonalFilterButtons
+        },
         data: () =>({
             personalInformation: [],
             year: 2018,
@@ -112,30 +105,21 @@
             },
             closeModal(){
                 this.$refs.modal.hide()
-            }, 
-            renderTableByYaer() {
-                axios.get('/api/report/worktime/'+this.year)
-                    .then(response => {
-                        console.log(response);
-                    })
-                    .catch();
             }
+        },
+        mounted() {
+            // axios.get('/api/reports/free/personal')
+            //     .then(response => {
+            //         if (response.data.success) {
+            //             this.personals = response.data.data;
+            //             console.log(this.personals);
+            //         }
+            //     })
+            //     .catch(e => {
+            //         console.log(e);
+            //
+            //     });
         }
-        // mounted() {
-        //     axios.get('/api/report/personal')
-        //         .then(response => {
-        //             if (response.data.success) {
-        //                 this.personals = response.data.data;
-        //                 console.log(this.personals); 
-        //             }
-
-
-        //         })
-        //         .catch(e => {
-        //             console.log(e);
-                    
-        //         });
-        // }
     }
 </script>
 

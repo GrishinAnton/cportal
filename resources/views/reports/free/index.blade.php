@@ -7,5 +7,5 @@
 @stop
 
 @section('content')
-    <report></report>    
+    <consolidated></consolidated>
 @stop

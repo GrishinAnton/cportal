@@ -4,21 +4,21 @@ export const personalFilter = {
         activeCompanies: [],
     }),
     methods: {
-        onChange(id, item) {
-
+        onChange(obj) {
+             
             var arrName;
 
-            if (item === 'group') {
+            if (obj.item === 'group') {
                 arrName = this.activeGroups;
             }
-            if (item === 'company') {
+            if (obj.item === 'company') {
                 arrName = this.activeCompanies;
             }
 
-            var arrPosition = arrName.indexOf(id);
+            var arrPosition = arrName.indexOf(obj.id);
 
             if (arrPosition === -1) {
-                arrName.push(id);
+                arrName.push(obj.id);
             } else {
                 arrName.splice(arrPosition, 1);
             }
@@ -28,7 +28,7 @@ export const personalFilter = {
         },
         requestFilter() {
 
-            axios.get('/api/personal', {
+            axios.get(this.requestUrl, {
                 params: {
                     group: this.activeGroups,
                     company: this.activeCompanies
@@ -61,7 +61,7 @@ export const personalFilter = {
     mounted() {
         if (!localStorage.length) {
 
-            axios.get('/api/personal')
+            axios.get(this.requestUrl)
                 .then(response => {
                     if (this.sortTableData) {
                         this.sortTableData(response.data.data);

@@ -45,15 +45,15 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('api/personal/{persId}/project-costs', 'Api\Personal\ProjectCostController@index')->name('api.personal.project-costs.index');
     Route::post('api/personal/{persId}/project-costs/store', 'Api\Personal\ProjectCostController@store')->name('api.personal.project-costs.store');
 
-    //Resourse Report
-    Route::get('api/report/personal', 'Api\Report\PersonalController@index');
-    Route::get('api/report/worktime/{year}', 'Api\Report\WorkTimeController@workTimeByMonth');
-    Route::get('api/report/personal/{persId}/salaries/{year}/{month}', 'Api\Report\PersonalController@salaries');
-
     //Resource Report Costs
     Route::get('api/report/costs', 'Api\Report\CostController@index')->name('api.report.costs.index');
     Route::post('api/report/costs', 'Api\Report\CostController@store')->name('api.report.costs.store');
     Route::post('api/report/costs/{costId}', 'Api\Report\CostController@update')->name('api.report.costs.update');
+
+    Route::get('api/report/productivity', 'Api\Report\ProductivityController@index')->name('api.report.productivity');
+
+    //Resource Report Free
+    Route::get('api/reports/free/personal', 'Api\Report\Free\FreeController@personal')->name('api.report.free.personal');
 
     //----------------------------------------------------------------------------------------------------------------//
 
