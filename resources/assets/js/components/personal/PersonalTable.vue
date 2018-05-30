@@ -4,26 +4,10 @@
             <h3 class="box-title">Список сотрудников</h3>
         </div>
         <div class="box-header">
-            <div class="flex flex_jc-fs mr-2">
-                <div class="pb-2 pr-2" v-for="item in load.companies" :key="item.id">
-                    <b-button :size="'sm'" :variant="activeCompanies.indexOf(item.id) === -1 ? 'outline-success' : 'success'" @click.prevent="onChange(item.id, 'company')">
-                        {{ item.name }}
-                    </b-button>
-                </div>
-            </div>
 
-            <div class="flex flex_jc-fs mr-2">
-                <div class="pb-2 pr-2" v-for="item in load.groups" :key="item.id">
-                    <b-button :size="'sm'" :variant="activeGroups.indexOf(item.id) === -1 ? 'outline-success' : 'success'" @click.prevent="onChange(item.id, 'group')">
-                        {{ item.name }}
-                    </b-button>
-                </div>
-            </div>
+            <personal-filter-buttons @filterButtonChange="onChange" :activeGroups="activeGroups" :activeCompanies="activeCompanies"></personal-filter-buttons>
 
-        
-            <b-button class="salary-hide__button" :size="'sm'" :variant="'danger'" @click="salaryShowToggle()">
-                {{ salaryShow ? 'Скрыть' : 'Показать' }}
-            </b-button>
+            <button-toggle @toggle="salaryShowToggle" :toggleText="toggleText"></button-toggle>            
 
         </div>
 
@@ -38,7 +22,7 @@
                     </a>
                 </template>
                 <template slot="salary" slot-scope="data">
-                    <span v-show="salaryShow">
+                    <span v-show="toggleText">
                         {{data.item.salary}}
                     </span>
                 </template>
@@ -59,19 +43,26 @@
 </template>
 
 <script>
-    import { personalMixin } from './../../mixins/personalMixin';
+    
     import { paginationMixin } from './../../mixins/paginationMixin';
     import { personalFilter } from './../../mixins/personalFilter';
 
+    import buttonToggle from './../parts/ButtonToggle'
+    import PersonalFilterButtons from './../parts/PersonalFilterButtons'
+
     export default {
-        mixins: [paginationMixin, personalMixin, personalFilter],
+        mixins: [paginationMixin, personalFilter],
+        components: {
+            buttonToggle,
+            PersonalFilterButtons
+        },
         data: ()=> ({
             personalInformation: [],            
             table: {
                 fields: {},
                 items: []
             },
-            salaryShow: ''
+            toggleText: ''
 
         }),        
         methods: {         
@@ -95,14 +86,13 @@
                  return value <= 30 ? 'table-danger' : '';
                  
             },
-            salaryShowToggle(){
-                this.salaryShow = !this.salaryShow
-                localStorage.setItem('showTableSalary', this.salaryShow)
+            salaryShowToggle(){                
+                this.toggleText = !this.toggleText
+                localStorage.setItem('showTableSalary', this.toggleText)
             }
         },
-        mounted() {
-            
-            this.salaryShow = localStorage.getItem('showTableSalary') ? JSON.parse(localStorage.getItem('showTableSalary')) : true;           
+        mounted() {            
+            this.toggleText = localStorage.getItem('showTableSalary') ? JSON.parse(localStorage.getItem('showTableSalary')) : true;           
         }       
     }
 </script>
