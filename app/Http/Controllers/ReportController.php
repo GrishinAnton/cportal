@@ -11,6 +11,6 @@ class ReportController extends Controller
      */
     public function index()
     {
-        return view('report.index');
+        return view('reports.free.index');
     }
 }

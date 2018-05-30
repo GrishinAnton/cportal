@@ -4,57 +4,49 @@
             <h3 class="box-title">Список сотрудников</h3>
         </div>
         <div class="box-header">
-            <div class="flex flex_jc-fs mr-2">
-                <div class="pb-2 pr-2" v-for="item in load.companies" :key="item.id">
-                    <b-button :size="'sm'" :variant="activeCompanies.indexOf(item.id) === -1 ? 'outline-success' : 'success'" @click.prevent="onChange(item.id, 'company')">
-                        {{ item.name }}
-                    </b-button>
-                </div>
-            </div>
-
-            <div class="flex flex_jc-fs mr-2">
-                <div class="pb-2 pr-2" v-for="item in load.groups" :key="item.id">
-                    <b-button :size="'sm'" :variant="activeGroups.indexOf(item.id) === -1 ? 'outline-success' : 'success'" @click.prevent="onChange(item.id, 'group')">
-                        {{ item.name }}
-                    </b-button>
-                </div>
-            </div>
+            
+            <!-- <personal-filter-buttons @filterButtonChange="onChange" :activeGroups="activeGroups" :activeCompanies="activeCompanies"></personal-filter-buttons> -->
+            
         </div>
 
         <div class="box-body">
-            <b-table bordered hover :items="table.items" :fields="table.fields">
+            <b-table bordered hover :items="table.items" :fields="table.fields" :sort-compare="sort">
                 <template slot="index" slot-scope="data">
                     {{data.index + 1}}
                 </template>
                 <template slot="firstName" slot-scope="data">
                     <a :href="data.item.url">
-                        {{data.item.firstName}} {{data.item.lastName}}
+                        {{data.item.first_name}} {{data.item.last_name}}
                     </a>
                 </template>
             </b-table>
         </div>
 
         <div class="box-footer">
-            <b-pagination align="right" 
+            <!-- <b-pagination align="right" 
                 v-show="showPagination" 
                 :total-rows="paginationData.total"
                 v-model="paginationData.currentPage" 
                 @change="onPaginationChange($event)" 
                 :per-page="paginationData.perPage"
                 >
-            </b-pagination>
+            </b-pagination> -->
         </div>
     </div>
 </template>
 
 <script>
 
-    import { personalMixin } from './../../mixins/personalMixin';
-    import { paginationMixin } from './../../mixins/paginationMixin';
-    import { personalFilter } from './../../mixins/personalFilter';
+    // import { paginationMixin } from './../../mixins/paginationMixin';
+    // import { personalFilter } from './../../mixins/personalFilter';
+
+    // import PersonalFilterButtons from './../parts/PersonalFilterButtons'
 
      export default {
-        mixins: [paginationMixin, personalMixin, personalFilter],
+        // mixins: [paginationMixin],
+        // components: {
+        //     PersonalFilterButtons
+        // },
         data: ()=> ({
             personalInformation: [],
             table: {
@@ -62,21 +54,36 @@
                 items: [] 
             }
         }),        
-        methods: {            
+        methods: {      
+            sort(a, b, key){  
+                var key = key.slice(0,-6)
+
+                return a[key].hours < b[key].hours ? -1 : (a[key].hours > b[key].hours ? 1 : 0);         
+            },   
             sortTableData(data){
-                
+               
                 this.table.fields = {
                     index: {label: '#'},
                     firstName: {label: 'Имя Фамилия'},
-                    email: {label: 'E-mail'},
-                    coefficient: {label: '14.05-20.05', sortable: true},
-                    closedHours: {label: '7.05-13.05', sortable: true},
-                    previousWeeksCloseHours: {label: '30.04-6.05', sortable: true},
-                    fine: {label: '23.04-29.04', sortable: true},
-                    salary: {label: '16.04-22.04', sortable: true},
+                    week1: {key: 'week1.hours', label: data[0].week1.date, sortable: true},
+                    week2: {key: 'week2.hours', label: data[0].week2.date, sortable: true},
+                    week3: {key: 'week3.hours', label: data[0].week3.date, sortable: true},
+                    week4: {key: 'week4.hours', label: data[0].week4.date, sortable: true},
+                    week5: {key: 'week5.hours', label: data[0].week5.date, sortable: true},
+                    week6: {key: 'week6.hours', label: data[0].week6.date, sortable: true},
                 }
+
                 this.table.items = data
             },      
-        }        
+        },
+        mounted() {
+            axios.get('/api/report/productivity')
+                .then(response => {
+                    console.log(response.data.data);
+                    
+                    this.sortTableData(response.data.data);
+                })
+                .catch(e=>console.log(e));
+        }
     }
 </script>
