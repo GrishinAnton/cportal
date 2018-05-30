@@ -75,6 +75,27 @@ class TimeRecords extends Command
                 ->getJson();
 
             if ($timeRecords) {
+                if (! empty($timeRecords['related']['Task'])) {
+                    foreach ($timeRecords['related']['Task'] as $task) {
+                        Task::updateOrCreate(
+                            [
+                                'task_id' => $task['id']
+                            ],
+                            [
+                                'type' => $task['class'],
+                                'permalink' => 'https://app.activecollab.com/144541' . $task['url_path'],
+                                'name' => $task['name'],
+                                'completed_on' => $task['completed_on'],
+                                'is_completed' => isset($task['completed_on']) ? true : false,
+                                'project_id' => $task['project_id'],
+                                'created_on' => $task['created_on'],
+                                'assignee_id' => $task['assignee_id'],
+                                'tracked_time' => $task['tracked_time'] ?? 0,
+                                'estimated_time' => $task['estimate']
+                            ]
+                        );
+                    }
+                }
                 foreach ($timeRecords['time_records'] as $timeRecord) {
                     $task = Task::select('task_id')->where('task_id', $timeRecord['parent_id'])->first();
                     if ($task) {
