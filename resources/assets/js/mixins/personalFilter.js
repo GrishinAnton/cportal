@@ -4,21 +4,21 @@ export const personalFilter = {
         activeCompanies: [],
     }),
     methods: {
-        onChange(id, item) {
-
+        onChange(obj) {
+             
             var arrName;
 
-            if (item === 'group') {
+            if (obj.item === 'group') {
                 arrName = this.activeGroups;
             }
-            if (item === 'company') {
+            if (obj.item === 'company') {
                 arrName = this.activeCompanies;
             }
 
-            var arrPosition = arrName.indexOf(id);
+            var arrPosition = arrName.indexOf(obj.id);
 
             if (arrPosition === -1) {
-                arrName.push(id);
+                arrName.push(obj.id);
             } else {
                 arrName.splice(arrPosition, 1);
             }

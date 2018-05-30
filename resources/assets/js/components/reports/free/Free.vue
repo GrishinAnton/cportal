@@ -10,21 +10,9 @@
             </div>
         </div>
         <div class="box-header">
-            <div class="flex flex_jc-fs mr-2">
-                <div class="pb-2 pr-2" v-for="item in load.companies" :key="item.id">
-                    <b-button :size="'sm'" :variant="activeCompanies.indexOf(item.id) === -1 ? 'outline-success' : 'success'" @click.prevent="onChange(item.id, 'company')">
-                        {{ item.name }}
-                    </b-button>
-                </div>
-            </div>
 
-            <div class="flex flex_jc-fs mr-2">
-                <div class="pb-2 pr-2" v-for="item in load.groups" :key="item.id">
-                    <b-button :size="'sm'" :variant="activeGroups.indexOf(item.id) === -1 ? 'outline-success' : 'success'" @click.prevent="onChange(item.id, 'group')">
-                        {{ item.name }}
-                    </b-button>
-                </div>
-            </div>
+            <personal-filter-buttons @filterButtonChange="onChange" :activeGroups="activeGroups" :activeCompanies="activeCompanies"></personal-filter-buttons>
+
         </div>
         <div class="box-body">
             <table class="table table-hover table-bordered">
@@ -100,8 +88,13 @@
     import { paginationMixin } from '../../../mixins/paginationMixin';
     import { personalFilter } from '../../../mixins/personalFilter';
 
+    import PersonalFilterButtons from './parts/PersonalFilterButtons'
+
     export default {
-        mixins: [paginationMixin, personalMixin, personalFilter],
+        mixins: [paginationMixin, personalFilter],
+        components: {
+            PersonalFilterButtons
+        },
         data: () =>({
             personalInformation: [],
             year: 2018,
