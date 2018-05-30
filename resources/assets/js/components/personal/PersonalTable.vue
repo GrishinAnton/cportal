@@ -62,14 +62,12 @@
                 fields: {},
                 items: []
             },
-            toggleText: ''
+            toggleText: '',
+            requestUrl: `/api/personal`
 
         }),        
         methods: {         
             sortTableData(data){
-
-                console.log(data);
-                
                 
                 this.table.fields = {
                     index: {label: '#'},
