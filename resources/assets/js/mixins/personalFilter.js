@@ -28,7 +28,7 @@ export const personalFilter = {
         },
         requestFilter() {
 
-            axios.get('/api/personal', {
+            axios.get(this.requestUrl, {
                 params: {
                     group: this.activeGroups,
                     company: this.activeCompanies
@@ -61,7 +61,7 @@ export const personalFilter = {
     mounted() {
         if (!localStorage.length) {
 
-            axios.get('/api/personal')
+            axios.get(this.requestUrl)
                 .then(response => {
                     if (this.sortTableData) {
                         this.sortTableData(response.data.data);

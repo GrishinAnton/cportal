@@ -5,7 +5,7 @@
         </div>
         <div class="box-header">
             
-            <!-- <personal-filter-buttons @filterButtonChange="onChange" :activeGroups="activeGroups" :activeCompanies="activeCompanies"></personal-filter-buttons> -->
+            <personal-filter-buttons @filterButtonChange="onChange" :activeGroups="activeGroups" :activeCompanies="activeCompanies"></personal-filter-buttons>
             
         </div>
 
@@ -23,36 +23,37 @@
         </div>
 
         <div class="box-footer">
-            <!-- <b-pagination align="right" 
+            <b-pagination align="right" 
                 v-show="showPagination" 
                 :total-rows="paginationData.total"
                 v-model="paginationData.currentPage" 
                 @change="onPaginationChange($event)" 
                 :per-page="paginationData.perPage"
                 >
-            </b-pagination> -->
+            </b-pagination>
         </div>
     </div>
 </template>
 
 <script>
 
-    // import { paginationMixin } from './../../mixins/paginationMixin';
-    // import { personalFilter } from './../../mixins/personalFilter';
+    import { paginationMixin } from './../../mixins/paginationMixin';
+    import { personalFilter } from './../../mixins/personalFilter';
 
-    // import PersonalFilterButtons from './../parts/PersonalFilterButtons'
+    import PersonalFilterButtons from './../parts/PersonalFilterButtons'
 
      export default {
-        // mixins: [paginationMixin],
-        // components: {
-        //     PersonalFilterButtons
-        // },
+        mixins: [paginationMixin, personalFilter],
+        components: {
+            PersonalFilterButtons
+        },
         data: ()=> ({
             personalInformation: [],
             table: {
                 fields: {},
                 items: [] 
-            }
+            },
+            requestUrl: `/api/report/productivity`
         }),        
         methods: {      
             sort(a, b, key){  
@@ -75,15 +76,6 @@
 
                 this.table.items = data
             },      
-        },
-        mounted() {
-            axios.get('/api/report/productivity')
-                .then(response => {
-                    console.log(response.data.data);
-                    
-                    this.sortTableData(response.data.data);
-                })
-                .catch(e=>console.log(e));
         }
     }
 </script>

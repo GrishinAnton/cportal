@@ -62,7 +62,8 @@
                 fields: {},
                 items: []
             },
-            toggleText: ''
+            toggleText: '',
+            requestUrl: `/api/personal`
 
         }),        
         methods: {         
