@@ -19,27 +19,27 @@ class ProductivityResource extends JsonResource
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
             'week1' => [
-                'hours' => $this->week1,
+                'hours' => $this->week1 ? round($this->week1, 2) : 0,
                 'date' => $this->getWeekMonthDay('-1 week')
             ],
             'week2' => [
-                'hours' => $this->week2,
+                'hours' => $this->week2 ? round($this->week2, 2) : 0,
                 'date' => $this->getWeekMonthDay('-2 week')
             ],
             'week3' => [
-                'hours' => $this->week3,
+                'hours' => $this->week3 ? round($this->week3, 2) : 0,
                 'date' => $this->getWeekMonthDay('-3 week')
             ],
             'week4' => [
-                'hours' => $this->week4,
+                'hours' => $this->week4 ? round($this->week4, 2) : 0,
                 'date' => $this->getWeekMonthDay('-4 week')
             ],
             'week5' => [
-                'hours' => $this->week5,
+                'hours' => $this->week5 ? round($this->week5, 2) : 0,
                 'date' => $this->getWeekMonthDay('-5 week')
             ],
             'week6' => [
-                'hours' => $this->week6,
+                'hours' => $this->week6 ? round($this->week6, 2) : 0,
                 'date' => $this->getWeekMonthDay('-6 week')
             ],
         ];

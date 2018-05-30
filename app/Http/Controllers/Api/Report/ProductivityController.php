@@ -21,7 +21,7 @@ class ProductivityController extends Controller
                 DB::raw('sum(t3.week3) as week3'),
                 DB::raw('sum(t3.week4) as week4'),
                 DB::raw('sum(t3.week5) as week5'),
-                DB::raw('sum(t3.week5) as week6')
+                DB::raw('sum(t3.week6) as week6')
             )
             ->leftJoin(DB::raw("(
                 SELECT
