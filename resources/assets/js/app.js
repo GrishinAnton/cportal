@@ -24,6 +24,7 @@ Vue.component('personal-position', function (resolve) { require(['./components/p
 Vue.component('personal-table', function (resolve) { require(['./components/personal/PersonalTable'], resolve)});
 Vue.component('employees-card', function (resolve) { require(['./components/employees/EmployeesCard'], resolve)});
 Vue.component('productivity', function (resolve) { require(['./components/productivity/Productivity'], resolve)});
+Vue.component('project-show', function (resolve) { require(['./components/projects/ProjectShow'], resolve)});
 
 import Vuex from 'vuex';
 import BootstrapVue from 'bootstrap-vue';
