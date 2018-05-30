@@ -9,7 +9,11 @@
 <script>
     export default {
         props: {
-            toggleText: Boolean
+            toggleText: {
+                type: Boolean,
+                required: true
+            }
+            
         },
         methods: {
             toggle() {                
