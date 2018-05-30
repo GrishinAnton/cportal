@@ -66,16 +66,26 @@
                 this.table.fields = {
                     index: {label: '#'},
                     firstName: {label: 'Имя Фамилия'},
-                    week1: {key: 'week1.hours', label: data[0].week1.date, sortable: true},
-                    week2: {key: 'week2.hours', label: data[0].week2.date, sortable: true},
-                    week3: {key: 'week3.hours', label: data[0].week3.date, sortable: true},
-                    week4: {key: 'week4.hours', label: data[0].week4.date, sortable: true},
-                    week5: {key: 'week5.hours', label: data[0].week5.date, sortable: true},
-                    week6: {key: 'week6.hours', label: data[0].week6.date, sortable: true},
+                    week1: {key: 'week1.hours', label: data[0].week1.date, sortable: true, tdClass: this.showHowWeekHours},
+                    week2: {key: 'week2.hours', label: data[0].week2.date, sortable: true, tdClass: this.showHowWeekHours},
+                    week3: {key: 'week3.hours', label: data[0].week3.date, sortable: true, tdClass: this.showHowWeekHours},
+                    week4: {key: 'week4.hours', label: data[0].week4.date, sortable: true, tdClass: this.showHowWeekHours},
+                    week5: {key: 'week5.hours', label: data[0].week5.date, sortable: true, tdClass: this.showHowWeekHours},
+                    week6: {key: 'week6.hours', label: data[0].week6.date, sortable: true, tdClass: this.showHowWeekHours},
                 }
 
                 this.table.items = data
-            },      
+            },  
+            showHowWeekHours(value){
+                
+                if (value <= 30) {
+                    return 'table-danger';
+                } else if (value <= 35) {
+                    return 'table-warning';
+                }
+                
+                return '';                 
+            },    
         }
     }
 </script>

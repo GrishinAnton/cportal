@@ -48,7 +48,7 @@ export const personalFilter = {
                     
 
                     //pagination
-                    this.paginationDataChange(response.data)
+                    this.paginationDataChange(response.data);
 
                 })
                 .catch(e => {
