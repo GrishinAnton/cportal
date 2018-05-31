@@ -26,8 +26,6 @@ class PersonalResource extends JsonResource
             'fine' => round($this->getFine($this) < 0 ? 0 : $this->getFine($this)),
             'salary' => $this->getSalary($this->salary->first()),
             'previousWeeksCloseHours' => round($this->previousWeeksCloseHours()->sum('worktime'), 2),
-            'group' => (new GroupResource($this->group)),
-            'company' => (new CompanyResource($this->company))
         ];
     }
 
