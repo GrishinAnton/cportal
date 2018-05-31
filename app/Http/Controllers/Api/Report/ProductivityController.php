@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Report;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\PersonalFilterRequest;
 use App\Http\Resources\Report\ProductivityResource;
 use App\Personal;
 use Carbon\Carbon;
@@ -10,19 +11,41 @@ use DB;
 
 class ProductivityController extends Controller
 {
-    public function index()
+    /**
+     * Productivity
+     *
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
+    public function index(PersonalFilterRequest $request)
     {
-        $personal =  Personal::select(
-                'personal.id',
-                'personal.first_name',
-                'personal.last_name',
-                DB::raw('sum(t3.week1) as week1'),
-                DB::raw('sum(t3.week2) as week2'),
-                DB::raw('sum(t3.week3) as week3'),
-                DB::raw('sum(t3.week4) as week4'),
-                DB::raw('sum(t3.week5) as week5'),
-                DB::raw('sum(t3.week6) as week6')
-            )
+        $personal = $this->queryProductivity();
+
+        foreach ($request->all() as $key => $filter) {
+            try {
+                $personal->{$key}($filter);
+            } catch (\Exception $e) {
+                report($e);
+            }
+        }
+
+        return ProductivityResource::collection($personal->paginate(75))
+            ->additional(['success' => true]);
+    }
+
+    private function queryProductivity()
+    {
+        $personal = Personal::select(
+            'personal.id',
+            'personal.first_name',
+            'personal.last_name',
+            'personal.pers_id',
+            DB::raw('sum(t3.week1) as week1'),
+            DB::raw('sum(t3.week2) as week2'),
+            DB::raw('sum(t3.week3) as week3'),
+            DB::raw('sum(t3.week4) as week4'),
+            DB::raw('sum(t3.week5) as week5'),
+            DB::raw('sum(t3.week6) as week6')
+        )
             ->leftJoin(DB::raw("(
                 SELECT
                     pers_id,
@@ -39,12 +62,12 @@ class ProductivityController extends Controller
                         weeks
                     FROM (
                         SELECT
-                            IF(date BETWEEN '{$this->getStartOfWeekDate('-1 week')}' AND '{$this->getEndOfWeekDate('-1 week')}', 1,
-                                IF(date BETWEEN '{$this->getStartOfWeekDate('-2 week')}' AND '{$this->getEndOfWeekDate('-2 week')}', 2,
-                                    IF(date BETWEEN '{$this->getStartOfWeekDate('-3 week')}' AND '{$this->getEndOfWeekDate('-3 week')}', 3,
-                                        IF(date BETWEEN '{$this->getStartOfWeekDate('-4 week')}' AND '{$this->getEndOfWeekDate('-4 week')}', 4,
-                                            IF(date BETWEEN '{$this->getStartOfWeekDate('-5 week')}' AND '{$this->getEndOfWeekDate('-5 week')}', 5,
-                                                IF(date BETWEEN '{$this->getStartOfWeekDate('-6 week')}' AND '{$this->getEndOfWeekDate('-6 week')}', 6, null)
+                            IF(date BETWEEN '{$this->getStartOfWeekDate('-6 week')}' AND '{$this->getEndOfWeekDate('-6 week')}', 1,
+                                IF(date BETWEEN '{$this->getStartOfWeekDate('-5 week')}' AND '{$this->getEndOfWeekDate('-5 week')}', 2,
+                                    IF(date BETWEEN '{$this->getStartOfWeekDate('-4 week')}' AND '{$this->getEndOfWeekDate('-4 week')}', 3,
+                                        IF(date BETWEEN '{$this->getStartOfWeekDate('-3 week')}' AND '{$this->getEndOfWeekDate('-3 week')}', 4,
+                                            IF(date BETWEEN '{$this->getStartOfWeekDate('-2 week')}' AND '{$this->getEndOfWeekDate('-2 week')}', 5,
+                                                IF(date BETWEEN '{$this->getStartOfWeekDate('-1 week')}' AND '{$this->getEndOfWeekDate('-1 week')}', 6, null)
                                             )
                                         )
                                     )
@@ -58,10 +81,9 @@ class ProductivityController extends Controller
                     GROUP BY pt.weeks, pt.pers_id
                 ) as t2 ) as t3"), 't3.pers_id', '=', 'personal.pers_id')
             ->groupBy('personal.id')
-            ->paginate(75);
+            ->where('is_active', true);
 
-        return ProductivityResource::collection($personal)
-            ->additional(['success' => true]);
+        return $personal;
     }
 
     /**

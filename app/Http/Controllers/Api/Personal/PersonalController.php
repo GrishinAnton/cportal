@@ -75,7 +75,7 @@ class PersonalController extends Controller
                 $query->whereYear('date', $year)
                     ->whereMonth('date', $month)
                     ->orderBy('date', 'desc');
-            }])->with(['company', 'group']);
+            }]);
 
         return $personal;
     }
