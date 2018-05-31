@@ -32,6 +32,11 @@ class ProductivityController extends Controller
             ->additional(['success' => true]);
     }
 
+    /**
+     * Query productivity
+     *
+     * @return mixed
+     */
     private function queryProductivity()
     {
         $personal = Personal::select(

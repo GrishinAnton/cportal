@@ -52,8 +52,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('api/report/productivity', 'Api\Report\ProductivityController@index')->name('api.report.productivity');
 
-    //Resource Report Free
-    Route::get('api/reports/free/personal', 'Api\Report\Free\FreeController@personal')->name('api.report.free.personal');
+    Route::get('api/report/summary', 'Api\Report\SummaryController@index')->name('api.report.summary');
 
     //----------------------------------------------------------------------------------------------------------------//
 

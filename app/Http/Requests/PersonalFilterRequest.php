@@ -25,7 +25,8 @@ class PersonalFilterRequest extends FormRequest
     {
         return [
             'company.*.' => 'sometimes|exists:personal_companies,id',
-            'group.*.' => 'sometimes|exists:personal_groups,id'
+            'group.*.' => 'sometimes|exists:personal_groups,id',
+            'year' => 'sometimes|date_format:Y',
         ];
     }
 }
