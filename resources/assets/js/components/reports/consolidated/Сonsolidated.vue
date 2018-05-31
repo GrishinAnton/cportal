@@ -38,7 +38,7 @@
                     <tr>
                         <td>{{ ++index }}</td>
                         <td>
-                            <a :href="personal.url" target="_blank">{{ personal.firstName }} {{ personal.lastName }}</a>
+                            <a :href="personal.url" target="_blank">{{ personal.first_name }} {{ personal.last_name }}</a>
                         </td>
                         <td @click="openmodal()"></td>
                         <td></td>
@@ -108,17 +108,17 @@
             }
         },
         mounted() {
-            // axios.get('/api/reports/free/personal')
-            //     .then(response => {
-            //         if (response.data.success) {
-            //             this.personals = response.data.data;
-            //             console.log(this.personals);
-            //         }
-            //     })
-            //     .catch(e => {
-            //         console.log(e);
-            //
-            //     });
+            axios.get('/api/report/summary')
+                .then(response => {
+                    if (response.data.success) {
+                        this.personals = response.data.data;
+                        console.log(this.personals);
+                    }
+                })
+                .catch(e => {
+                    console.log(e);
+
+                });
         }
     }
 </script>
