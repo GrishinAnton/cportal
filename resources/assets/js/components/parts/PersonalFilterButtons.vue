@@ -21,7 +21,7 @@
 
 
 <script>
-    import { personalMixin } from './../../mixins/personalMixin';
+    import { personalMixin } from './../../mixins/loadGroupAndCompany';
 
     export default {
         mixins: [personalMixin],

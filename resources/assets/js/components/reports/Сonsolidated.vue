@@ -3,10 +3,10 @@
         <div class="box-header flex flex_jc-sb">
             <h3 class="box-title">Отчет</h3>
             <div class="col-sm-1">
-                <select class="form-control" v-model="year" @change="renderTableByYaer">
+                <!-- <select class="form-control" v-model="year" @change="renderTableByYaer">
                     <option value="2017">2017</option>
                     <option value="2018">2018</option>
-                </select>
+                </select> -->
             </div>
         </div>
         <div class="box-header">
@@ -40,25 +40,25 @@
                         <td>
                             <a :href="personal.url" target="_blank">{{ personal.first_name }} {{ personal.last_name }}</a>
                         </td>
-                        <td @click="openmodal()"></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                        <td @click="openmodal()">{{  personal.salary.january}}</td>
+                        <td>{{  personal.salary.february }}</td>
+                        <td>{{  personal.salary.march }}</td>
+                        <td>{{  personal.salary.april }}</td>
+                        <td>{{  personal.salary.may }}</td>
+                        <td>{{  personal.salary.june }}</td>
+                        <td>{{  personal.salary.july }}</td>
+                        <td>{{  personal.salary.august }}</td>
+                        <td>{{  personal.salary.september }}</td>
+                        <td>{{  personal.salary.october }}</td>
+                        <td>{{  personal.salary.november }}</td>
+                        <td>{{  personal.salary.december }}</td>
                     </tr>
-                    <tr :id="personal.email" >
+                    <!-- <tr :id="personal.email" >
                         <td></td>
                         <td class="text-right">проект</td>
                         <td>data 1</td>  
                         <td>data 1</td>
-                    </tr>
+                    </tr> -->
                 </tbody>
             </table>    
             <b-modal ref="modal" title="Фиксированная зарплата">
@@ -84,11 +84,11 @@
     </div>
 </template>
 <script>
-    import { personalMixin } from '../../../mixins/personalMixin';
-    import { paginationMixin } from '../../../mixins/paginationMixin';
-    import { personalFilter } from '../../../mixins/personalFilter';
 
-    import PersonalFilterButtons from './../../parts/PersonalFilterButtons'
+    import { paginationMixin } from '../../mixins/paginationMixin';
+    import { personalFilter } from '../../mixins/personalFilter';
+
+    import PersonalFilterButtons from './../parts/PersonalFilterButtons'
 
     export default {
         mixins: [paginationMixin, personalFilter],
@@ -98,6 +98,7 @@
         data: () =>({
             personalInformation: [],
             year: 2018,
+            requestUrl: '/api/report/summary'
         }),
         methods: {
             openmodal(){
@@ -107,28 +108,15 @@
                 this.$refs.modal.hide()
             }
         },
-        mounted() {
-            axios.get('/api/report/summary')
-                .then(response => {
-                    if (response.data.success) {
-                        this.personals = response.data.data;
-                        console.log(this.personals);
-                    }
-                })
-                .catch(e => {
-                    console.log(e);
-
-                });
-        }
     }
 </script>
 
 <style>
 
-    .collapsing {
+    /* .collapsing {
         transition: none;
         display: table-row!important;
-    }
+    } */
 
 </style>
 

@@ -23,7 +23,7 @@ export const personalFilter = {
                 arrName.splice(arrPosition, 1);
             }
 
-            this.requestFilter()
+            this.requestFilter();
 
         },
         requestFilter() {
@@ -44,17 +44,14 @@ export const personalFilter = {
                         this.sortTableData(response.data.data);
                     } else {
                         this.personalInformation = response.data.data;
+                        console.log(this.personalInformation);
+                        
                     }
-                    
-
                     //pagination
                     this.paginationDataChange(response.data);
 
                 })
-                .catch(e => {
-                    console.log(e);
-
-                })
+                .catch(e => console.log(e));
 
         },
     },
@@ -70,23 +67,21 @@ export const personalFilter = {
                     }
 
                     //pagination
-                    this.paginationDataChange(response.data)
+                    this.paginationDataChange(response.data);
                 })
-                .catch(e => {
-                    console.log(e);
-                })
+                .catch(e => console.log(e));
         } else {
 
             var localGroup = localStorage.getItem('activeGroup');
             var localCompany = localStorage.getItem('activeCompanies');
 
             var arrGroup = localGroup ? localGroup.split(',') : localStorage.removeItem('activeGroup');
-            this.activeGroups = _.map(arrGroup, _.parseInt)
+            this.activeGroups = _.map(arrGroup, _.parseInt);
 
             var arrCompany = localCompany ? localCompany.split(',') : localStorage.removeItem('activeCompanies');
-            this.activeCompanies = _.map(arrCompany, _.parseInt)
+            this.activeCompanies = _.map(arrCompany, _.parseInt);
 
-            this.requestFilter()
+            this.requestFilter();
 
         }
     }
