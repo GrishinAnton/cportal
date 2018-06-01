@@ -45,7 +45,6 @@ class SummaryController extends Controller
             'personal.first_name',
             'personal.last_name',
             'personal.pers_id',
-            't4.date as date',
             DB::raw('t4.january as january'),
             DB::raw('t4.february as february'),
             DB::raw('t4.march as march'),
