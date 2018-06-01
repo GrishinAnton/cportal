@@ -189,14 +189,17 @@
         },
         saveSalary(){
             var day = new Date();
+            var dayForBack = `0${day.getDate()}`.slice(-2)
             var url; 
+
+            
           
             if (this.postData.salaryId) {
                 url = `/api/personal/salary/${this.postData.salaryId}/update`;
             } else {
                 url = `/api/personal/${this.personalId}/salary/store`;
             }
-          
+            
             axios.post(url, {
                 salary: this.flagHours ? this.staticData.salary : this.changeData.salary,
                 coefficient: this.changeData.coef,
@@ -204,7 +207,7 @@
                 closeHours: this.changeData.closeHours || this.staticData.closeHours,
                 penaltyHours: this.changeData.penaltyTime || this.staticData.penaltyTime,
                 fix: this.changeData.fixSalary,
-                date: `${this.date}-${day.getDate()}`
+                date: `${this.date}-${dayForBack}`
             })
             .then(response => {
                 if(response.data.success){
