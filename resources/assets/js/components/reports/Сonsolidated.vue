@@ -67,17 +67,17 @@
                     <button type="button" class="btn btn-default pull-left" @click="closeModal()">Закрыть</button>
                     <button type="button" class="btn btn-primary">Сохранить</button>
                 </div>
-            </b-modal>
-        </div>
+            </b-modal>  
+        </div>  
 
         <div class="box-footer">
-            <b-pagination align="right"
-                          v-show="showPagination"
-                          :total-rows="paginationData.total"
-                          v-model="paginationData.currentPage"
-                          @change="onPaginationChange($event)"
-                          :per-page="paginationData.perPage"
-            >
+            <b-pagination align="right" 
+                v-show="showPagination" 
+                :total-rows="paginationData.total"
+                v-model="paginationData.currentPage" 
+                @change="onPaginationChange($event)" 
+                :per-page="paginationData.perPage"
+                >
             </b-pagination>
         </div>
 
