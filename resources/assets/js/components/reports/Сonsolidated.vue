@@ -17,67 +17,67 @@
         <div class="box-body">
             <table class="table table-hover table-bordered">
                 <thead>
-                    <tr>
-                        <th style="width: 10px">#</th>
-                        <th>Имя Фамилия</th>
-                        <th class="text-center">Январь</th>
-                        <th class="text-center">Февраль</th>
-                        <th class="text-center">Март</th>
-                        <th class="text-center">Апрель</th>
-                        <th class="text-center">Май</th>
-                        <th class="text-center">Июнь</th>
-                        <th class="text-center">Июль</th>
-                        <th class="text-center">Август</th>
-                        <th class="text-center">Сентябрь</th>
-                        <th class="text-center">Октябрь</th>
-                        <th class="text-center">Ноябрь</th>
-                        <th class="text-center">Декабрь</th>
-                    </tr>
+                <tr>
+                    <th style="width: 10px">#</th>
+                    <th>Имя Фамилия</th>
+                    <th class="text-center">Январь</th>
+                    <th class="text-center">Февраль</th>
+                    <th class="text-center">Март</th>
+                    <th class="text-center">Апрель</th>
+                    <th class="text-center">Май</th>
+                    <th class="text-center">Июнь</th>
+                    <th class="text-center">Июль</th>
+                    <th class="text-center">Август</th>
+                    <th class="text-center">Сентябрь</th>
+                    <th class="text-center">Октябрь</th>
+                    <th class="text-center">Ноябрь</th>
+                    <th class="text-center">Декабрь</th>
+                </tr>
                 </thead>
                 <tbody v-for="(personal, index) in personalInformation" :key="index">
-                    <tr>
-                        <td>{{ ++index }}</td>
-                        <td>
-                            <a :href="personal.url" target="_blank">{{ personal.first_name }} {{ personal.last_name }}</a>
-                        </td>
-                        <td @click="openmodal()">{{  personal.salary.january}}</td>
-                        <td>{{  personal.salary.february }}</td>
-                        <td>{{  personal.salary.march }}</td>
-                        <td>{{  personal.salary.april }}</td>
-                        <td>{{  personal.salary.may }}</td>
-                        <td>{{  personal.salary.june }}</td>
-                        <td>{{  personal.salary.july }}</td>
-                        <td>{{  personal.salary.august }}</td>
-                        <td>{{  personal.salary.september }}</td>
-                        <td>{{  personal.salary.october }}</td>
-                        <td>{{  personal.salary.november }}</td>
-                        <td>{{  personal.salary.december }}</td>
-                    </tr>
-                    <!-- <tr :id="personal.email" >
-                        <td></td>
-                        <td class="text-right">проект</td>
-                        <td>data 1</td>  
-                        <td>data 1</td>
-                    </tr> -->
+                <tr class="text-center">
+                    <td>{{ ++index }}</td>
+                    <td>
+                        <a :href="personal.url" target="_blank">{{ personal.first_name }} {{ personal.last_name }}</a>
+                    </td>
+                    <td @click="profileUser(personal.url, '01')">{{ personal.salary.january }}</td>
+                    <td @click="profileUser(personal.url, '02')">{{  personal.salary.february }}</td>
+                    <td @click="profileUser(personal.url, '03')">{{  personal.salary.march }}</td>
+                    <td @click="profileUser(personal.url, '04')">{{  personal.salary.april }}</td>
+                    <td @click="profileUser(personal.url, '05')">{{  personal.salary.may }}</td>
+                    <td @click="profileUser(personal.url, '06')">{{  personal.salary.june }}</td>
+                    <td @click="profileUser(personal.url, '07')">{{  personal.salary.july }}</td>
+                    <td @click="profileUser(personal.url, '08')">{{  personal.salary.august }}</td>
+                    <td @click="profileUser(personal.url, '09')">{{  personal.salary.september }}</td>
+                    <td @click="profileUser(personal.url, '10')">{{  personal.salary.october }}</td>
+                    <td @click="profileUser(personal.url, '11')">{{  personal.salary.november }}</td>
+                    <td @click="profileUser(personal.url, '12')">{{  personal.salary.december }}</td>
+                </tr>
+                <!-- <tr :id="personal.email" >
+                    <td></td>
+                    <td class="text-right">проект</td>
+                    <td>data 1</td>
+                    <td>data 1</td>
+                </tr> -->
                 </tbody>
-            </table>    
+            </table>
             <b-modal ref="modal" title="Фиксированная зарплата">
                 <input type="text" class="form-control">
                 <div slot="modal-footer" class="w-100 d-flex justify-content-between">
                     <button type="button" class="btn btn-default pull-left" @click="closeModal()">Закрыть</button>
                     <button type="button" class="btn btn-primary">Сохранить</button>
                 </div>
-            </b-modal>  
-        </div>  
+            </b-modal>
+        </div>
 
         <div class="box-footer">
-            <b-pagination align="right" 
-                v-show="showPagination" 
-                :total-rows="paginationData.total"
-                v-model="paginationData.currentPage" 
-                @change="onPaginationChange($event)" 
-                :per-page="paginationData.perPage"
-                >
+            <b-pagination align="right"
+                          v-show="showPagination"
+                          :total-rows="paginationData.total"
+                          v-model="paginationData.currentPage"
+                          @change="onPaginationChange($event)"
+                          :per-page="paginationData.perPage"
+            >
             </b-pagination>
         </div>
 
@@ -106,8 +106,13 @@
             },
             closeModal(){
                 this.$refs.modal.hide()
+            },
+            profileUser(url, month) {
+                let date = new Date();
+
+                return window.location.href = url + '?date=' + date.getFullYear() + '-' + month;
             }
-        },
+        }
     }
 </script>
 
