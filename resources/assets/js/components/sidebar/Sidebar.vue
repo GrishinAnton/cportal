@@ -78,6 +78,12 @@
                     name: "Сотрудники",
                     href: '/employees',
                     id: 4
+                },
+                {
+                    icon: "fa fa-fw fa-file",
+                    name: "ActiveCollab",
+                    href: 'activecollab',
+                    id: 5,
                 }
             ]
         }),
@@ -111,10 +117,11 @@
             this.$refs.submenu[0].childNodes.forEach((item)=>{
                 item.classList.forEach((item) => {
                     if(item === 'active') {  
-                          this.$refs.submenu[0].classList.add('nav-submenu-show')          
+                          this.$refs.submenu[0].classList.add('nav-submenu-show');
                         return                        
                     }
-                    return                    
+
+                    return;
                 });
             });
         }

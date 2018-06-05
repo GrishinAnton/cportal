@@ -79,4 +79,12 @@ Route::group(['middleware' => 'auth'], function () {
 
     //Финансы
     Route::get('report/costs', 'Report\CostController@index')->name('web.report.costs.index');
+
+    //Active Collab
+    Route::get('activecollab', 'ActiveCollab\ApiController@index')->name('web.activecollab.index');
+    Route::get('activecollab/personal', 'ActiveCollab\ApiController@personal')->name('web.activecollab.personal');
+    Route::get('activecollab/projects', 'ActiveCollab\ApiController@projects')->name('web.activecollab.projects');
+    Route::get('activecollab/tasks', 'ActiveCollab\ApiController@tasks')->name('web.activecollab.tasks');
+    Route::get('activecollab/time-records', 'ActiveCollab\ApiController@timeRecords')->name('web.activecollab.time-records');
+    Route::get('activecollab/time-records/all', 'ActiveCollab\ApiController@timeRecordsAll')->name('web.activecollab.time-records.all');
 });
