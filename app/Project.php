@@ -24,21 +24,41 @@ class Project extends Model
         'is_completed'
     ];
 
+    /**
+     * Tasks
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function tasks()
     {
         return $this->hasMany('App\Task', 'project_id', 'project_id');
     }
 
+    /**
+     * Costs
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function costs()
     {
         return $this->hasMany('App\ProjectCost', 'project_id', 'project_id');
     }
 
+    /**
+     * Full info costs
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function fullInfoCosts()
     {
         return $this->hasMany('App\ProjectCost', 'project_id', 'project_id');
     }
 
+    /**
+     * Personal
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function personal()
     {
         return $this->belongsToMany('App\Personal', 'personal_project', 'project_id', 'pers_id', 'project_id');
