@@ -97,8 +97,15 @@
             </div>
         </div>
         <b-modal ref="modal" title="Потрачено" size="lg">
-            <b-table striped hover :items="items" :fields="fields"></b-table>
-            <div slot="modal-footer" class="w-100 d-flex justify-content-end">
+            <table class="table table-striped table-hover">
+                <th v-for="item in tableHeader" :key="item">{{ item }}</th>
+                <tr v-for="items in tableData" :key="`${items.info.first_name}${items.info.last_name}`">
+                    <td>{{ items.info.id }}</td>
+                    <td>{{ items.info.first_name }} {{ items.info.last_name }}</td>
+                    <td v-for="(mounth, index) in items.times" :key="index">{{ mounth ? mounth.toFixed(2) : '' }}</td>
+                </tr>
+            </table>
+            <div slot="modal-footer" class="w-100 d-flex justify-content-start">
                 <button type="button" class="btn btn-default pull-left" @click="closeModal()">Закрыть</button>
                 <!-- <button type="button" class="btn btn-primary">Сохранить</button> -->
             </div>
@@ -109,25 +116,13 @@
 
 <script>
     export default {
+        props: {
+            projectId: String
+        },
         data: () => ({
-            fields: {
-                index: {label: '#'},
-                jan: {label: 'Январь'},
-                feb: {label: 'Февраль'},
-                mar: {label: 'Март'},
-                apr: {label: 'Апрель'},
-                jun: {label: 'Июнь'},
-                jul: {label: 'Июль'},
-                aug: {label: 'Август'},
-                sep: {label: 'Сентябрь'},
-                nov: {label: 'Ноябрь'},
-                oct: {label: 'Октябрь'},
-                dec: {label: 'Декабрь'},
-            },
-            items: [
-                { index: 'Петров', jan: '10 (50%)', feb: '10 (50%)' },
-                { index: 'Иванов', jan: '10 (50%)', feb: '10 (50%)' },
-            ]
+            tableData: '',
+            tableHeader: ''
+
         }),
         methods: {
             openmodal(){
@@ -136,6 +131,23 @@
             closeModal(){
                 this.$refs.modal.hide()
             }, 
+        },
+        mounted() {          
+            axios.get(`/api/report/projects/${this.projectId}/hours-spent`)
+                .then(response => {
+                    this.tableData = response.data.data;
+                    this.tableHeader = response.data.header 
+                    console.log(this.tableData);
+                    
+                    
+                })
+                .catch(e=>console.log(e))
         }
     }
 </script>
+
+<style>
+    .modal-open .modal {
+        overflow-x: auto;
+    }
+</style>
