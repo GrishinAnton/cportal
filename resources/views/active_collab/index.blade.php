@@ -11,13 +11,8 @@
         </div>
         <div class="box-header">
         </div>
-        <div class="box-body">
-            <a class="btn btn-primary" href="{{ route('web.activecollab.personal') }}" target="_blank">Персонал</a>
-            <a class="btn btn-primary" href="{{ route('web.activecollab.projects') }}" target="_blank">Проекты</a>
-            <a class="btn btn-primary" href="{{ route('web.activecollab.tasks') }}" target="_blank">Задачи</a>
-            <a class="btn btn-primary" href="{{ route('web.activecollab.time-records') }}" target="_blank">Затреканное время</a>
 
-            <a class="btn btn-primary" href="{{ route('web.activecollab.time-records.all') }}" target="_blank">Затреканное время (с отчисткой)</a>
-        </div>
+        <active-collab />
+        
     </div>
 @stop
