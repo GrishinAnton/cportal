@@ -82,7 +82,7 @@
                 {
                     icon: "fa fa-fw fa-file",
                     name: "ActiveCollab",
-                    href: 'activecollab',
+                    href: '/activecollab',
                     id: 5,
                 }
             ]

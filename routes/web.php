@@ -50,9 +50,13 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('api/report/costs', 'Api\Report\CostController@store')->name('api.report.costs.store');
     Route::post('api/report/costs/{costId}', 'Api\Report\CostController@update')->name('api.report.costs.update');
 
+    //Resource Report Productivity
     Route::get('api/report/productivity', 'Api\Report\ProductivityController@index')->name('api.report.productivity');
 
+    //Resource Report Summary
     Route::get('api/report/summary', 'Api\Report\SummaryController@index')->name('api.report.summary');
+
+    Route::get('api/report/projects/{id}/hours-spent', 'Api\Report\ProjectController@show')->name('api.report.projects.show');
 
     //----------------------------------------------------------------------------------------------------------------//
 
