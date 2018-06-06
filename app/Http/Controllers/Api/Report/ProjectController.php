@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api\Report;
 
+use App\Http\Resources\Report\Project\HourSpentHeaderResource;
+use App\Http\Resources\Report\Project\HourSpentResource;
 use App\Personal;
 use DB;
 use App\Http\Controllers\Controller;
@@ -19,8 +21,13 @@ class ProjectController extends Controller
 
         $dates = $this->datesArray($tasks->min, $tasks->max);
 
-        dd($this->queryProjects($dates, $projectId)->get());
+        $hourSpent = $this->queryProjects($dates, $projectId)->get();
 
+        return HourSpentResource::collection($hourSpent)
+            ->additional([
+                'header' => new HourSpentHeaderResource($hourSpent),
+                'success' => true,
+            ]);
     }
 
     /**
@@ -35,16 +42,12 @@ class ProjectController extends Controller
         $min = Carbon::parse($min);
         $max = Carbon::parse($max);
 
-        $dates['date1'] = $min->format('Y-n');
+        $dates[$min->format('F-Y')] = $min->format('Y-n');
         $date = $min->format('Y-n');
-
-        $i = 2;
 
         while ($max->format('Y-n') != $date) {
             $date = $min->modify('+1 month')->format('Y-n');
-            $dates['date' . $i] = $date;
-
-            $i++;
+            $dates[$min->format('F-Y')] = $date;
         }
 
         return $dates;
@@ -61,7 +64,7 @@ class ProjectController extends Controller
         $t3Select = '';
 
         foreach ($dates as $key => $date) {
-            $t3Select .= "sum({$key}) as {$key}, ";
+            $t3Select .= "sum(`{$key}`) as `{$key}`, ";
         }
 
         return $t3Select;
@@ -78,7 +81,7 @@ class ProjectController extends Controller
         $t2Select = '';
 
         foreach ($dates as $key => $date) {
-            $t2Select .= "IF(yearmonth = '{$date}', worktime, null) as {$key}, ";
+            $t2Select .= "IF(yearmonth = '{$date}', worktime, null) as `{$key}`, ";
         }
 
         return $t2Select;
