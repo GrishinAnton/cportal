@@ -102,7 +102,7 @@
                 <tr v-for="items in tableData" :key="`${items.info.first_name}${items.info.last_name}`">
                     <td>{{ items.info.id }}</td>
                     <td>{{ items.info.first_name }} {{ items.info.last_name }}</td>
-                    <td v-for="(mounth, index) in items.times" :key="index">{{ mounth ? mounth.toFixed(2) : '' }}</td>
+                    <td v-for="(mounth, index) in items.times" :key="index">{{ mounth ? mounth : '' }}</td>
                 </tr>
             </table>
             <div slot="modal-footer" class="w-100 d-flex justify-content-start">

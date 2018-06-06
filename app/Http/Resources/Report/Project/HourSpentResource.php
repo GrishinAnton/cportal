@@ -47,10 +47,14 @@ class HourSpentResource extends JsonResource
                 ->where('pers_id', $persId)
                 ->first();
 
-            $itemTime = $item ? $item : 1;
-            $workTime = $personalTime->worktime ? $personalTime->worktime : 1;
-
-            $procent = 100 / ($workTime / $itemTime);
+            $itemTime = $item;
+            $workTime = $personalTime->worktime;
+            
+            try {
+                $procent = 100 / ($workTime / $itemTime);
+            } catch (\Exception $e) {
+                $procent = 0;
+            }
 
             $times[] = ($item ?? 0) .' (' . round($procent) . '%)';
         }
