@@ -38,7 +38,7 @@
                     <tbody>
                         <tr>
                             <th>Часов потрачено</th>
-                            <td @click="openmodal()">100</td>
+                            <td @click="openmodal()">{{ allHoursSumm }}</td>
                         </tr>
                         <tr>
                             <th>Часов заложено</th>
@@ -120,7 +120,8 @@
         },
         data: () => ({
             tableData: '',
-            tableHeader: ''
+            tableHeader: '',
+            allHoursSumm: ''
 
         }),
         methods: {
@@ -130,17 +131,29 @@
             closeModal(){
                 this.$refs.modal.hide()
             }, 
+            allHours(){
+                console.log(this.tableData); 
+                this.allHoursSumm = _.sumBy(this.tableData, function(o) {
+                    var summ = 0
+                    for(let item of o.times){
+                        summ+= +item.split(' ')[0]
+                        
+                    } 
+                    return summ });        
+            }
         },
         mounted() {          
             axios.get(`/api/report/projects/${this.projectId}/hours-spent`)
                 .then(response => {
                     this.tableData = response.data.data;
                     this.tableHeader = response.data.header 
-                    console.log(response);
-                    
+
+                    this.allHours()                 
                     
                 })
                 .catch(e=>console.log(e))
+
+            
         }
     }
 </script>
