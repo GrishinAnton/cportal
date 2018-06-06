@@ -107,7 +107,6 @@
             </table>
             <div slot="modal-footer" class="w-100 d-flex justify-content-start">
                 <button type="button" class="btn btn-default pull-left" @click="closeModal()">Закрыть</button>
-                <!-- <button type="button" class="btn btn-primary">Сохранить</button> -->
             </div>
         </b-modal>
     </div> 
@@ -137,7 +136,7 @@
                 .then(response => {
                     this.tableData = response.data.data;
                     this.tableHeader = response.data.header 
-                    console.log(this.tableData);
+                    console.log(response);
                     
                     
                 })
