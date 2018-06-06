@@ -132,14 +132,13 @@
                 this.$refs.modal.hide()
             }, 
             allHours(){
-                console.log(this.tableData); 
                 this.allHoursSumm = _.sumBy(this.tableData, function(o) {
                     var summ = 0
                     for(let item of o.times){
                         summ+= +item.split(' ')[0]
-                        
                     } 
-                    return summ });        
+                    return summ
+                });        
             }
         },
         mounted() {          
