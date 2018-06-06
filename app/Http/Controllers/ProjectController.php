@@ -35,10 +35,9 @@ class ProjectController extends Controller
      * Show one project
      *
      * @param $id
-     * @param Request $request
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function show($id, Request $request)
+    public function show($id)
     {
        return view('projects.show', compact('id'));
     }

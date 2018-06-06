@@ -12,6 +12,12 @@ use Carbon\Carbon;
 
 class ProjectController extends Controller
 {
+    /**
+     * Show
+     *
+     * @param $projectId
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
     public function show($projectId)
     {
         $tasks = Task::selectRaw('min(personal_times.date) as min, max(personal_times.date) as max')
@@ -42,12 +48,12 @@ class ProjectController extends Controller
         $min = Carbon::parse($min);
         $max = Carbon::parse($max);
 
-        $dates[$min->format('F-Y')] = $min->format('Y-n');
+        $dates[$min->format('Y-n')] = $min->format('Y-n');
         $date = $min->format('Y-n');
 
         while ($max->format('Y-n') != $date) {
             $date = $min->modify('+1 month')->format('Y-n');
-            $dates[$min->format('F-Y')] = $date;
+            $dates[$min->format('Y-n')] = $date;
         }
 
         return $dates;
@@ -96,7 +102,7 @@ class ProjectController extends Controller
     private function getGeneralSelect($dates)
     {
         $generalSelect = [
-            'personal.id',
+            'personal.pers_id',
             'personal.first_name',
             'personal.last_name',
         ];
@@ -118,29 +124,29 @@ class ProjectController extends Controller
     private function queryProjects($dates, $projectId)
     {
         $personal = Personal::select($this->getGeneralSelect($dates))
-        ->rightJoin(DB::raw("(
-            SELECT "
-            . $this->getT3Select($dates) .
-                "pers_id
-            FROM (
+            ->rightJoin(DB::raw("(
                 SELECT "
-                . $this->getT2Select($dates) .
-                    "pers_id,
-                    task_id
+                . $this->getT3Select($dates) .
+                    "pers_id
                 FROM (
-                    SELECT
-                        CONCAT(YEAR(date), '-', MONTH(date)) as yearmonth,
-                        pers_id,
-                        worktime,
+                    SELECT "
+                    . $this->getT2Select($dates) .
+                        "pers_id,
                         task_id
-                    FROM personal_times
-                    WHERE task_id IN (
-                        SELECT task_id FROM tasks WHERE project_id = {$projectId}
-                    ) 
-                ) as t2
-            ) as t3
-            GROUP BY t3.pers_id
-        ) as t4"), 't4.pers_id', '=', 'personal.pers_id');
+                    FROM (
+                        SELECT
+                            CONCAT(YEAR(date), '-', MONTH(date)) as yearmonth,
+                            pers_id,
+                            worktime,
+                            task_id
+                        FROM personal_times
+                        WHERE task_id IN (
+                            SELECT task_id FROM tasks WHERE project_id = {$projectId}
+                        ) 
+                    ) as t2
+                ) as t3
+                GROUP BY t3.pers_id
+            ) as t4"), 't4.pers_id', '=', 'personal.pers_id');
 
         return $personal;
     }
