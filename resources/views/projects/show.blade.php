@@ -7,5 +7,5 @@
 @stop
 
 @section('content')
-    <project-show></project-show>
+    <project-show project-id="{{ $id }}"></project-show>
 @stop

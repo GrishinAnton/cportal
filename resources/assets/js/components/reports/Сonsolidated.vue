@@ -37,7 +37,7 @@
                 <tbody v-for="(personal, index) in personalInformation" :key="index">
                 <tr class="text-center">
                     <td>{{ ++index }}</td>
-                    <td>
+                    <td class="text-left">
                         <a :href="personal.url" target="_blank">{{ personal.first_name }} {{ personal.last_name }}</a>
                     </td>
                     <td @click="profileUser(personal.url, '01')">{{ personal.salary.january }}</td>
