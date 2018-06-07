@@ -102,7 +102,7 @@
                 <tr v-for="items in tableData" :key="`${items.info.first_name}${items.info.last_name}`">
                     <td>{{ items.info.id }}</td>
                     <td>{{ items.info.first_name }} {{ items.info.last_name }}</td>
-                    <td v-for="(mounth, index) in items.times" :key="index">{{ mounth ? mounth : '' }}</td>
+                    <td v-for="(mounth, index) in items.times" :class="tableColor(mounth)" :key="index">{{ mounth ? mounth : '' }}</td>
                 </tr>
             </table>
             <div slot="modal-footer" class="w-100 d-flex justify-content-start">
@@ -124,7 +124,7 @@
             allHoursSumm: ''
 
         }),
-        methods: {
+          methods: {
             openmodal(){
                 this.$refs.modal.show()
             },
@@ -132,6 +132,7 @@
                 this.$refs.modal.hide()
             }, 
             allHours(){
+                
                 this.allHoursSumm = _.sumBy(this.tableData, function(o) {
                     var summ = 0
                     for(let item of o.times){
@@ -139,6 +140,17 @@
                     } 
                     return summ
                 });        
+            },
+            tableColor(data){
+                var str = +data.split(' ')[1].slice(1, -2);
+                
+                if(str >= 70){
+                    return 'table-success'
+                }
+
+                if(str >= 30 && str < 70){
+                    return 'table-warning'
+                }        
             }
         },
         mounted() {          
