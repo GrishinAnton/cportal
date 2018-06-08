@@ -38,6 +38,8 @@ class ProjectRepository extends Repository
     {
         $this->projectId = $projectId;
 
+        $this->dates = $this->dates();
+
         return $this;
     }
 
@@ -46,7 +48,7 @@ class ProjectRepository extends Repository
      *
      * @return $this
      */
-    public function dates()
+    private function dates()
     {
         $betweenDate = $this->betweenDate();
 
@@ -61,9 +63,7 @@ class ProjectRepository extends Repository
             $dates[$min->format('Y-n')] = $date;
         }
 
-        $this->dates = $dates;
-
-        return $this;
+        return $dates;
     }
 
     /**

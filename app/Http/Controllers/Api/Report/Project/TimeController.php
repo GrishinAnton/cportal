@@ -32,8 +32,8 @@ class TimeController extends Controller
     {
         $hourSpent = $this->timeRepository
             ->project($projectId)
-            ->dates()
-            ->getTimes();
+            ->query()
+            ->get();
 
         return HourSpentResource::collection($hourSpent)
             ->additional([

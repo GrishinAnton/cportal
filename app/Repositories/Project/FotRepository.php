@@ -8,21 +8,11 @@ use DB;
 class FotRepository extends ProjectRepository
 {
     /**
-     * Get Fot
-     *
-     * @return mixed
-     */
-    public function getFot()
-    {
-        return $this->query()->get();
-    }
-
-    /**
      * Query
      *
      * @return mixed
      */
-    private function query()
+    public function query()
     {
         $personal = Personal::select($this->getFotSelect())
             ->rightJoin(DB::raw("(

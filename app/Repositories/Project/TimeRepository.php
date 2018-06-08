@@ -8,32 +8,11 @@ use DB;
 class TimeRepository extends ProjectRepository
 {
     /**
-     * Get times
-     *
-     * @return mixed
-     */
-    public function getTimes()
-    {
-        return $this->query()->get();
-    }
-
-    /**
-     * Paginate Times
-     *
-     * @param int $quantity
-     * @return mixed
-     */
-    public function paginateTimes($quantity = 15)
-    {
-        return $this->query()->paginate($quantity);
-    }
-
-    /**
      * Query
      *
      * @return mixed
      */
-    private function query()
+    public function query()
     {
         $personal = Personal::select($this->getTimeSelect())
             ->rightJoin(DB::raw("(

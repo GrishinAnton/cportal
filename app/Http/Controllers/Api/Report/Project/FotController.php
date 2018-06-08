@@ -31,7 +31,7 @@ class FotController extends Controller
      */
     public function show($projectId)
     {
-        $fot = $this->fotRepository->project($projectId)->dates()->getFot();
+        $fot = $this->fotRepository->project($projectId)->query()->get();
 
         return FotResource::collection($fot)
             ->additional([
