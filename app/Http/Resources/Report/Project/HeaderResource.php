@@ -4,7 +4,7 @@ namespace App\Http\Resources\Report\Project;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class HourSpentHeaderResource extends JsonResource
+class HeaderResource extends JsonResource
 {
     /**
      * Date month

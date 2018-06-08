@@ -56,7 +56,8 @@ Route::group(['middleware' => 'auth'], function () {
     //Resource Report Summary
     Route::get('api/report/summary', 'Api\Report\SummaryController@index')->name('api.report.summary');
 
-    Route::get('api/report/projects/{id}/hours-spent', 'Api\Report\ProjectController@show')->name('api.report.projects.show');
+    Route::get('api/report/projects/{id}/hours-spent', 'Api\Report\Project\TimeController@show')->name('api.report.projects.show');
+    Route::get('api/report/projects/{id}/fot', 'Api\Report\Project\FotController@show')->name('api.report.projects.show');
 
     //----------------------------------------------------------------------------------------------------------------//
 

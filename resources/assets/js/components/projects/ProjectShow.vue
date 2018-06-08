@@ -134,7 +134,8 @@
             allHours(){
                 
                 this.allHoursSumm = _.sumBy(this.tableData, function(o) {
-                    var summ = 0
+                    var summ = 0;
+
                     for(let item of o.times){
                         summ+= Number(item.split(' ')[0]);
                     } 
