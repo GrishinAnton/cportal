@@ -126,30 +126,31 @@
         }),
           methods: {
             openmodal(){
-                this.$refs.modal.show()
+                this.$refs.modal.show();
             },
             closeModal(){
-                this.$refs.modal.hide()
+                this.$refs.modal.hide();
             }, 
             allHours(){
                 
                 this.allHoursSumm = _.sumBy(this.tableData, function(o) {
-                    var summ = 0
+                    var summ = 0;
+
                     for(let item of o.times){
-                        summ+= +item.split(' ')[0]
+                        summ+= Number(item.split(' ')[0]);
                     } 
-                    return summ
+                    return summ;
                 });        
             },
-            tableColor(data){
-                var str = +data.split(' ')[1].slice(1, -2);
+            tableColor(str){
+                var number = Number(str.split(' ')[1].slice(1, -2));
                 
-                if(str >= 70){
-                    return 'table-success'
+                if(number >= 70){
+                    return 'table-success';
                 }
 
-                if(str >= 30 && str < 70){
-                    return 'table-warning'
+                if(number >= 30 && number < 70){
+                    return 'table-warning';
                 }        
             }
         },
@@ -157,9 +158,9 @@
             axios.get(`/api/report/projects/${this.projectId}/hours-spent`)
                 .then(response => {
                     this.tableData = response.data.data;
-                    this.tableHeader = response.data.header 
+                    this.tableHeader = response.data.header;
 
-                    this.allHours()                 
+                    this.allHours();
                     
                 })
                 .catch(e=>console.log(e))

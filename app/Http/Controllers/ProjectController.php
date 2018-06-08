@@ -22,7 +22,7 @@ class ProjectController extends Controller
 
         $projects = Project::with(['costs' => function ($query) use ($year, $month) {
             $query->whereMonth('date', $month)
-            ->whereYear('date', $year);
+                ->whereYear('date', $year);
         }])->with('fullInfoCosts')
             ->paginate(25);
 
