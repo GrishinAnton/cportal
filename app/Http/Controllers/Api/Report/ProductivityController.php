@@ -113,3 +113,73 @@ class ProductivityController extends Controller
         return Carbon::now()->modify($modify)->endOfWeek()->format('Y-m-d');
     }
 }
+
+
+
+select 
+    `personal`.`pers_id`,
+    `personal`.`first_name`,
+    `personal`.`last_name`,
+    `2018-2`,
+    `2018-3`,
+    `2018-4`,
+    `2018-5`,
+    `2018-6` 
+from `personal` 
+right join (
+    SELECT 
+    	sum(`2018-2`) as `2018-2`,
+    	sum(`2018-3`) as `2018-3`,
+    	sum(`2018-4`) as `2018-4`,
+    	sum(`2018-5`) as `2018-5`,
+    	sum(`2018-6`) as `2018-6`,
+    	pers_id
+    FROM (
+        SELECT
+        	IF(yearmonth = '2018-2', worktime, null) as `2018-2`,
+        	IF(yearmonth = '2018-3', worktime, null) as `2018-3`,
+        	IF(yearmonth = '2018-4', worktime, null) as `2018-4`,
+        	IF(yearmonth = '2018-5', worktime, null) as `2018-5`,
+        	IF(yearmonth = '2018-6', worktime, null) as `2018-6`,
+        	pers_id,
+            task_id
+        FROM (
+            SELECT
+            	CONCAT(YEAR(date), '-', MONTH(date)) as yearmonth,
+            	pers_id,
+            	worktime,
+            	task_id
+            FROM personal_times
+                WHERE task_id IN (
+                    SELECT task_id FROM tasks WHERE project_id = 51
+                )
+        	) as t2
+    	) as t3
+    GROUP BY t3.pers_id
+) as t4 on `t4`.`pers_id` = `personal`.`pers_id`
+right join (
+    SELECT 
+        sum(`2018-2`) as `z-2018-2`,
+        sum(`2018-3`) as `z-2018-3`,
+        sum(`2018-4`) as `z-2018-4`,
+        sum(`2018-5`) as `z-2018-5`,
+        sum(`2018-6`) as `z-2018-6`,
+        pers_id
+    FROM (
+        SELECT
+        	IF(yearmonth = '2018-2', worktime, null) as `z-2018-2`,
+        	IF(yearmonth = '2018-3', worktime, null) as `z-2018-3`,
+        	IF(yearmonth = '2018-4', worktime, null) as `z-2018-4`,
+        	IF(yearmonth = '2018-5', worktime, null) as `z-2018-5`,
+        	IF(yearmonth = '2018-6', worktime, null) as `z-2018-6`,
+        	pers_id
+        FROM (
+                SELECT
+                    CONCAT(YEAR(date), '-', MONTH(date)) as yearmonth,
+                    pers_id,
+                    salary
+                FROM salaries
+        	) as t2
+    	) as t3
+    GROUP BY t3.pers_id
+) as t5 on `t5`.`pers_id` = `personal`.`pers_id`      

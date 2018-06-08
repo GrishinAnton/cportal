@@ -133,11 +133,13 @@
             }, 
             allHours(){
                 this.allHoursSumm = _.sumBy(this.tableData, function(o) {
-                    var summ = 0
+                    var summ = 0;
+
                     for(let item of o.times){
-                        summ+= +item.split(' ')[0]
-                    } 
-                    return summ
+                        summ+= +item.split(' ')[0];
+                    }
+
+                    return summ;
                 });        
             }
         },
@@ -145,9 +147,9 @@
             axios.get(`/api/report/projects/${this.projectId}/hours-spent`)
                 .then(response => {
                     this.tableData = response.data.data;
-                    this.tableHeader = response.data.header 
+                    this.tableHeader = response.data.header;
 
-                    this.allHours()                 
+                    this.allHours();
                     
                 })
                 .catch(e=>console.log(e))
