@@ -34,40 +34,35 @@ export const personalFilter = {
                     company: this.activeCompanies
                 }
             })
-                .then(response => {
+            .then(response => {
 
-                    this.activeGroups.length ? localStorage.setItem('activeGroup', this.activeGroups) : localStorage.removeItem('activeGroup');
+                this.activeGroups.length ? localStorage.setItem('activeGroup', this.activeGroups) : localStorage.removeItem('activeGroup');
 
-                    this.activeCompanies.length ? localStorage.setItem('activeCompanies', this.activeCompanies) : localStorage.removeItem('activeCompanies');
-
-                    if (this.sortTableData){
-                        this.sortTableData(response.data.data);
-                    } else {
-                        this.personalInformation = response.data.data;
-                        console.log(this.personalInformation);
-                        
-                    }
-                    //pagination
-                    this.paginationDataChange(response.data);
-
-                })
-                .catch(e => console.log(e));
+                this.activeCompanies.length ? localStorage.setItem('activeCompanies', this.activeCompanies) : localStorage.removeItem('activeCompanies');
+                
+                this.refreshTableData(response);
+            })
+            .catch(e => console.log(e));
 
         },
+        refreshTableData(response) {
+
+            if (this.sortTableData) {
+                this.sortTableData(response.data.data);
+            } else {
+                this.personalInformation = response.data.data;
+            }
+
+            //pagination
+            this.paginationDataChange(response.data);
+        }
     },
     mounted() {
         if (!localStorage.length) {
 
             axios.get(this.requestUrl)
                 .then(response => {
-                    if (this.sortTableData) {
-                        this.sortTableData(response.data.data);
-                    } else {
-                        this.personalInformation = response.data.data;
-                    }
-
-                    //pagination
-                    this.paginationDataChange(response.data);
+                    this.refreshTableData(response);
                 })
                 .catch(e => console.log(e));
         } else {
