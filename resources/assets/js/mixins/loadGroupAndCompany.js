@@ -1,4 +1,4 @@
-export const personalMixin = {
+export const loadGroupAndCompany = {
     data: () => ({
         load: {
             groups: [],
@@ -11,16 +11,12 @@ export const personalMixin = {
             .then(response => {
                 this.load.groups = response.data.data;                       
             })
-            .catch(e => {
-                console.log(e)
-            });
+            .catch(e => console.log(e));
 
         axios.get('/api/personal/companies')
             .then(response => {
                 this.load.companies = response.data.data;
             })
-            .catch(e => {
-                console.log(e)
-            });        
+            .catch(e => console.log(e));        
     }
 }
