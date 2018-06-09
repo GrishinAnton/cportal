@@ -157,10 +157,10 @@
                         summ+= Number(item.split(' ')[0]);
                     } 
                     return summ;
-                });        
+                }).toFixed(2);        
             },
             allFot(){
-                
+
                 this.allForSumm = _.sumBy(this.tableFotData, function(o) {           
                     var summ = 0;
 
