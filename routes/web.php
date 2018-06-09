@@ -58,6 +58,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('api/report/projects/{id}/hours-spent', 'Api\Report\Project\TimeController@show')->name('api.report.projects.show');
     Route::get('api/report/projects/{id}/fot', 'Api\Report\Project\FotController@show')->name('api.report.projects.show');
+    Route::get('api/report/projects/{id}/costs', 'Api\Report\Project\CostController@show')->name('api.report.costs.show');
 
     //----------------------------------------------------------------------------------------------------------------//
 
