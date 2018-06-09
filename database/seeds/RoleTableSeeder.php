@@ -16,7 +16,7 @@ class RoleTableSeeder extends Seeder
             $role = Role::select('id')->where('name', $param['name'])->first();
 
             if ($role) {
-                Role::where('name', $param['name'])->update($param);
+                $role->update($param);
             } else {
                 Role::create($param);
             }
