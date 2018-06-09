@@ -165,6 +165,14 @@
                 })
                 .catch(e=>console.log(e))
 
+            axios.get(`/api/report/projects/${this.projectId}/fot`)
+                .then(response => {
+                    console.log(response);
+                    
+                    
+                })
+                .catch(e=>console.log(e))
+
             
         }
     }
