@@ -7,7 +7,12 @@ use DB;
 
 class CostRepository extends ProjectRepository
 {
-    public function costs()
+    /**
+     * Query costs
+     *
+     * @return mixed
+     */
+    public function query()
     {
         $personal = Personal::select($this->getFotSelect())
             ->rightJoin(DB::raw("(
@@ -53,23 +58,20 @@ class CostRepository extends ProjectRepository
                 ) as t3
                 GROUP BY t3.pers_id
             ) as t5"), 't5.pers_id', '=', 'personal.pers_id')
-            ->leftJoin(DB::raw("(
+            ->join(DB::raw("(
                 SELECT "
-                . $this->getT3Select('s') .
-                "personal.pers_id
-                FROM (
+                .  substr($this->getT3Select('s'), 0, -2) .
+                " FROM (
                     SELECT "
-                . $this->getT2Select('s', 'cost') .
-                "pers_id
-                    FROM (
+                . substr($this->getT2Select('s', 'cost') , 0, -2) .
+                " FROM (
                         SELECT
             	            CONCAT(YEAR(date), '-', MONTH(date)) as yearmonth,
             	            cost
                         FROM costs
                     ) as t2
                 ) as t3
-	            GROUP BY pers_id
-            ) as t6"), 't6.pers_id', '=', 'personal.pers_id');
+            ) as t6"), 'personal.pers_id', '=', 'personal.pers_id');
 
         return $personal;
     }
