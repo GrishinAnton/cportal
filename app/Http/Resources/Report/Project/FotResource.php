@@ -15,9 +15,10 @@ class FotResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'pers_id' => $this->resource->pers_id,
+            'id' => $this->resource->pers_id,
             'first_name' => $this->resource->first_name,
             'last_name' => $this->resource->last_name,
+            'url' => route('web.personal.show', ['id' => $this->pers_id]),
             'salaries' => collect($this->resource)->except(['first_name', 'last_name', 'pers_id']),
         ];
     }

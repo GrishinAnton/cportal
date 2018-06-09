@@ -99,9 +99,9 @@
         <b-modal ref="modalHour" title="Потрачено" size="lg">
             <table class="table table-striped table-hover">
                 <th v-for="item in tableHeader" :key="item">{{ item }}</th>
-                <tr v-for="items in tableHoursData" :key="`${items.info.first_name}${items.info.last_name}`">
-                    <td>{{ items.info.id }}</td>
-                    <td>{{ items.info.first_name }} {{ items.info.last_name }}</td>
+                <tr v-for="items in tableHoursData" :key="`${items.first_name}${items.last_name}`">
+                    <td>{{ items.id }}</td>
+                    <td><a :href="items.url">{{ items.first_name }} {{ items.last_name }}</a></td>
                     <td v-for="(mounth, index) in items.times" :class="tableColor(mounth)" :key="index">{{ mounth ? mounth : '' }}</td>
                 </tr>
             </table>
@@ -114,8 +114,8 @@
             <table class="table table-striped table-hover">
                 <th v-for="item in tableHeader" :key="item">{{ item }}</th>
                 <tr v-for="items in tableFotData" :key="`${items.first_name}${items.last_name}`">
-                    <td>{{ items.pers_id }}</td>
-                    <td>{{ items.first_name }} {{ items.last_name }}</td>
+                    <td>{{ items.id }}</td>
+                    <td><a :href="items.url">{{ items.first_name }} {{ items.last_name }}</a></td>
                     <td v-for="(mounth, index) in items.salaries" :key="index">{{ mounth ? mounth.toFixed(0) : '' }}</td>
                 </tr>
             </table>
@@ -128,8 +128,8 @@
             <table class="table table-striped table-hover">
                 <th v-for="item in tableHeader" :key="item">{{ item }}</th>
                 <tr v-for="items in tableCostsData" :key="`${items.first_name}${items.last_name}`">
-                    <td>{{ items.pers_id }}</td>
-                    <td>{{ items.first_name }} {{ items.last_name }}</td>
+                    <td>{{ items.id }}</td>
+                    <td><a :href="items.url">{{ items.first_name }} {{ items.last_name }}</a></td>
                     <td v-for="(mounth, index) in items.costs" :key="index">{{ mounth ? mounth.toFixed(0) : '' }}</td>
                 </tr>
             </table>
