@@ -38,7 +38,7 @@
                     <tbody>
                         <tr>
                             <th>Часов потрачено</th>
-                            <td @click="openmodal()">{{ allHoursSumm }}</td>
+                            <td @click="openmodal('modalHour')">{{ allHoursSumm }}</td>
                         </tr>
                         <tr>
                             <th>Часов заложено</th>
@@ -86,7 +86,7 @@
                     <tbody>
                         <tr>
                             <th>ФОТ:</th>
-                            <td>50000</td>
+                            <td @click="openmodal('modalFot')">{{ allForSumm }}</td>
                         </tr>
                         <tr>
                             <th>Издержки:</th>
@@ -96,17 +96,32 @@
                 </table>
             </div>
         </div>
-        <b-modal ref="modal" title="Потрачено" size="lg">
+
+        <b-modal ref="modalHour" title="Потрачено" size="lg">
             <table class="table table-striped table-hover">
                 <th v-for="item in tableHeader" :key="item">{{ item }}</th>
-                <tr v-for="items in tableData" :key="`${items.info.first_name}${items.info.last_name}`">
+                <tr v-for="items in tableHoursData" :key="`${items.info.first_name}${items.info.last_name}`">
                     <td>{{ items.info.id }}</td>
                     <td>{{ items.info.first_name }} {{ items.info.last_name }}</td>
                     <td v-for="(mounth, index) in items.times" :class="tableColor(mounth)" :key="index">{{ mounth ? mounth : '' }}</td>
                 </tr>
             </table>
             <div slot="modal-footer" class="w-100 d-flex justify-content-start">
-                <button type="button" class="btn btn-default pull-left" @click="closeModal()">Закрыть</button>
+                <button type="button" class="btn btn-default pull-left" @click="closeModal('modalHour')">Закрыть</button>
+            </div>
+        </b-modal>
+
+        <b-modal ref="modalFot" title="Потрачено" size="lg">
+            <table class="table table-striped table-hover">
+                <th v-for="item in tableHeader" :key="item">{{ item }}</th>
+                <tr v-for="items in tableFotData" :key="`${items.first_name}${items.last_name}`">
+                    <td>{{ items.pers_id }}</td>
+                    <td>{{ items.first_name }} {{ items.last_name }}</td>
+                    <td v-for="(mounth, index) in items.salaries" :key="index">{{ mounth ? mounth.toFixed(0) : '' }}</td>
+                </tr>
+            </table>
+            <div slot="modal-footer" class="w-100 d-flex justify-content-start">
+                <button type="button" class="btn btn-default pull-left" @click="closeModal('modalFot')">Закрыть</button>
             </div>
         </b-modal>
     </div> 
@@ -119,21 +134,23 @@
             projectId: String
         },
         data: () => ({
-            tableData: '',
+            tableHoursData: '',
+            tableFotData: '',
             tableHeader: '',
-            allHoursSumm: ''
+            allHoursSumm: '',
+            allForSumm: ''
 
         }),
           methods: {
-            openmodal(){
-                this.$refs.modal.show();
+            openmodal(e){ 
+                this.$refs[e].show();
             },
-            closeModal(){
-                this.$refs.modal.hide();
+            closeModal(e){
+                this.$refs[e].hide();
             }, 
             allHours(){
                 
-                this.allHoursSumm = _.sumBy(this.tableData, function(o) {
+                this.allHoursSumm = _.sumBy(this.tableHoursData, function(o) {
                     var summ = 0;
 
                     for(let item of o.times){
@@ -141,6 +158,18 @@
                     } 
                     return summ;
                 });        
+            },
+            allFot(){
+                
+                this.allForSumm = _.sumBy(this.tableFotData, function(o) {           
+                    var summ = 0;
+
+                    for(let item in o.salaries){
+                        summ+= o.salaries[item];
+                    } 
+                    return summ;
+                }).toFixed(0);
+                  
             },
             tableColor(str){
                 var number = Number(str.split(' ')[1].slice(1, -2));
@@ -157,7 +186,7 @@
         mounted() {          
             axios.get(`/api/report/projects/${this.projectId}/hours-spent`)
                 .then(response => {
-                    this.tableData = response.data.data;
+                    this.tableHoursData = response.data.data;
                     this.tableHeader = response.data.header;
 
                     this.allHours();
@@ -167,9 +196,10 @@
 
             axios.get(`/api/report/projects/${this.projectId}/fot`)
                 .then(response => {
-                    console.log(response);
-                    
-                    
+                    this.tableFotData = response.data.data;
+                    this.tableHeader = response.data.header;    
+
+                    this.allFot()           
                 })
                 .catch(e=>console.log(e))
 
