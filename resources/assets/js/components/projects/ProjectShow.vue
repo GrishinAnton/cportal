@@ -38,7 +38,7 @@
                     <tbody>
                         <tr>
                             <th>Часов потрачено</th>
-                            <td @click="openmodal()">{{ allHoursSumm }}</td>
+                            <td @click="openmodal('modalHour')">{{ allHoursSumm }}</td>
                         </tr>
                         <tr>
                             <th>Часов заложено</th>
@@ -65,13 +65,12 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>100 000,00 ₽</td>
-                            <td>40 000,00 ₽</td>
-                            <td>60 000,00 ₽</td>
+                            <td>{{ budget + ' ₽' }}</td>
+                            <td>{{ costsFotSumm + ' ₽' }}</td>
+                            <td>{{ balanceFn + ' ₽' }}</td>
                             <td>60 000,00 ₽</td>
                             <td>4</td>
                         </tr>
-
                     </tbody>
                 </table>
             </div>       
@@ -86,27 +85,56 @@
                     <tbody>
                         <tr>
                             <th>ФОТ:</th>
-                            <td>50000</td>
+                            <td @click="openmodal('modalFot')">{{ allForSumm }}</td>
                         </tr>
                         <tr>
                             <th>Издержки:</th>
-                            <td>0</td>
+                            <td @click="openmodal('modalCosts')">{{  allCostsSumm }}</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
-        <b-modal ref="modal" title="Потрачено" size="lg">
+
+        <b-modal ref="modalHour" title="Потрачено" size="lg">
             <table class="table table-striped table-hover">
                 <th v-for="item in tableHeader" :key="item">{{ item }}</th>
-                <tr v-for="items in tableData" :key="`${items.info.first_name}${items.info.last_name}`">
-                    <td>{{ items.info.id }}</td>
-                    <td>{{ items.info.first_name }} {{ items.info.last_name }}</td>
+                <tr v-for="items in tableHoursData" :key="`${items.first_name}${items.last_name}`">
+                    <td>{{ items.id }}</td>
+                    <td><a :href="items.url">{{ items.first_name }} {{ items.last_name }}</a></td>
                     <td v-for="(mounth, index) in items.times" :class="tableColor(mounth)" :key="index">{{ mounth ? mounth : '' }}</td>
                 </tr>
             </table>
             <div slot="modal-footer" class="w-100 d-flex justify-content-start">
-                <button type="button" class="btn btn-default pull-left" @click="closeModal()">Закрыть</button>
+                <button type="button" class="btn btn-default pull-left" @click="closeModal('modalHour')">Закрыть</button>
+            </div>
+        </b-modal>
+
+        <b-modal ref="modalFot" title="Потрачено" size="lg">
+            <table class="table table-striped table-hover">
+                <th v-for="item in tableHeader" :key="item">{{ item }}</th>
+                <tr v-for="items in tableFotData" :key="`${items.first_name}${items.last_name}`">
+                    <td>{{ items.id }}</td>
+                    <td><a :href="items.url">{{ items.first_name }} {{ items.last_name }}</a></td>
+                    <td v-for="(mounth, index) in items.salaries" :key="index">{{ mounth ? mounth.toFixed(0) : '' }}</td>
+                </tr>
+            </table>
+            <div slot="modal-footer" class="w-100 d-flex justify-content-start">
+                <button type="button" class="btn btn-default pull-left" @click="closeModal('modalFot')">Закрыть</button>
+            </div>
+        </b-modal>
+
+         <b-modal ref="modalCosts" title="Потрачено" size="lg">
+            <table class="table table-striped table-hover">
+                <th v-for="item in tableHeader" :key="item">{{ item }}</th>
+                <tr v-for="items in tableCostsData" :key="`${items.first_name}${items.last_name}`">
+                    <td>{{ items.id }}</td>
+                    <td><a :href="items.url">{{ items.first_name }} {{ items.last_name }}</a></td>
+                    <td v-for="(mounth, index) in items.costs" :key="index">{{ mounth ? mounth.toFixed(0) : '' }}</td>
+                </tr>
+            </table>
+            <div slot="modal-footer" class="w-100 d-flex justify-content-start">
+                <button type="button" class="btn btn-default pull-left" @click="closeModal('modalCosts')">Закрыть</button>
             </div>
         </b-modal>
     </div> 
@@ -119,28 +147,59 @@
             projectId: String
         },
         data: () => ({
-            tableData: '',
+            tableHoursData: '',
+            tableFotData: '',
+            tableCostsData: '',
             tableHeader: '',
-            allHoursSumm: ''
+            allHoursSumm: '',
+            allForSumm: '',
+            allCostsSumm: '',
+            costsSumm: '',
+            budget: '100000',
+            balance: ''
 
         }),
-          methods: {
-            openmodal(){
-                this.$refs.modal.show();
+        computed: {
+            costsFotSumm() {
+                this.costsSumm = Number(this.allForSumm) + Number(this.allCostsSumm);
+                return  this.costsSumm;
             },
-            closeModal(){
-                this.$refs.modal.hide();
+            balanceFn() {
+                this.balance = Number(this.budget) - Number(this.costsSumm);
+                return  this.balance;
+            }
+        },
+          methods: {
+            openmodal(e){ 
+                this.$refs[e].show();
+            },
+            closeModal(e){
+                this.$refs[e].hide();
             }, 
             allHours(){
                 
-                this.allHoursSumm = _.sumBy(this.tableData, function(o) {
+                this.allHoursSumm = _.sumBy(this.tableHoursData, function(o) {
                     var summ = 0;
 
                     for(let item of o.times){
                         summ+= Number(item.split(' ')[0]);
                     } 
                     return summ;
-                });        
+                }).toFixed(2);        
+            },
+            allWriteOff(data, requestData){
+                var data = data === 'fot' ? 'allForSumm' : 'allCostsSumm';             
+
+                this[data] = _.sumBy(requestData, function(o) {           
+                    var summ = 0;
+                    var obj = o.salaries || o.costs;
+
+                    for(let item in obj ){
+                        summ+= obj[item];
+                    };
+
+                    return summ;
+                }).toFixed(0);                  
             },
             tableColor(str){
                 var number = Number(str.split(' ')[1].slice(1, -2));
@@ -152,16 +211,35 @@
                 if(number >= 30 && number < 70){
                     return 'table-warning';
                 }        
-            }
+            }       
         },
         mounted() {          
             axios.get(`/api/report/projects/${this.projectId}/hours-spent`)
                 .then(response => {
-                    this.tableData = response.data.data;
+                    this.tableHoursData = response.data.data;
                     this.tableHeader = response.data.header;
 
                     this.allHours();
                     
+                })
+                .catch(e=>console.log(e))
+
+            axios.get(`/api/report/projects/${this.projectId}/fot`)
+                .then(response => {
+                    this.tableFotData = response.data.data;
+                    this.tableHeader = response.data.header;    
+
+                    this.allWriteOff('fot', response.data.data)           
+                })
+                .catch(e=>console.log(e))
+
+            axios.get(`/api/report/projects/${this.projectId}/costs`)
+                .then(response => {
+                    this.tableCostsData = response.data.data;
+                    this.tableHeader = response.data.header;    
+
+                    this.allWriteOff('costs', response.data.data ) 
+                            
                 })
                 .catch(e=>console.log(e))
 

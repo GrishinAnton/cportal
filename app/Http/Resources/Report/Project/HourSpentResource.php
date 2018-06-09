@@ -26,25 +26,13 @@ class HourSpentResource extends JsonResource
      */
     public function toArray($request)
     {
-        $info = [
-            'id' => $this->resource->pers_id,
-            'first_name' => $this->resource->first_name,
-            'last_name' => $this->resource->last_name,
-        ];
-
-        $persId = $this->resource->pers_id;
-
-        unset($this->resource->pers_id);
-        unset($this->resource->first_name);
-        unset($this->resource->last_name);
-
-        foreach ($this->resource->getAttributes() as $key => $item) {
+        foreach (collect($this->resource)->except(['first_name', 'last_name', 'pers_id']) as $key => $item) {
             $explode = explode('-', $key);
 
             $personalTime = PersonalTime::selectRaw('sum(worktime) as worktime')
                 ->whereYear('date', $explode[static::DATE_YEAR])
                 ->whereMonth('date', $explode[static::DATE_MONTH])
-                ->where('pers_id', $persId)
+                ->where('pers_id', $this->resource->pers_id)
                 ->first();
 
             $itemTime = $item;
@@ -60,7 +48,10 @@ class HourSpentResource extends JsonResource
         }
 
         return [
-            'info' => $info,
+            'id' => $this->resource->pers_id,
+            'first_name' => $this->resource->first_name,
+            'last_name' => $this->resource->last_name,
+            'url' => route('web.personal.show', ['id' => $this->pers_id]),
             'times' => $times,
         ];
     }

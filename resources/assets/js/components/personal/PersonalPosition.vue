@@ -41,10 +41,10 @@
 
 </template>
 <script>
-    import { personalMixin } from './../../mixins/loadGroupAndCompany';
+    import { loadGroupAndCompany } from './../../mixins/loadGroupAndCompany';
 
     export default {
-        mixins: [personalMixin],
+        mixins: [loadGroupAndCompany],
         props: {
             personalId: {
                 type: Number
