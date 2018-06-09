@@ -65,13 +65,12 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>100 000,00 ₽</td>
-                            <td>40 000,00 ₽</td>
-                            <td>60 000,00 ₽</td>
+                            <td>{{ budget + ' ₽' }}</td>
+                            <td>{{ costsFotSumm + ' ₽' }}</td>
+                            <td>{{ balanceFn + ' ₽' }}</td>
                             <td>60 000,00 ₽</td>
                             <td>4</td>
                         </tr>
-
                     </tbody>
                 </table>
             </div>       
@@ -90,7 +89,7 @@
                         </tr>
                         <tr>
                             <th>Издержки:</th>
-                            <td>0</td>
+                            <td @click="openmodal('modalCosts')">{{  allCostsSumm }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -124,6 +123,20 @@
                 <button type="button" class="btn btn-default pull-left" @click="closeModal('modalFot')">Закрыть</button>
             </div>
         </b-modal>
+
+         <b-modal ref="modalCosts" title="Потрачено" size="lg">
+            <table class="table table-striped table-hover">
+                <th v-for="item in tableHeader" :key="item">{{ item }}</th>
+                <tr v-for="items in tableCostsData" :key="`${items.first_name}${items.last_name}`">
+                    <td>{{ items.pers_id }}</td>
+                    <td>{{ items.first_name }} {{ items.last_name }}</td>
+                    <td v-for="(mounth, index) in items.costs" :key="index">{{ mounth ? mounth.toFixed(0) : '' }}</td>
+                </tr>
+            </table>
+            <div slot="modal-footer" class="w-100 d-flex justify-content-start">
+                <button type="button" class="btn btn-default pull-left" @click="closeModal('modalCosts')">Закрыть</button>
+            </div>
+        </b-modal>
     </div> 
     
 </template>
@@ -136,11 +149,26 @@
         data: () => ({
             tableHoursData: '',
             tableFotData: '',
+            tableCostsData: '',
             tableHeader: '',
             allHoursSumm: '',
-            allForSumm: ''
+            allForSumm: '',
+            allCostsSumm: '',
+            costsSumm: '',
+            budget: '100000',
+            balance: ''
 
         }),
+        computed: {
+            costsFotSumm() {
+                this.costsSumm = Number(this.allForSumm) + Number(this.allCostsSumm);
+                return  this.costsSumm;
+            },
+            balanceFn() {
+                this.balance = Number(this.budget) - Number(this.costsSumm);
+                return  this.balance;
+            }
+        },
           methods: {
             openmodal(e){ 
                 this.$refs[e].show();
@@ -159,17 +187,19 @@
                     return summ;
                 }).toFixed(2);        
             },
-            allFot(){
+            allWriteOff(data, requestData){
+                var data = data === 'fot' ? 'allForSumm' : 'allCostsSumm';             
 
-                this.allForSumm = _.sumBy(this.tableFotData, function(o) {           
+                this[data] = _.sumBy(requestData, function(o) {           
                     var summ = 0;
+                    var obj = o.salaries || o.costs;
 
-                    for(let item in o.salaries){
-                        summ+= o.salaries[item];
-                    } 
+                    for(let item in obj ){
+                        summ+= obj[item];
+                    };
+
                     return summ;
-                }).toFixed(0);
-                  
+                }).toFixed(0);                  
             },
             tableColor(str){
                 var number = Number(str.split(' ')[1].slice(1, -2));
@@ -181,7 +211,7 @@
                 if(number >= 30 && number < 70){
                     return 'table-warning';
                 }        
-            }
+            }       
         },
         mounted() {          
             axios.get(`/api/report/projects/${this.projectId}/hours-spent`)
@@ -199,7 +229,17 @@
                     this.tableFotData = response.data.data;
                     this.tableHeader = response.data.header;    
 
-                    this.allFot()           
+                    this.allWriteOff('fot', response.data.data)           
+                })
+                .catch(e=>console.log(e))
+
+            axios.get(`/api/report/projects/${this.projectId}/costs`)
+                .then(response => {
+                    this.tableCostsData = response.data.data;
+                    this.tableHeader = response.data.header;    
+
+                    this.allWriteOff('costs', response.data.data ) 
+                            
                 })
                 .catch(e=>console.log(e))
 
