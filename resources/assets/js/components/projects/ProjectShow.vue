@@ -17,12 +17,8 @@
                 </div>
                 <div class="form-item form-item_bold mr-3">
                     <label for="status">Статус</label>
-                    <select id="status" class="form-control">
-                        <option selected>пиар</option>
-                        <option>кейс</option>
-                        <option>готов</option>
-                        <option>в работе</option>
-                        <option>старт</option>
+                    <select id="status" class="form-control" v-model="projectStatusSelected" @change="projectStatusChange()">
+                        <option v-for="item in projectStatus" :key="item.id" :value="item.id">{{ item.name }}</option>
                     </select>
                 </div>
                 <div class="form-item form-item_bold">
@@ -156,7 +152,9 @@
             allCostsSumm: '',
             costsSumm: '',
             budget: '100000',
-            balance: ''
+            balance: '',
+            projectStatus: '',
+            projectStatusSelected: 'Старт'
 
         }),
         computed: {
@@ -211,6 +209,15 @@
                 if(number >= 30 && number < 70){
                     return 'table-warning';
                 }        
+            },
+            projectStatusChange() {
+                console.log(this.projectStatusSelected);
+                
+                axios.post(`/api/report/projects/${this.projectId}`, this.projectStatusSelected)
+                .then(response => {
+                    console.log(response)
+                })
+                .catch(e=>console.log(e));
             }       
         },
         mounted() {          
@@ -222,28 +229,32 @@
                     this.allHours();
                     
                 })
-                .catch(e=>console.log(e))
+                .catch(e=>console.log(e));
 
             axios.get(`/api/report/projects/${this.projectId}/fot`)
                 .then(response => {
                     this.tableFotData = response.data.data;
                     this.tableHeader = response.data.header;    
 
-                    this.allWriteOff('fot', response.data.data)           
+                    this.allWriteOff('fot', response.data.data);           
                 })
-                .catch(e=>console.log(e))
+                .catch(e=>console.log(e));
 
             axios.get(`/api/report/projects/${this.projectId}/costs`)
                 .then(response => {
                     this.tableCostsData = response.data.data;
                     this.tableHeader = response.data.header;    
 
-                    this.allWriteOff('costs', response.data.data ) 
+                    this.allWriteOff('costs', response.data.data );
                             
                 })
-                .catch(e=>console.log(e))
+                .catch(e=>console.log(e));
 
-            
+            axios.get(`/api/report/projects/statuses`)
+                .then(response => {
+                    this.projectStatus = response.data.data;                            
+                })
+                .catch(e=>console.log(e));
         }
     }
 </script>
