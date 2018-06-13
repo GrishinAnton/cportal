@@ -230,7 +230,7 @@
 
                 console.log(this.data);
                 
-                axios.post(`/api/report/projects/${this.projectId}`, this.data)
+            Api.postProjectHoursSpent(this.projectId, this.data)
                 .then(response => {
                     console.log(response)
                 })
@@ -238,7 +238,7 @@
             }       
         },
         mounted() {          
-            axios.get(`/api/report/projects/${this.projectId}/hours-spent`)
+            Api.getProjectHoursSpent(this.projectId)
                 .then(response => {
                     this.tableHoursData = response.data.data;
                     this.tableHeader = response.data.header;
@@ -248,7 +248,7 @@
                 })
                 .catch(e=>console.log(e));
 
-            axios.get(`/api/report/projects/${this.projectId}/fot`)
+            Api.getProjectFot(this.projectId)
                 .then(response => {
                     this.tableFotData = response.data.data;
                     this.tableHeader = response.data.header;    
@@ -269,10 +269,7 @@
 
             Api.getProjectStatuses()
                 .then(response => {
-                    this.projectStatus = response.data.data;      
-
-                    // console.log(response);
-                                          
+                    this.projectStatus = response.data.data;         
                 })
                 .catch(e=>console.log(e));
             
