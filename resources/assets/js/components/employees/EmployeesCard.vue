@@ -14,17 +14,15 @@
     </div>
 </template>
 <script>
+    import Api from '../../utils/api'
     export default {
         data: () => ({
             personalInformation: []
         }),
         mounted(){
-            axios.get('/api/personal')
+            Api.getPersonal()
                 .then(response => {
-                    this.personalInformation = response.data.data;  
-                    console.log(response);
-                    
-                      
+                    this.personalInformation = response.data.data; 
                 })
                 .catch(e => {
                     console.log(e);

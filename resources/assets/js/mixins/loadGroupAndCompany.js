@@ -1,3 +1,4 @@
+import Api from '../utils/api'
 export const loadGroupAndCompany = {
     data: () => ({
         load: {
@@ -7,13 +8,13 @@ export const loadGroupAndCompany = {
     }),
     mounted() {
 
-        axios.get('/api/personal/groups')
+        Api.getGroup()
             .then(response => {
-                this.load.groups = response.data.data;                       
+                this.load.groups = response.data.data;                                   
             })
             .catch(e => console.log(e));
 
-        axios.get('/api/personal/companies')
+        Api.getCompanies()
             .then(response => {
                 this.load.companies = response.data.data;
             })
