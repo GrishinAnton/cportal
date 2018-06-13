@@ -9,24 +9,29 @@
             <div class="box-body box-body_personal-select-group flex flex_jc-fs">
                 <div class="form-item form-item_bold mr-3">
                     <label for="start">Старт</label>
-                    <input type="text" placeholder="Старт" id="start" class="form-control">
+                    <input type="text" placeholder="Старт" id="start" class="form-control" v-model="data.start" v-mask="'##/##/####'">
                 </div>  
                 <div class="form-item form-item_bold mr-3">
                     <label for="finish">Финиш</label>
-                    <input type="text" placeholder="Финиш" id="finish" class="form-control">
+                    <input type="text" placeholder="Финиш" id="finish" class="form-control" v-model="data.finish" v-mask="'##/##/####'">
                 </div>
                 <div class="form-item form-item_bold mr-3">
                     <label for="status">Статус</label>
-                    <select id="status" class="form-control" v-model="projectStatusSelected" @change="projectStatusChange()">
+                    <select id="status" class="form-control" v-model="data.status">
                         <option v-for="item in projectStatus" :key="item.id" :value="item.id">{{ item.name }}</option>
                     </select>
                 </div>
-                <div class="form-item form-item_bold">
+                <div class="form-item form-item_bold mr-3">
                     <label for="company">Компания</label>
                     <select id="company" class="form-control">
                         <option selected>2UP</option>
                         <option>PRO</option>
                     </select>
+                </div>
+                <div class="form-item form-item_bold align-self-end">
+                    <b-button class="project-save-button" :size="''" :variant="'success'" @click="projectStatusChange()">
+                        {{ 'Сохранить' }}
+                    </b-button>
                 </div>
             </div>
             <div class="box-body box-body_personal-select-group flex flex_jc-fs">
@@ -38,11 +43,11 @@
                         </tr>
                         <tr>
                             <th>Часов заложено</th>
-                            <td>200</td>
+                            <td class="w-50"><input type="text" placeholder="Введите данные" id="start" class="form-control" v-model="data.hours_laid"></td>
                         </tr>
                         <tr>
                             <th>Стоимость часа</th>
-                            <td>1350</td>
+                            <td class="w-50"><input type="text" placeholder="Введите данные" id="start" class="form-control" v-model="data.cost_per_hour"></td>
                         </tr>
 
                     </tbody>
@@ -61,11 +66,11 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>{{ budget + ' ₽' }}</td>
-                            <td>{{ costsFotSumm + ' ₽' }}</td>
-                            <td>{{ balanceFn + ' ₽' }}</td>
-                            <td>60 000,00 ₽</td>
-                            <td>4</td>
+                            <td class="w-15"><input type="text" placeholder="Введите данные" id="start" class="form-control" v-model="data.budget"></td>
+                            <td class="va_m">{{ costsFotSumm + ' ₽' }}</td>
+                            <td class="va_m">{{ balanceFn + ' ₽' }}</td>
+                            <td class="va_m">60 000,00 ₽</td>
+                            <td class="va_m">4</td>
                         </tr>
                     </tbody>
                 </table>
@@ -138,10 +143,14 @@
 </template>
 
 <script>
+    import {TheMask} from 'vue-the-mask';
+    import Api from '../../utils/api'
+
     export default {
         props: {
             projectId: String
         },
+        components: {TheMask},
         data: () => ({
             tableHoursData: '',
             tableFotData: '',
@@ -151,10 +160,17 @@
             allForSumm: '',
             allCostsSumm: '',
             costsSumm: '',
-            budget: '100000',
             balance: '',
-            projectStatus: '',
-            projectStatusSelected: 'Старт'
+            projectStatus: '', 
+            data: {
+                start: '',
+                finish: '',
+                budget: '',
+                cost_per_hour: '',
+                hours_laid: '',
+                status: 1,
+                company: 1,
+            }
 
         }),
         computed: {
@@ -163,7 +179,7 @@
                 return  this.costsSumm;
             },
             balanceFn() {
-                this.balance = Number(this.budget) - Number(this.costsSumm);
+                this.balance = Number(this.data.budget) - Number(this.costsSumm);
                 return  this.balance;
             }
         },
@@ -211,9 +227,10 @@
                 }        
             },
             projectStatusChange() {
-                console.log(this.projectStatusSelected);
+
+                console.log(this.data);
                 
-                axios.post(`/api/report/projects/${this.projectId}`, this.projectStatusSelected)
+                axios.post(`/api/report/projects/${this.projectId}`, this.data)
                 .then(response => {
                     console.log(response)
                 })
@@ -240,21 +257,25 @@
                 })
                 .catch(e=>console.log(e));
 
-            axios.get(`/api/report/projects/${this.projectId}/costs`)
+            Api.getProjectCosts(this.projectId)
                 .then(response => {
                     this.tableCostsData = response.data.data;
-                    this.tableHeader = response.data.header;    
+                    this.tableHeader = response.data.header;
 
                     this.allWriteOff('costs', response.data.data );
                             
                 })
                 .catch(e=>console.log(e));
 
-            axios.get(`/api/report/projects/statuses`)
+            Api.getProjectStatuses()
                 .then(response => {
-                    this.projectStatus = response.data.data;                            
+                    this.projectStatus = response.data.data;      
+
+                    // console.log(response);
+                                          
                 })
                 .catch(e=>console.log(e));
+            
         }
     }
 </script>
@@ -262,5 +283,9 @@
 <style>
     .modal-open .modal {
         overflow-x: auto;
+    }
+
+    .table .va_m {
+        vertical-align: middle;
     }
 </style>
