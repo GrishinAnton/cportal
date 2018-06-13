@@ -36,7 +36,7 @@ class ProjectController extends Controller
      * @param $projectId
      * @return \Illuminate\Http\JsonResponse
      */
-    public function upload($projectId, ProjectRequest $request)
+    public function update($projectId, ProjectRequest $request)
     {
         Project::where('project_id', $projectId)
             ->update([
