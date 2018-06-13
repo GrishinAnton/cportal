@@ -46,7 +46,7 @@ class ProjectController extends Controller
                 'finish_at' => Carbon::parse($request->finish_at)->format('Y-m-d'),
                 'company_id' => $request->company,
                 'cost_per_hour' => $request->costPerHour,
-                ''
+                'hours_laid' => $request->hoursLaid,
             ]);
 
         return response()->json(['success' => true]);
