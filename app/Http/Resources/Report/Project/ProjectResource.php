@@ -17,6 +17,12 @@ class ProjectResource extends JsonResource
         return [
             'budget' => $this->resource->budget,
             'name' => $this->resource->name,
+            'start' => $this->resource->start_at,
+            'finish' => $this->resource->finish_at,
+            'company' => $this->resource->company_id,
+            'status' => $this->resource->status_id,
+            'hoursLaid' => $this->resource->hours_laid,
+            'costPerHour' => $this->resource->cost_per_hour,
         ];
     }
 }

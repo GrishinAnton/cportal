@@ -27,8 +27,8 @@ class ProjectRequest extends FormRequest
             'budget' => 'required',
             'status' => 'required|exists:project_statuses,id',
             'company' => 'required|exists:personal_companies,id',
-            'start' => 'required',
-            'finish' => 'required',
+            'start' => 'required|date_format:d/m/Y',
+            'finish' => 'required|date_format:d/m/Y',
             'hours_laid' => 'required|integer',
             'cost_per_hour' => 'required|integer',
         ];

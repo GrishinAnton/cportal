@@ -18,7 +18,16 @@ class ProjectController extends Controller
      */
     public function show($projectId)
     {
-        $project = Project::select('name', 'budget')
+        $project = Project::select(
+            'name',
+            'budget',
+            'start_at',
+            'finish_at',
+            'company_id',
+            'status_id',
+            'hours_laid',
+            'cost_per_hour'
+        )
             ->where('project_id', $projectId)
             ->first();
 
@@ -45,8 +54,8 @@ class ProjectController extends Controller
                 'start_at' => Carbon::parse($request->start_at)->format('Y-m-d'),
                 'finish_at' => Carbon::parse($request->finish_at)->format('Y-m-d'),
                 'company_id' => $request->company,
-                'cost_per_hour' => $request->costPerHour,
-                'hours_laid' => $request->hoursLaid,
+                'cost_per_hour' => $request->cost_per_hour,
+                'hours_laid' => $request->hours_laid,
             ]);
 
         return response()->json(['success' => true]);
