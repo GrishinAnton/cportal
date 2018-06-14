@@ -16,7 +16,7 @@ class PersonalCompanyTableSeeder extends Seeder
             $personalGroup = PersonalCompany::where('index', $param)->first();
 
             if ($personalGroup) {
-                PersonalCompany::where('index', $param)->update($param);
+                $personalGroup->update($param);
             } else {
                 PersonalCompany::create($param);
             }
@@ -42,7 +42,7 @@ class PersonalCompanyTableSeeder extends Seeder
             [
                 'name' => 'Web2print',
                 'index' => 'web2print'
-            ]
+            ],
         ];
     }
 }

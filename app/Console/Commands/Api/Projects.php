@@ -34,7 +34,7 @@ class Projects extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
+     * @throws \ActiveCollab\SDK\Exceptions\Authentication
      */
     public function handle()
     {
@@ -63,15 +63,13 @@ class Projects extends Command
                     'class' => $project['class'],
                     'url_path' => $project['url_path'],
                     'name' => $project['name'],
-                    'category_id' => $project['category_id'],
                     'is_trashed' => $project['is_trashed'],
                     'trashed_on' => $project['trashed_on'],
                     'updated_on' => $project['updated_on'],
                     'body_formatted' => $project['body_formatted'],
-                    'company_id' => $project['company_id'],
                     'currency_id' => $project['currency_id'],
                     'budget' => $project['budget'] ?? 0,
-                    'is_completed' => $project['is_completed']
+                    'is_completed' => $project['is_completed'],
                 ]
             );
 
@@ -91,12 +89,10 @@ class Projects extends Command
                     'class' => $archive['class'],
                     'url_path' => $archive['url_path'],
                     'name' => $archive['name'],
-                    'category_id' => $archive['category_id'],
                     'is_trashed' => $archive['is_trashed'],
                     'trashed_on' => $archive['trashed_on'],
                     'updated_on' => $archive['updated_on'],
                     'body_formatted' => $archive['body_formatted'],
-                    'company_id' => $archive['company_id'],
                     'currency_id' => $archive['currency_id'],
                     'budget' => $archive['budget'] ?? 0,
                     'is_completed' => $archive['is_completed']

@@ -1,3 +1,4 @@
+
 export const personalFilter = {
     data: () => ({
         activeGroups: [],

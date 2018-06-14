@@ -1,3 +1,4 @@
+import Api from '../utils/api'
 export const paginationMixin = {
     data: () => ({
         paginationData: {
@@ -20,11 +21,10 @@ export const paginationMixin = {
     methods: {
         onPaginationChange(data){
 
-            axios.get(`/api/personal`, {
+            Api.getPersonal({
                 params: {
                     page: data
-                }
-            })
+                }})
                 .then(response => {
                     this.sortTableData(response.data.data);
 
