@@ -23,30 +23,36 @@
                 </div>
                 <div class="form-item form-item_bold mr-3">
                     <label for="company">Компания</label>
-                    <select id="company" class="form-control">
-                        <option selected>2UP</option>
-                        <option>PRO</option>
+                    <select id="company" class="form-control"  v-model="data.company">
+                        <option v-for="item in projectCompany" :key="item.id" :value="item.id">{{ item.name }}</option>
                     </select>
                 </div>
-                <div class="form-item form-item_bold align-self-end">
+                <div class="form-item form-item_bold align-self-end mr-3">
                     <b-button class="project-save-button" :size="''" :variant="'success'" @click="projectStatusChange()">
                         {{ 'Сохранить' }}
                     </b-button>
                 </div>
+                <b-alert :show="dismissCountDown"
+                    dismissible
+                    :variant="alertVariant"
+                    @dismissed="dismissCountdown=0"
+                    @dismiss-count-down="countDownChanged">
+                    <p>{{ alertMessage }}. Закроюсь через {{dismissCountDown}} сукунд.</p>                 
+                </b-alert>
             </div>
             <div class="box-body box-body_personal-select-group flex flex_jc-fs">
                 <table class="table table-striped table-hover w-25">
                     <tbody>
                         <tr>
-                            <th>Часов потрачено</th>
+                            <th class="va_m">Часов потрачено</th>
                             <td @click="openmodal('modalHour')">{{ allHoursSumm }}</td>
                         </tr>
                         <tr>
-                            <th>Часов заложено</th>
+                            <th class="va_m">Часов заложено</th>
                             <td class="w-50"><input type="text" placeholder="Введите данные" id="start" class="form-control" v-model="data.hours_laid"></td>
                         </tr>
                         <tr>
-                            <th>Стоимость часа</th>
+                            <th class="va_m">Стоимость часа</th>
                             <td class="w-50"><input type="text" placeholder="Введите данные" id="start" class="form-control" v-model="data.cost_per_hour"></td>
                         </tr>
 
@@ -145,7 +151,6 @@
 <script>
     import {TheMask} from 'vue-the-mask';
     import Api from '../../utils/api'
-
     export default {
         props: {
             projectId: String
@@ -162,6 +167,7 @@
             costsSumm: '',
             balance: '',
             projectStatus: '', 
+            projectCompany: '',
             data: {
                 start: '',
                 finish: '',
@@ -170,7 +176,11 @@
                 hours_laid: '',
                 status: 1,
                 company: 1,
-            }
+            },
+            dismissSecs: 5,
+            dismissCountDown: 0,
+            alertVariant: '',
+            alertMessage: ''
 
         }),
         computed: {
@@ -228,14 +238,22 @@
             },
             projectStatusChange() {
 
-                console.log(this.data);
-                
             Api.postProjectHoursSpent(this.projectId, this.data)
                 .then(response => {
-                    console.log(response)
+                    this.alertVariant = 'success';
+                    this.dismissCountDown = 5;
+                    this.alertMessage = 'Данные обновлены';
                 })
-                .catch(e=>console.log(e));
-            }       
+                .catch(e=>{
+                    this.alertVariant = 'danger';
+                    this.dismissCountDown = 5;
+                    this.alertMessage = 'Ошибка';
+                    console.log(e)
+                });
+            },
+            countDownChanged (dismissCountDown) {
+                this.dismissCountDown = dismissCountDown
+            },       
         },
         mounted() {          
             Api.getProjectHoursSpent(this.projectId)
@@ -272,7 +290,19 @@
                     this.projectStatus = response.data.data;         
                 })
                 .catch(e=>console.log(e));
-            
+
+            Api.getProject(this.projectId)
+                .then(response => {
+                    this.data = response.data.data;
+                })
+                .catch(e=>console.log(e));
+
+            Api.getCompanies(this.projectId)
+                .then(response => {
+                    this.projectCompany = response.data.data
+                })
+                .catch(e=>console.log(e));
+           
         }
     }
 </script>
@@ -284,5 +314,9 @@
 
     .table .va_m {
         vertical-align: middle;
+    }
+
+    .alert-success {
+        margin-bottom: 0;
     }
 </style>
