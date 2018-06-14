@@ -21,7 +21,7 @@ class ProjectResource extends JsonResource
             'budget' => $this->budget,
             'status' => $this->status_name,
             'company' => $this->company_name,
-            'url' => route('web.projects.show', ['id' => $this->id]),
+            'url' => route('web.projects.show', ['id' => $this->project_id]),
         ];
     }
 }
