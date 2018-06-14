@@ -25,8 +25,8 @@ const Api = {
     getSalaryPersonalSalary: (id, params) => axios.get(`/api/personal/${id}/salary`, params),
     getSalaryPersonalProjectCostStore: (id, data) => axios.post(`/api/personal/${id}/project-costs/store`, data),
     getSalaryPersonalStoreUpdate: (url, data) => axios.post(url, data),
+    //SomeMixin
+    getSomeAxiosRequest: (url, params={}) => axios.get(url, params)
 }
 
 export default Api;
-
-
