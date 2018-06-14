@@ -42,6 +42,10 @@ class HeaderResource extends JsonResource
      */
     public function toArray($request)
     {
+        if (! $this->first()) {
+            return [];
+        }
+
         $dates = $this->first()->toArray();
 
         return array_merge([
