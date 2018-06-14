@@ -42,6 +42,7 @@
 </template>
 <script>
     import { loadGroupAndCompany } from './../../mixins/loadGroupAndCompany';
+    import Api from '../../utils/api'
 
     export default {
         mixins: [loadGroupAndCompany],
@@ -63,9 +64,7 @@
         methods: {
             onChangeGroup(){                
                   
-                axios.post(`/api/personal/${this.personalId}/add/group`, {
-                    groupId: this.input.group
-                })
+                Api.postPersonalGroup(this.personalId, {groupId: this.input.group})
                     .then(response => {
 
                         if(response.data.success){
@@ -79,9 +78,7 @@
             },
             onChangeCompany(){    
 
-                axios.post(`/api/personal/${this.personalId}/add/company`, {
-                    companyId: this.input.company
-                })
+                Api.postPersonalCompany(this.personalId, {companyId: this.input.company})
                     .then(response => {
                         
                         if(response.data.success){
@@ -100,7 +97,7 @@
         },
         mounted(){           
 
-            axios.get(`/api/personal/${this.personalId}/group-company`)
+            Api.getPersonalGroupAndCompany(this.personalId)
                 .then(response => {
 
                     this.input.group = response.data.data.group.id

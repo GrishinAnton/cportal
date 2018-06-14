@@ -118,6 +118,7 @@
 
 
 <script>
+    import Api from '../utils/api'
  export default {
     props: {
         personalId: {
@@ -200,7 +201,7 @@
                 url = `/api/personal/${this.personalId}/salary/store`;
             }
             
-            axios.post(url, {
+            Api.getSalaryPersonalStoreUpdate(url, {
                 salary: this.flagHours ? this.staticData.salary : this.changeData.salary,
                 coefficient: this.changeData.coef,
                 salaryHours: this.flagHours ? this.changeData.salaryHour : this.staticData.salaryHour,
@@ -233,7 +234,7 @@
                 item.date = `${this.date}-07`
             });
            
-            axios.post(`/api/personal/${this.personalId}/project-costs/store`, data)
+            Api.getSalaryPersonalProjectCostStore(this.personalId, data)
             .then(response => {
                 this.alertVariant = 'success';
                 this.costsProjectAlertCountDown = 5;
@@ -258,11 +259,9 @@
             this.staticData.penaltyTime = this.penaltyTime ? this.penaltyTime : 0;
             this.staticData.closeHours = this.closeHours ? this.closeHours : 0;
 
-            axios.get('/api/personal/'+this.personalId+'/salary', {
-                params: {
+            Api.getSalaryPersonalSalary(this.personalId, { params: {
                     date: this.date
-                }
-            })
+                }})
             .then(response => {
 
                 if(response.data.success){
@@ -297,11 +296,9 @@
     created() {
         this.salary();
 
-        axios.get(`/api/personal/${this.personalId}/project-costs`, {
-            params: {
+        Api.getSalaryProjectCosts(this.personalId, {params: {
                 date: this.date
-            }
-        })
+            }})
         .then(response => {
             
             this.costsProject.data = response.data.data.reverse();
@@ -313,11 +310,9 @@
         .catch(e => console.log(e));
 
 
-        axios.get(`/api/personal/costs`, {
-            params: {
+        Api.getSalaryPersonalCosts({params: {
                 date: this.date
-            }
-        })
+            }})
         .then(response => {
             this.costsProject.costsMonth = response.data.data
         })

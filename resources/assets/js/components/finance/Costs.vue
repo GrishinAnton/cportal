@@ -51,6 +51,7 @@
     </div>
 </template>
 <script>
+    import Api from '../../utils/api'
     export default {
         data: () => ({
             currentYear: new Date().getFullYear(),
@@ -89,11 +90,9 @@
             renderTableByYaer(e) {
                 var monthFormat = (`0${this.currentMonth}`).slice(-2);
 
-                axios.get(`/api/report/costs`, {
-                    params: {
+                Api.getReportCosts({params: {
                         date: `${e.target.value}-${monthFormat}`
-                    }
-                })
+                    }})
                 .then(response => {                   
                     this.costsOverride.data =  this.createCostData(response.data.data); 
                 })
@@ -107,7 +106,7 @@
                 this.currentObj.id !== undefined ? url = `/api/report/costs/${this.currentObj.id}` : url = `/api/report/costs`;               
                 this.currentObj.date = `${this.renderYear}-${this.currentObj.month}-07`
 
-                axios.post(url, this.currentObj)
+                Api.postReportCosts(url, this.currentObj)
                 .then(response => {
                     console.log(response);
                     
@@ -150,11 +149,9 @@
 
             var monthFormat = (`0${this.currentMonth}`).slice(-2);
 
-            axios.get(`/api/report/costs`, {
-                params: {
+            Api.getReportCosts({params: {
                     date: `${this.currentYear}-${monthFormat}`
-                }
-            })
+            }})
             .then(response => {
                 this.costsOverride.data =  this.createCostData(response.data.data);   
             })

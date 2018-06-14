@@ -3,6 +3,7 @@
 namespace App\Http\Resources\Report\Project;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Carbon\Carbon;
 
 class ProjectResource extends JsonResource
 {
@@ -15,12 +16,14 @@ class ProjectResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->project_id,
-            'name' => $this->name,
-            'budget' => $this->budget,
-            'status' => $this->status_name,
-            'company' => $this->company_name,
-            'url' => route('web.projects.show', ['id' => $this->id]),
+            'budget' => $this->resource->budget,
+            'name' => $this->resource->name,
+            'start' => Carbon::parse($this->resource->start_at)->format('d/m/Y'),
+            'finish' => Carbon::parse($this->resource->finish_at)->format('d/m/Y'),
+            'company' => $this->resource->company_id,
+            'status' => $this->resource->status_id,
+            'hours_laid' => $this->resource->hours_laid,
+            'cost_per_hour' => $this->resource->cost_per_hour,
         ];
     }
 }

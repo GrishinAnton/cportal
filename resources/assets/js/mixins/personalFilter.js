@@ -1,3 +1,4 @@
+import Api from '../utils/api'
 export const personalFilter = {
     data: () => ({
         activeGroups: [],
@@ -28,7 +29,7 @@ export const personalFilter = {
         },
         requestFilter() {
 
-            axios.get(this.requestUrl, {
+            Api.getSomeAxiosRequest(this.requestUrl, {
                 params: {
                     group: this.activeGroups,
                     company: this.activeCompanies
@@ -60,7 +61,7 @@ export const personalFilter = {
     mounted() {
         if (!localStorage.length) {
 
-            axios.get(this.requestUrl)
+            Api.getSomeAxiosRequest(this.requestUrl)
                 .then(response => {
                     this.refreshTableData(response);
                 })
