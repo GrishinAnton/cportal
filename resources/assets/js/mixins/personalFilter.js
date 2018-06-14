@@ -3,6 +3,7 @@ export const personalFilter = {
     data: () => ({
         activeGroups: [],
         activeCompanies: [],
+        activeStatus: []
     }),
     methods: {
         onChange(obj) {
@@ -14,6 +15,9 @@ export const personalFilter = {
             }
             if (obj.item === 'company') {
                 arrName = this.activeCompanies;
+            }
+            if (obj.item === 'status') {
+                arrName = this.activeStatus;
             }
 
             var arrPosition = arrName.indexOf(obj.id);
@@ -32,14 +36,17 @@ export const personalFilter = {
             Api.getSomeAxiosRequest(this.requestUrl, {
                 params: {
                     group: this.activeGroups,
-                    company: this.activeCompanies
+                    company: this.activeCompanies,
+                    status: this.activeStatus,
                 }
             })
             .then(response => {
-
+                 
                 this.activeGroups.length ? localStorage.setItem('activeGroup', this.activeGroups) : localStorage.removeItem('activeGroup');
 
                 this.activeCompanies.length ? localStorage.setItem('activeCompanies', this.activeCompanies) : localStorage.removeItem('activeCompanies');
+
+                this.activeStatus.length ? localStorage.setItem('activeStatus', this.activeStatus) : localStorage.removeItem('activeStatus');
                 
                 this.refreshTableData(response);
             })
@@ -55,7 +62,9 @@ export const personalFilter = {
             }
 
             //pagination
-            this.paginationDataChange(response.data);
+            if (this.paginationDataChange){
+                this.paginationDataChange(response.data);
+            }
         }
     },
     mounted() {
@@ -70,12 +79,16 @@ export const personalFilter = {
 
             var localGroup = localStorage.getItem('activeGroup');
             var localCompany = localStorage.getItem('activeCompanies');
+            var localStatus = localStorage.getItem('activeStatus');
 
             var arrGroup = localGroup ? localGroup.split(',') : localStorage.removeItem('activeGroup');
             this.activeGroups = _.map(arrGroup, _.parseInt);
 
             var arrCompany = localCompany ? localCompany.split(',') : localStorage.removeItem('activeCompanies');
             this.activeCompanies = _.map(arrCompany, _.parseInt);
+
+            var arrStatus = localStatus ? localStatus.split(',') : localStorage.removeItem('activeStatus');
+            this.activeCompanies = _.map(arrStatus, _.parseInt);
 
             this.requestFilter();
 
