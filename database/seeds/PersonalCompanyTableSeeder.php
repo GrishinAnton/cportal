@@ -13,7 +13,9 @@ class PersonalCompanyTableSeeder extends Seeder
     public function run()
     {
         foreach ($this->params() as $param) {
-            $personalGroup = PersonalCompany::where('index', $param)->first();
+            $personalGroup = PersonalCompany::select('id')
+                ->where('index', $param['index'])
+                ->first();
 
             if ($personalGroup) {
                 $personalGroup->update($param);
@@ -33,15 +35,15 @@ class PersonalCompanyTableSeeder extends Seeder
         return [
             [
                 'name' => '2UP',
-                'index' => '2up'
+                'index' => '2up',
             ],
             [
                 'name' => 'PROspace',
-                'index' => 'prospace'
+                'index' => 'prospace',
             ],
             [
                 'name' => 'Web2print',
-                'index' => 'web2print'
+                'index' => 'web2print',
             ],
         ];
     }

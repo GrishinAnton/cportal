@@ -13,7 +13,9 @@ class PersonalGroupTableSeeder extends Seeder
     public function run()
     {
         foreach ($this->params() as $param) {
-            $personalGroup = PersonalGroup::where('index', $param)->first();
+            $personalGroup = PersonalGroup::select('id')
+                ->where('index', $param['index'])
+                ->first();
 
             if ($personalGroup) {
                 $personalGroup->update($param);
@@ -33,23 +35,23 @@ class PersonalGroupTableSeeder extends Seeder
         return [
             [
                 'name' => 'Программисты',
-                'index' => 'programmers'
+                'index' => 'programmers',
             ],
             [
                 'name' => 'Менеджеры',
-                'index' => 'managers'
+                'index' => 'managers',
             ],
             [
                 'name' => 'Дизайнеры',
-                'index' => 'designers'
+                'index' => 'designers',
             ],
             [
                 'name' => 'Контент',
-                'index' => 'content'
+                'index' => 'content',
             ],
             [
                 'name' => 'Другие',
-                'index' => 'other'
+                'index' => 'other',
             ]
         ];
     }
