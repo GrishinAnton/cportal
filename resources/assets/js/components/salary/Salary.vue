@@ -118,7 +118,7 @@
 
 
 <script>
-    import Api from '../utils/api'
+    import Api from '../../utils/api'
  export default {
     props: {
         personalId: {

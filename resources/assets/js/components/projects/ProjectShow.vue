@@ -3,7 +3,7 @@
         <div class="box">
             <div class="box-header flex flex_jc-sb">
                 <h3 class="box-title">
-                    Сайт собак
+                    {{ projectName }}
                 </h3>
             </div>
             <div class="box-body box-body_personal-select-group flex flex_jc-fs">
@@ -177,6 +177,7 @@
                 status: 1,
                 company: 1,
             },
+            projectName: '',
             dismissSecs: 5,
             dismissCountDown: 0,
             alertVariant: '',
@@ -259,7 +260,7 @@
             Api.getProjectHoursSpent(this.projectId)
                 .then(response => {
                     this.tableHoursData = response.data.data;
-                    this.tableHeader = response.data.header;
+                    this.tableHeader = response.data.header;                    
 
                     this.allHours();
                     
@@ -287,13 +288,15 @@
 
             Api.getProjectStatuses()
                 .then(response => {
-                    this.projectStatus = response.data.data;         
+                    this.projectStatus = response.data.data;   
+                          
                 })
                 .catch(e=>console.log(e));
 
             Api.getProject(this.projectId)
                 .then(response => {
                     this.data = response.data.data;
+                    this.projectName = response.data.data.name;
                 })
                 .catch(e=>console.log(e));
 
