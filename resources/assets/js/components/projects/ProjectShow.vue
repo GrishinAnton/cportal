@@ -9,44 +9,51 @@
             <div class="box-body box-body_personal-select-group flex flex_jc-fs">
                 <div class="form-item form-item_bold mr-3">
                     <label for="start">Старт</label>
-                    <input type="text" placeholder="Старт" id="start" class="form-control">
+                    <input type="text" placeholder="Старт" id="start" class="form-control" v-model="data.start" v-mask="'##/##/####'">
                 </div>  
                 <div class="form-item form-item_bold mr-3">
                     <label for="finish">Финиш</label>
-                    <input type="text" placeholder="Финиш" id="finish" class="form-control">
+                    <input type="text" placeholder="Финиш" id="finish" class="form-control" v-model="data.finish" v-mask="'##/##/####'">
                 </div>
                 <div class="form-item form-item_bold mr-3">
                     <label for="status">Статус</label>
-                    <select id="status" class="form-control">
-                        <option selected>пиар</option>
-                        <option>кейс</option>
-                        <option>готов</option>
-                        <option>в работе</option>
-                        <option>старт</option>
+                    <select id="status" class="form-control" v-model="data.status">
+                        <option v-for="item in projectStatus" :key="item.id" :value="item.id">{{ item.name }}</option>
                     </select>
                 </div>
-                <div class="form-item form-item_bold">
+                <div class="form-item form-item_bold mr-3">
                     <label for="company">Компания</label>
-                    <select id="company" class="form-control">
-                        <option selected>2UP</option>
-                        <option>PRO</option>
+                    <select id="company" class="form-control"  v-model="data.company">
+                        <option v-for="item in projectCompany" :key="item.id" :value="item.id">{{ item.name }}</option>
                     </select>
                 </div>
+                <div class="form-item form-item_bold align-self-end mr-3">
+                    <b-button class="project-save-button" :size="''" :variant="'success'" @click="projectStatusChange()">
+                        {{ 'Сохранить' }}
+                    </b-button>
+                </div>
+                <b-alert :show="dismissCountDown"
+                    dismissible
+                    :variant="alertVariant"
+                    @dismissed="dismissCountdown=0"
+                    @dismiss-count-down="countDownChanged">
+                    <p>{{ alertMessage }}. Закроюсь через {{dismissCountDown}} сукунд.</p>                 
+                </b-alert>
             </div>
             <div class="box-body box-body_personal-select-group flex flex_jc-fs">
                 <table class="table table-striped table-hover w-25">
                     <tbody>
                         <tr>
-                            <th>Часов потрачено</th>
+                            <th class="va_m">Часов потрачено</th>
                             <td @click="openmodal('modalHour')">{{ allHoursSumm }}</td>
                         </tr>
                         <tr>
-                            <th>Часов заложено</th>
-                            <td>200</td>
+                            <th class="va_m">Часов заложено</th>
+                            <td class="w-50"><input type="text" placeholder="Введите данные" id="start" class="form-control" v-model="data.hours_laid"></td>
                         </tr>
                         <tr>
-                            <th>Стоимость часа</th>
-                            <td>1350</td>
+                            <th class="va_m">Стоимость часа</th>
+                            <td class="w-50"><input type="text" placeholder="Введите данные" id="start" class="form-control" v-model="data.cost_per_hour"></td>
                         </tr>
 
                     </tbody>
@@ -65,11 +72,11 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>{{ budget + ' ₽' }}</td>
-                            <td>{{ costsFotSumm + ' ₽' }}</td>
-                            <td>{{ balanceFn + ' ₽' }}</td>
-                            <td>60 000,00 ₽</td>
-                            <td>4</td>
+                            <td class="w-15"><input type="text" placeholder="Введите данные" id="start" class="form-control" v-model="data.budget"></td>
+                            <td class="va_m">{{ costsFotSumm + ' ₽' }}</td>
+                            <td class="va_m">{{ balanceFn + ' ₽' }}</td>
+                            <td class="va_m">60 000,00 ₽</td>
+                            <td class="va_m">4</td>
                         </tr>
                     </tbody>
                 </table>
@@ -142,10 +149,13 @@
 </template>
 
 <script>
+    import {TheMask} from 'vue-the-mask';
+    import Api from '../../utils/api'
     export default {
         props: {
             projectId: String
         },
+        components: {TheMask},
         data: () => ({
             tableHoursData: '',
             tableFotData: '',
@@ -155,8 +165,22 @@
             allForSumm: '',
             allCostsSumm: '',
             costsSumm: '',
-            budget: '100000',
-            balance: ''
+            balance: '',
+            projectStatus: '', 
+            projectCompany: '',
+            data: {
+                start: '',
+                finish: '',
+                budget: '',
+                cost_per_hour: '',
+                hours_laid: '',
+                status: 1,
+                company: 1,
+            },
+            dismissSecs: 5,
+            dismissCountDown: 0,
+            alertVariant: '',
+            alertMessage: ''
 
         }),
         computed: {
@@ -165,7 +189,7 @@
                 return  this.costsSumm;
             },
             balanceFn() {
-                this.balance = Number(this.budget) - Number(this.costsSumm);
+                this.balance = Number(this.data.budget) - Number(this.costsSumm);
                 return  this.balance;
             }
         },
@@ -211,10 +235,28 @@
                 if(number >= 30 && number < 70){
                     return 'table-warning';
                 }        
-            }       
+            },
+            projectStatusChange() {
+
+            Api.postProjectHoursSpent(this.projectId, this.data)
+                .then(response => {
+                    this.alertVariant = 'success';
+                    this.dismissCountDown = 5;
+                    this.alertMessage = 'Данные обновлены';
+                })
+                .catch(e=>{
+                    this.alertVariant = 'danger';
+                    this.dismissCountDown = 5;
+                    this.alertMessage = 'Ошибка';
+                    console.log(e)
+                });
+            },
+            countDownChanged (dismissCountDown) {
+                this.dismissCountDown = dismissCountDown
+            },       
         },
         mounted() {          
-            axios.get(`/api/report/projects/${this.projectId}/hours-spent`)
+            Api.getProjectHoursSpent(this.projectId)
                 .then(response => {
                     this.tableHoursData = response.data.data;
                     this.tableHeader = response.data.header;
@@ -222,28 +264,45 @@
                     this.allHours();
                     
                 })
-                .catch(e=>console.log(e))
+                .catch(e=>console.log(e));
 
-            axios.get(`/api/report/projects/${this.projectId}/fot`)
+            Api.getProjectFot(this.projectId)
                 .then(response => {
                     this.tableFotData = response.data.data;
                     this.tableHeader = response.data.header;    
 
-                    this.allWriteOff('fot', response.data.data)           
+                    this.allWriteOff('fot', response.data.data);           
                 })
-                .catch(e=>console.log(e))
+                .catch(e=>console.log(e));
 
-            axios.get(`/api/report/projects/${this.projectId}/costs`)
+            Api.getProjectCosts(this.projectId)
                 .then(response => {
                     this.tableCostsData = response.data.data;
-                    this.tableHeader = response.data.header;    
+                    this.tableHeader = response.data.header;
 
-                    this.allWriteOff('costs', response.data.data ) 
+                    this.allWriteOff('costs', response.data.data );
                             
                 })
-                .catch(e=>console.log(e))
+                .catch(e=>console.log(e));
 
-            
+            Api.getProjectStatuses()
+                .then(response => {
+                    this.projectStatus = response.data.data;         
+                })
+                .catch(e=>console.log(e));
+
+            Api.getProject(this.projectId)
+                .then(response => {
+                    this.data = response.data.data;
+                })
+                .catch(e=>console.log(e));
+
+            Api.getCompanies(this.projectId)
+                .then(response => {
+                    this.projectCompany = response.data.data
+                })
+                .catch(e=>console.log(e));
+           
         }
     }
 </script>
@@ -251,5 +310,13 @@
 <style>
     .modal-open .modal {
         overflow-x: auto;
+    }
+
+    .table .va_m {
+        vertical-align: middle;
+    }
+
+    .alert-success {
+        margin-bottom: 0;
     }
 </style>

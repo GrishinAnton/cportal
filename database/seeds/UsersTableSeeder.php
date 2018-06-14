@@ -13,10 +13,12 @@ class UsersTableSeeder extends Seeder
     public function run()
     {
         foreach ($this->params() as $param) {
-            $user = User::select('id')->where('email', $param['email'])->first();
+            $user = User::select('id')
+                ->where('email', $param['email'])
+                ->first();
 
             if ($user) {
-                User::where('name', $param['name'])->update($param);
+                $user->update($param);
             } else {
                 User::create($param);
             }

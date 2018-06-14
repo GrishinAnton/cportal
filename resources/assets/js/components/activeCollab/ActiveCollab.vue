@@ -13,6 +13,7 @@
 
 
 <script>
+    import Api from '../../utils/api'
     export default {
         data: ()=>({
             responseMessage: '',
@@ -43,7 +44,7 @@
             loadActiveCollab(url){
 
                 this.responseMessage = 'Выгружаю данные...'
-                axios.get(url)
+                Api.getActiveCollab(url)
                     .then(response => {
                         this.responseMessage = response.data                        
                     })
