@@ -62,6 +62,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('api/report/projects/{id}/fot', 'Api\Report\Project\FotController@show')->name('api.report.projects.show');
     Route::get('api/report/projects/{id}/costs', 'Api\Report\Project\CostController@show')->name('api.report.costs.show');
     Route::get('api/report/projects/{id}', 'Api\Report\Project\ProjectController@show')->name('api.report.project.show');
+    Route::get('api/report/projects', 'Api\Report\Project\ProjectController@index')->name('api.report.project.index');
 
     Route::post('api/report/projects/{id}', 'Api\Report\Project\ProjectController@update')->name('api.report.project.update');
 
@@ -76,8 +77,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('dashboard', 'HomeController@index');
     
     //Projects
-    Route::get('projects', 'ProjectController@index');
-    Route::get('projects/{id}', 'ProjectController@show');
+    Route::get('projects', 'ProjectController@index')->name('web.projects.index');
+    Route::get('projects/{id}', 'ProjectController@show')->name('web.projects.show');
 
     //Report
     Route::get('report', 'ReportController@index')->name('web.report');

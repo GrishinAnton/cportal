@@ -16,7 +16,7 @@ window.Vue = require('vue');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('salary', function (resolve) {require(['./components/Salary'], resolve)});
+Vue.component('salary', function (resolve) {require(['./components/salary/Salary'], resolve)});
 Vue.component('consolidated', function (resolve) { require(['./components/reports/Сonsolidated'], resolve)});
 Vue.component('costs', function (resolve) { require(['./components/finance/Costs'], resolve)});
 Vue.component('sidebar', function (resolve) { require(['./components/sidebar/Sidebar'], resolve)});
@@ -25,6 +25,7 @@ Vue.component('personal-table', function (resolve) { require(['./components/pers
 Vue.component('employees-card', function (resolve) { require(['./components/employees/EmployeesCard'], resolve)});
 Vue.component('productivity', function (resolve) { require(['./components/productivity/Productivity'], resolve)});
 Vue.component('project-show', function (resolve) { require(['./components/projects/ProjectShow'], resolve)});
+Vue.component('project', function (resolve) { require(['./components/projects/Project'], resolve)});
 Vue.component('active-collab', function (resolve) { require(['./components/activeCollab/ActiveCollab'], resolve)});
 
 import Vuex from 'vuex';

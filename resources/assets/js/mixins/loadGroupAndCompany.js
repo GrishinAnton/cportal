@@ -3,7 +3,8 @@ export const loadGroupAndCompany = {
     data: () => ({
         load: {
             groups: [],
-            companies: []
+            companies: [],
+            status: []
         },
     }),
     mounted() {
@@ -18,6 +19,12 @@ export const loadGroupAndCompany = {
             .then(response => {
                 this.load.companies = response.data.data;
             })
-            .catch(e => console.log(e));        
+            .catch(e => console.log(e));   
+
+        Api.getProjectStatuses()
+            .then(response => {
+                this.load.status = response.data.data;
+            })
+            .catch(e => console.log(e));     
     }
 }

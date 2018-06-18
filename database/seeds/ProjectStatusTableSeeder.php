@@ -14,7 +14,7 @@ class ProjectStatusTableSeeder extends Seeder
     {
         foreach ($this->params() as $param) {
             $projectStatus = ProjectStatus::select('id')
-                ->where('index', $param)
+                ->where('index', $param['index'])
                 ->first();
 
             if ($projectStatus) {

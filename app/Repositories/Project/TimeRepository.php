@@ -33,7 +33,7 @@ class TimeRepository extends ProjectRepository
                         FROM personal_times
                         WHERE task_id IN (
                             SELECT task_id FROM tasks WHERE project_id = {$this->projectId}
-                        ) 
+                        )
                     ) as t2
                 ) as t3
                 GROUP BY t3.pers_id
