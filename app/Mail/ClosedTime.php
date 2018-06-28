@@ -5,20 +5,25 @@ namespace App\Mail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class ClosedTime extends Mailable
 {
     use Queueable, SerializesModels;
 
     /**
+     * @var array
+     */
+    protected $collection;
+
+    /**
      * Create a new message instance.
      *
-     * @return void
+     * ClosedTime constructor.
+     * @param $collection
      */
-    public function __construct()
+    public function __construct($collection)
     {
-        //
+        $this->collection = $collection;
     }
 
     /**
@@ -28,6 +33,10 @@ class ClosedTime extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.closed_time');
+        return $this->subject('Отчет по закрытому времени за неделю')
+            ->with([
+                'collection' => $this->collection,
+            ])
+            ->view('emails.closed_time');
     }
 }

@@ -9,30 +9,16 @@
         <td style="width: 100%;padding-top:15px;padding-bottom:15px;text-align:center;font-family: Arial, Helvetica, sans-serif;font-size:16px; line-height:16px; color:#222222;"> Данные в часах по дням за последнюю неделю</td>        
     </tr>
 
-        <tr style="text-align:center;">
-            <td>
-                <span>Пн (10.06)</span>
-                <span> - </span>
-                <span>8ч</span>
-            </td>        
-        </tr>
-         
-        <tr style="text-align:center;">
-            <td>
-                <span>Пн (10.06)</span>
-                <span> - </span>
-                <span>8ч</span>
-            </td>        
-        </tr> 
-        <tr style="text-align:center;">
-            <td>
-                <span>Пн (10.06)</span>
-                <span> - </span>
-                <span>8ч</span>
-            </td>        
-        </tr> 
+        @foreach ($collection as $collect)
+            <tr style="text-align:center;">
+                <td>
+                    <span>Пн ({{ format_date('d.m', $collect->date) }})</span>
+                    <span> - </span>
+                    <span>{{ $collect->worktime }} ч</span>
+                </td>
+            </tr>
+        @endforeach
 
- 
     <tr>
         <td style="width: 100%;padding-top:15px;padding-bottom:15px;text-align:center;font-family: Arial, Helvetica, sans-serif;font-size:16px; line-height:16px; color:#222222;">Данные за последние недели месяца</td>        
     </tr>

@@ -68,8 +68,12 @@ Route::group(['middleware' => 'auth'], function () {
 
     //----------------------------------------------------------------------------------------------------------------//
 
-    Route::get('test-email', function () {
-        return new \App\Mail\ClosedTime();
+    Route::get('test-projects', function () {
+        return new \App\Mail\ClosingTimeProject();
+    });
+
+    Route::get('test-teamlid', function () {
+        return new \App\Mail\ClosingTimeTeamlid();
     });
 
     //Personal

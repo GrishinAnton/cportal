@@ -80,3 +80,30 @@ if (! function_exists('input_date')) {
         return $date;
     }
 }
+
+if (! function_exists('format_date')) {
+    /**
+     * Format date
+     *
+     * @param $format
+     * @param $date
+     * @return string
+     */
+    function format_date($format, $date)
+    {
+        return \Carbon\Carbon::parse($date)->format($format);
+    }
+}
+
+if (! function_exists('day_of_week')) {
+    function day_of_week()
+    {
+//        $dayOfWeek = [
+//            ''
+//        ];
+
+        return;
+    }
+}
+
+
