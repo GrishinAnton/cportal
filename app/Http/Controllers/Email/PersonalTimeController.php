@@ -1,47 +1,23 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Http\Controllers\Email;
 
 use App\Mail\ClosedTime;
 use App\Personal;
-use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
-use Carbon\Carbon;
 use DB;
+use App\Http\Controllers\Controller;
 use App\PersonalTime;
+use Carbon\Carbon;
 
-class ClosedTimeEmails extends Command
+class PersonalTimeController extends Controller
 {
     /**
-     * The name and signature of the console command.
+     * Send email personal time
      *
-     * @var string
+     * @return string
      */
-    protected $signature = 'emails:closed-time';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Send email from closed time to user';
-
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
-     * Execute the console command.
-     *
-     * @return void
-     */
-    public function handle()
+    public function send()
     {
         $personals = Personal::select('first_name', 'last_name', 'email', 'pers_id')
             ->where('is_active', true)
@@ -136,8 +112,10 @@ class ClosedTimeEmails extends Command
 
             Mail::to($personal->email)
                 ->send((new ClosedTime($week, $weeks, $months, $personal))
-                ->onQueue('emails'));
+                    ->onQueue('emails'));
         }
+
+        return 'Письма разосланы';
     }
 
     /**

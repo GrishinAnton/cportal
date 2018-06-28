@@ -13,17 +13,36 @@ class ClosedTime extends Mailable
     /**
      * @var array
      */
-    protected $collection;
+    protected $week;
+
+    /**
+     * @var array
+     */
+    protected $weeks;
+
+    /**
+     * @var array
+     */
+    protected $months;
+
+    /**
+     * @var array
+     */
+    protected $personalInfo;
 
     /**
      * Create a new message instance.
      *
      * ClosedTime constructor.
-     * @param $collection
+     * @param $week
+     * @param $weeks
      */
-    public function __construct($collection)
+    public function __construct($week, $weeks, $months, $personalInfo)
     {
-        $this->collection = $collection;
+        $this->week = $week;
+        $this->weeks = $weeks;
+        $this->months = $months;
+        $this->personalInfo = $personalInfo;
     }
 
     /**
@@ -33,9 +52,13 @@ class ClosedTime extends Mailable
      */
     public function build()
     {
-        return $this->subject('Отчет по закрытому времени за неделю')
+        return $this->subject('Отчет по закрытому времени за неделю | 2UP')
             ->with([
-                'collection' => $this->collection,
+                'week' => $this->week,
+                'weeks' => $this->weeks,
+                'months' => $this->months,
+                'firstName' => $this->personalInfo->first_name,
+                'lastName' => $this->personalInfo->last_name,
             ])
             ->view('emails.closed_time');
     }

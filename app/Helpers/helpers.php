@@ -96,14 +96,53 @@ if (! function_exists('format_date')) {
 }
 
 if (! function_exists('day_of_week')) {
-    function day_of_week()
+    /**
+     * Day of week
+     *
+     * @param $date
+     * @return mixed
+     */
+    function day_of_week($date)
     {
-//        $dayOfWeek = [
-//            ''
-//        ];
+        $day = format_date('D', $date);
 
-        return;
+        $dayOfWeek = [
+            'Mon' => 'Пн',
+            'Tue' => 'Вт',
+            'Wed' => 'Ср',
+            'Thu' => 'Чт',
+            'Fri' => 'Пт',
+            'Sat' => 'Сб',
+            'Sun' => 'Вс',
+        ];
+
+        return $dayOfWeek[$day];
     }
 }
 
+if (! function_exists('month_ru')) {
+    /**
+     * Month english to russia
+     *
+     * @param $month
+     * @return mixed
+     */
+    function month_ru($month) {
+        $months = [
+            'January' => 'Январь',
+            'February' => 'Февраль',
+            'March' => 'Март',
+            'April' => 'Апрель',
+            'May' => 'Май',
+            'June' => 'Июнь',
+            'July' => 'Июль',
+            'August' => 'Август',
+            'September' => 'Сентябрь',
+            'October' => 'Октябрь',
+            'November' => 'Ноябрь',
+            'December' => 'Декабрь',
+        ];
 
+        return $months[$month];
+    }
+}

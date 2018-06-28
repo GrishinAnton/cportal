@@ -68,14 +68,6 @@ Route::group(['middleware' => 'auth'], function () {
 
     //----------------------------------------------------------------------------------------------------------------//
 
-    Route::get('test-projects', function () {
-        return new \App\Mail\ClosingTimeProject();
-    });
-
-    Route::get('test-teamlid', function () {
-        return new \App\Mail\ClosingTimeTeamlid();
-    });
-
     //Personal
     Route::get('personal', 'PersonalController@index')->name('web.personal.index');
     Route::get('personal/{id}', 'PersonalController@show')->name('web.personal.show');
@@ -107,4 +99,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('activecollab/tasks', 'ActiveCollab\ApiController@tasks')->name('web.activecollab.tasks');
     Route::get('activecollab/time-records', 'ActiveCollab\ApiController@timeRecords')->name('web.activecollab.time-records');
     Route::get('activecollab/time-records/all', 'ActiveCollab\ApiController@timeRecordsAll')->name('web.activecollab.time-records.all');
+
+    Route::get('api/send-email/personal-times', 'Email\PersonalTimeController@send')->name('api.send-email.personal-times');
 });

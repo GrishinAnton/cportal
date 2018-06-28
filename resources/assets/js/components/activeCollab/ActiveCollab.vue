@@ -38,17 +38,21 @@
                     title: 'Затреканное время (с отчисткой)',
                     url: 'activecollab/time-records/all'
                 },
+                {
+                    title: 'Разослать выроботки за неделю',
+                    url: '/api/send-email/personal-times'
+                }
             ]
         }),
         methods: {
             loadActiveCollab(url){
 
-                this.responseMessage = 'Выгружаю данные...'
+                this.responseMessage = 'Выгружаю данные...';
                 Api.getActiveCollab(url)
                     .then(response => {
-                        this.responseMessage = response.data                        
+                        this.responseMessage = response.data;
                     })
-                    .catch(e=>this.responseMessage = e)
+                    .catch(e=>this.responseMessage = e);
             }
         }
     }
