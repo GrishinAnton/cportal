@@ -8,7 +8,7 @@
     <tr>
         <td style="width: 100%;padding-top:15px;padding-bottom:15px;text-align:center;font-family: Arial, Helvetica, sans-serif;font-size:16px; line-height:16px; color:#222222;">
 
-            <div style="display:inline-block;min-width: 200px;border: 1px solid grey;padding-left: 10px;padding-top:15px;padding-bottom:15px;margin-bottom: 15px;">
+            <div style="display:inline-block;min-width: 200px;border: 1px solid grey;padding-left: 10px;padding-right: 10px;padding-top:15px;padding-bottom:15px;margin-bottom: 15px;">
             
                 <ul  style="list-style-type: none;padding:0;margin:0;">
                     <li>
