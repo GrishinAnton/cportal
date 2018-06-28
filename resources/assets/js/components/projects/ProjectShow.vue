@@ -27,6 +27,12 @@
                         <option v-for="item in projectCompany" :key="item.id" :value="item.id">{{ item.name }}</option>
                     </select>
                 </div>
+                <div class="form-item form-item_bold mr-3">
+                    <label for="company">Менеджер проекта</label>
+                    <select id="company" class="form-control"  v-model="data.company">
+                        <option v-for="item in projectCompany" :key="item.id" :value="item.id">{{ item.name }}</option>
+                    </select>
+                </div>
                 <div class="form-item form-item_bold align-self-end mr-3">
                     <b-button class="project-save-button" :size="''" :variant="'success'" @click="projectStatusChange()">
                         {{ 'Сохранить' }}
