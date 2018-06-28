@@ -33,6 +33,8 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('api:timerecords')->dailyAt('22:30');
         $schedule->command('api:timerecords')->dailyAt('23:00');
+
+        $schedule->command('emails:closed-time')->weekly()->mondays()->at('8:00');
     }
 
     /**
