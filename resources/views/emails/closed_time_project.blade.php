@@ -6,6 +6,9 @@
         <td style="width: 100%;padding-top:0px;padding-bottom:20px;text-align:center;font-family: Arial, Helvetica, sans-serif;font-size:20px; line-height:20px; color:#222222;">Данные по проекту {Название проекта}</td>        
     </tr>
     <tr>
+        <td style="width: 100%;padding-top:0px;padding-bottom:20px;text-align:center;font-family: Arial, Helvetica, sans-serif;font-size:16px; line-height:16px; color:#пкун;">состояние на: { Дата отчета}</td>        
+    </tr>
+    <tr>
         <td style="width: 100%;padding-top:15px;padding-bottom:15px;text-align:center;font-family: Arial, Helvetica, sans-serif;font-size:16px; line-height:16px; color:#222222;">
 
             <div style="display:inline-block;min-width: 200px;border: 1px solid grey;padding-left: 10px;padding-right: 10px;padding-top:15px;padding-bottom:15px;margin-bottom: 15px;">
