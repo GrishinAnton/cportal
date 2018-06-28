@@ -57,6 +57,14 @@
                         </div> 
                     </div>
                 </div>
+                <div class="form-group flex form-group_w20 ">
+                    <div class="form-item form-item_bold mr-5">
+                        <label for="teamlid">Тимлидские</label>
+                        <div class="flex">
+                            <input type="text" v-model="changeData.teamLid" class="form-control mr-1" placeholder="Тимлидские" id="teamlid">
+                        </div> 
+                    </div> 
+                </div>
 
                 <button type = "button" @click="saveSalary()" class = "btn btn-primary w-15 mb-2">Сохранить</button>
                 <b-alert :show="dismissCountDown"
@@ -148,7 +156,8 @@
             salaryHour: 0,
             closeHours: 0,
             penaltyTime: 0,
-            salary: 0
+            salary: 0,
+            teamLid: 0,
         },
         staticData: {
             salaryHour: 0,

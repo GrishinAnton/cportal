@@ -52,6 +52,10 @@ class PersonalGroupTableSeeder extends Seeder
             [
                 'name' => 'Другие',
                 'index' => 'other',
+            ],
+            [
+                'name' => 'Тимлид',
+                'index' => 'teamlid',
             ]
         ];
     }

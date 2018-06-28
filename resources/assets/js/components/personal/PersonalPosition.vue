@@ -92,16 +92,15 @@
 
             },
             countDownChanged (dismissCountDown) {
-                this.dismissCountDown = dismissCountDown
+                this.dismissCountDown = dismissCountDown;
             },
         },
         mounted(){           
 
             Api.getPersonalGroupAndCompany(this.personalId)
                 .then(response => {
-
-                    this.input.group = response.data.data.group.id
-                    this.input.company = response.data.data.company.id
+                    this.input.group = response.data.data.group.id;
+                    this.input.company = response.data.data.company.id;        
                     
                 })
                 .catch(e=> {
