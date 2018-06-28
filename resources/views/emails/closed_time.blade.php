@@ -1,6 +1,6 @@
 <table  align="center" cellspacing="0" cellpadding="0" border="0" style="width:100%; max-width:600px; border:0;">
     <tr>
-        <td style="width: 100%;padding-top:20px;padding-bottom:20px;text-align:center;"><img style="max-width: 130px;" src="{{ asset('images/logotype.jpg') }}"></td>        
+        <td style="width: 100%;padding-top:20px;padding-bottom:20px;text-align:center;"><img style="max-width: 130px;" src="{{ asset('images/logotype.png') }}"></td>        
     </tr>
      <tr>
         <td style="width: 100%;padding-top:0px;padding-bottom:20px;text-align:center;font-family: Arial, Helvetica, sans-serif;font-size:20px; line-height:20px; color:#222222;">Выработка {Данные сотрудника}</td>        
