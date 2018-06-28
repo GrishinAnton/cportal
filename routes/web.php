@@ -99,4 +99,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('activecollab/tasks', 'ActiveCollab\ApiController@tasks')->name('web.activecollab.tasks');
     Route::get('activecollab/time-records', 'ActiveCollab\ApiController@timeRecords')->name('web.activecollab.time-records');
     Route::get('activecollab/time-records/all', 'ActiveCollab\ApiController@timeRecordsAll')->name('web.activecollab.time-records.all');
+
+    Route::get('api/send-email/personal-times', 'Email\PersonalTimeController@send')->name('api.send-email.personal-times');
 });
