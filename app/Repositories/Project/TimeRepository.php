@@ -39,6 +39,8 @@ class TimeRepository extends ProjectRepository
                 GROUP BY t3.pers_id
             ) as t4"), 't4.pers_id', '=', 'personal.pers_id');
 
+        dd($personal->toSql());
+
         return $personal;
     }
 }

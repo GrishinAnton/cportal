@@ -68,6 +68,10 @@ Route::group(['middleware' => 'auth'], function () {
 
     //----------------------------------------------------------------------------------------------------------------//
 
+    Route::get('test-email', function () {
+        return new \App\Mail\ClosedTime();
+    });
+
     //Personal
     Route::get('personal', 'PersonalController@index')->name('web.personal.index');
     Route::get('personal/{id}', 'PersonalController@show')->name('web.personal.show');

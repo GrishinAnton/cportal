@@ -27,7 +27,8 @@ class ProjectController extends Controller
             'project_statuses.name as status_name'
         )
             ->leftJoin('personal_companies', 'projects.company_id', '=', 'personal_companies.id')
-            ->leftJoin('project_statuses', 'projects.status_id', '=', 'project_statuses.id');
+            ->leftJoin('project_statuses', 'projects.status_id', '=', 'project_statuses.id')
+            ->orderBy('project_id', 'asc');
 
         foreach ($request->all() as $key => $filter) {
             try {
