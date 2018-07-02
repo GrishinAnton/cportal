@@ -24,6 +24,7 @@ class SingleProjectResource extends JsonResource
             'status' => $this->resource->status_id,
             'hoursLaid' => $this->resource->hours_laid,
             'costPerHour' => $this->resource->cost_per_hour,
+            'manager' => $this->resource->manager,
         ];
     }
 }
