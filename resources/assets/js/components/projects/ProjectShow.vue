@@ -29,7 +29,7 @@
                 </div>
                 <div class="form-item form-item_bold mr-3">
                     <label for="company">Менеджеры</label>
-                    <select id="company" class="form-control"  v-model="data.managers">
+                    <select id="company" class="form-control"  v-model="data.manager">
                         <option v-for="item in projectManagers" :key="item.id" :value="item.id">{{ item.first_name }} {{ item.last }}</option>
                     </select>
                 </div>
@@ -183,7 +183,7 @@
                 hoursLaid: '',
                 status: 1,
                 company: 1,
-                managers: ''
+                manager: ''
             },
             projectName: '',
             dismissSecs: 5,
