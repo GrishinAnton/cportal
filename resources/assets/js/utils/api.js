@@ -9,6 +9,7 @@ const Api = {
     getProjectHoursSpent: (id) => axios.get(`/api/report/projects/${id}/hours-spent`),
     postProjectHoursSpent: (id, data) => axios.post(`/api/report/projects/${id}`, data),
     getProject: (id) => axios.get(`/api/report/projects/${id}`),
+    getManagers: () => axios.get(`/api/report/projects/managers`),
     //ActiveCollab
     getActiveCollab: (url) => axios.get(url),
     //Personal

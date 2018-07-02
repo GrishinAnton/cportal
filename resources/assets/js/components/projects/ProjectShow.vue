@@ -27,6 +27,12 @@
                         <option v-for="item in projectCompany" :key="item.id" :value="item.id">{{ item.name }}</option>
                     </select>
                 </div>
+                <div class="form-item form-item_bold mr-3">
+                    <label for="company">Менеджеры</label>
+                    <select id="company" class="form-control"  v-model="data.managers">
+                        <option v-for="item in projectManagers" :key="item.id" :value="item.id">{{ item.first_name }} {{ item.last }}</option>
+                    </select>
+                </div>
                 <div class="form-item form-item_bold align-self-end mr-3">
                     <b-button class="project-save-button" :size="''" :variant="'success'" @click="projectStatusChange()">
                         {{ 'Сохранить' }}
@@ -168,6 +174,7 @@
             balance: '',
             projectStatus: '', 
             projectCompany: '',
+            projectManagers: '',
             data: {
                 start: '',
                 finish: '',
@@ -176,6 +183,7 @@
                 hoursLaid: '',
                 status: 1,
                 company: 1,
+                managers: ''
             },
             projectName: '',
             dismissSecs: 5,
@@ -302,7 +310,13 @@
 
             Api.getCompanies(this.projectId)
                 .then(response => {
-                    this.projectCompany = response.data.data
+                    this.projectCompany = response.data.data;
+                })
+                .catch(e=>console.log(e));
+
+            Api.getManagers()
+                .then(response => {
+                   this.projectManagers = response.data.data;                   
                 })
                 .catch(e=>console.log(e));
            
