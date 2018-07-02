@@ -49,11 +49,11 @@
                         </tr>
                         <tr>
                             <th class="va_m">Часов заложено</th>
-                            <td class="w-50"><input type="text" placeholder="Введите данные" id="start" class="form-control" v-model="data.hours_laid"></td>
+                            <td class="w-50"><input type="text" placeholder="Введите данные" id="start" class="form-control" v-model="data.hoursLaid"></td>
                         </tr>
                         <tr>
                             <th class="va_m">Стоимость часа</th>
-                            <td class="w-50"><input type="text" placeholder="Введите данные" id="start" class="form-control" v-model="data.cost_per_hour"></td>
+                            <td class="w-50"><input type="text" placeholder="Введите данные" id="start" class="form-control" v-model="data.costPerHour"></td>
                         </tr>
 
                     </tbody>
@@ -172,8 +172,8 @@
                 start: '',
                 finish: '',
                 budget: '',
-                cost_per_hour: '',
-                hours_laid: '',
+                costPerHour: '',
+                hoursLaid: '',
                 status: 1,
                 company: 1,
             },
@@ -296,7 +296,7 @@
             Api.getProject(this.projectId)
                 .then(response => {
                     this.data = response.data.data;
-                    this.projectName = response.data.data.name;
+                    this.projectName = response.data.data.name;                    
                 })
                 .catch(e=>console.log(e));
 
