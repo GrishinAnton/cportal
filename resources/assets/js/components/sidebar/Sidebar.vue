@@ -73,7 +73,7 @@
                         {
                             icon: "fa fa-fw fa-user-md",
                             name: "Виджет",
-                            href: '/widget-time',
+                            href: '/report/widget-time',
                             id: 3.5
                         }
                     ],
