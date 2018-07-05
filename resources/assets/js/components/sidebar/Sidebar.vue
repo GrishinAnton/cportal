@@ -69,6 +69,12 @@
                             name: "Сводный",
                             href: '/report',
                             id: 3.4
+                        },
+                        {
+                            icon: "fa fa-fw fa-user-md",
+                            name: "Виджет",
+                            href: '/widget-time',
+                            id: 3.5
                         }
                     ],
                     id: 3
