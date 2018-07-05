@@ -102,4 +102,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('activecollab/time-records/all', 'ActiveCollab\ApiController@timeRecordsAll')->name('web.activecollab.time-records.all');
 
     Route::get('api/send-email/personal-times', 'Email\PersonalTimeController@send')->name('api.send-email.personal-times');
+
+    Route::get('report/widget-time', 'Report\WidgetController@index')->name('web.report.widget.index');
 });
