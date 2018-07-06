@@ -67,6 +67,8 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::post('api/report/projects/{id}', 'Api\Report\Project\ProjectController@update')->name('api.report.project.update');
 
+    Route::get('api/report/widget-time', 'Api\Report\WidgetController@index')->name('api.report.widget.index');
+
     //----------------------------------------------------------------------------------------------------------------//
 
     //Personal
