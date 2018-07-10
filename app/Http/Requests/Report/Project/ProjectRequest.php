@@ -24,13 +24,12 @@ class ProjectRequest extends FormRequest
     public function rules()
     {
         return [
-            'budget' => 'required',
-            'status' => 'required|exists:project_statuses,id',
-            'company' => 'required|exists:personal_companies,id',
-            'start' => 'required|date_format:d/m/Y',
-            'finish' => 'required|date_format:d/m/Y',
-            'hours_laid' => 'required|integer',
-            'cost_per_hour' => 'required|integer',
+            'status' => 'sometimes|exists:project_statuses,id',
+            'company' => 'sometimes|exists:personal_companies,id',
+            'start' => 'sometimes|date_format:d/m/Y',
+            'finish' => 'sometimes|date_format:d/m/Y',
+            'hours_laid' => 'sometimes|integer',
+            'cost_per_hour' => 'sometimes|integer',
         ];
     }
 }

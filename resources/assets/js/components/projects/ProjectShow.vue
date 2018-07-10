@@ -27,6 +27,12 @@
                         <option v-for="item in projectCompany" :key="item.id" :value="item.id">{{ item.name }}</option>
                     </select>
                 </div>
+                <div class="form-item form-item_bold mr-3">
+                    <label for="company">Менеджеры</label>
+                    <select id="company" class="form-control"  v-model="data.manager">
+                        <option v-for="item in projectManagers" :key="item.id" :value="item.id">{{ item.first_name }} {{ item.last }}</option>
+                    </select>
+                </div>
                 <div class="form-item form-item_bold align-self-end mr-3">
                     <b-button class="project-save-button" :size="''" :variant="'success'" @click="projectStatusChange()">
                         {{ 'Сохранить' }}
@@ -49,11 +55,11 @@
                         </tr>
                         <tr>
                             <th class="va_m">Часов заложено</th>
-                            <td class="w-50"><input type="text" placeholder="Введите данные" id="start" class="form-control" v-model="data.hours_laid"></td>
+                            <td class="w-50"><input type="text" placeholder="Введите данные" id="start" class="form-control" v-model="data.hoursLaid"></td>
                         </tr>
                         <tr>
                             <th class="va_m">Стоимость часа</th>
-                            <td class="w-50"><input type="text" placeholder="Введите данные" id="start" class="form-control" v-model="data.cost_per_hour"></td>
+                            <td class="w-50"><input type="text" placeholder="Введите данные" id="start" class="form-control" v-model="data.costPerHour"></td>
                         </tr>
 
                     </tbody>
@@ -168,14 +174,16 @@
             balance: '',
             projectStatus: '', 
             projectCompany: '',
+            projectManagers: '',
             data: {
                 start: '',
                 finish: '',
                 budget: '',
-                cost_per_hour: '',
-                hours_laid: '',
+                costPerHour: '',
+                hoursLaid: '',
                 status: 1,
                 company: 1,
+                manager: ''
             },
             projectName: '',
             dismissSecs: 5,
@@ -296,13 +304,19 @@
             Api.getProject(this.projectId)
                 .then(response => {
                     this.data = response.data.data;
-                    this.projectName = response.data.data.name;
+                    this.projectName = response.data.data.name;                    
                 })
                 .catch(e=>console.log(e));
 
             Api.getCompanies(this.projectId)
                 .then(response => {
-                    this.projectCompany = response.data.data
+                    this.projectCompany = response.data.data;
+                })
+                .catch(e=>console.log(e));
+
+            Api.getManagers()
+                .then(response => {
+                   this.projectManagers = response.data.data;                   
                 })
                 .catch(e=>console.log(e));
            

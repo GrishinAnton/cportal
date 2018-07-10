@@ -27,7 +27,8 @@ class ProjectController extends Controller
             'project_statuses.name as status_name'
         )
             ->leftJoin('personal_companies', 'projects.company_id', '=', 'personal_companies.id')
-            ->leftJoin('project_statuses', 'projects.status_id', '=', 'project_statuses.id');
+            ->leftJoin('project_statuses', 'projects.status_id', '=', 'project_statuses.id')
+            ->orderBy('project_id', 'asc');
 
         foreach ($request->all() as $key => $filter) {
             try {
@@ -57,7 +58,8 @@ class ProjectController extends Controller
             'company_id',
             'status_id',
             'hours_laid',
-            'cost_per_hour'
+            'cost_per_hour',
+            'manager_id'
         )
             ->where('project_id', $projectId)
             ->first();
@@ -87,6 +89,7 @@ class ProjectController extends Controller
                 'company_id' => $request->company,
                 'cost_per_hour' => $request->cost_per_hour,
                 'hours_laid' => $request->hours_laid,
+                'manager_id' => $request->manager,
             ]);
 
         return response()->json(['success' => true]);

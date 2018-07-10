@@ -57,6 +57,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('api/report/summary', 'Api\Report\SummaryController@index')->name('api.report.summary');
 
 
+    Route::get('api/report/projects/managers', 'Api\Report\Project\ManagerController@index')->name('api.report.managers.index');
     Route::get('api/report/projects/statuses', 'Api\Report\Project\StatusController@index')->name('api.report.project.statuses.show');
     Route::get('api/report/projects/{id}/hours-spent', 'Api\Report\Project\TimeController@show')->name('api.report.projects.show');
     Route::get('api/report/projects/{id}/fot', 'Api\Report\Project\FotController@show')->name('api.report.projects.show');
@@ -99,4 +100,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('activecollab/tasks', 'ActiveCollab\ApiController@tasks')->name('web.activecollab.tasks');
     Route::get('activecollab/time-records', 'ActiveCollab\ApiController@timeRecords')->name('web.activecollab.time-records');
     Route::get('activecollab/time-records/all', 'ActiveCollab\ApiController@timeRecordsAll')->name('web.activecollab.time-records.all');
+
+    Route::get('api/send-email/personal-times', 'Email\PersonalTimeController@send')->name('api.send-email.personal-times');
 });

@@ -7,7 +7,6 @@ use App\Http\Resources\CompanyResource;
 use App\Personal;
 use App\PersonalCompany;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\DB;
 
 class CompanyController extends Controller
 {
