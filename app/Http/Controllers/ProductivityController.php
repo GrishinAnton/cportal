@@ -13,4 +13,14 @@ class ProductivityController extends Controller
     {
         return view('productivity.index');
     }
+
+    /**
+     * Productivity two week
+     *
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
+    public function indexTwoWeek()
+    {
+        return view('productivity.index_two_week');
+    }
 }
