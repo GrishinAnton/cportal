@@ -2,16 +2,21 @@
 
 namespace App\Http\Controllers\Api\Report;
 
+use DB;
+use App\Personal;
+use Carbon\Carbon;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PersonalFilterRequest;
 use App\Http\Resources\Report\ProductivityResource;
 use App\Http\Resources\Report\ProductivityTwoWeekResource;
-use App\Personal;
-use Carbon\Carbon;
-use DB;
 
 class ProductivityController extends Controller
 {
+
+    /**
+     * Dates
+     */
+    public $days;
     /**
      * Productivity
      *
@@ -41,7 +46,6 @@ class ProductivityController extends Controller
     public function indexTwoWeek(PersonalFilterRequest $request)
     {
         $personal = $this->queryTwoWeekProductivity();
-
         foreach ($request->all() as $key => $filter) {
             try {
                 $personal->{$key}($filter);
@@ -121,81 +125,49 @@ class ProductivityController extends Controller
      */
     private function queryTwoWeekProductivity()
     {
-//        $personal = Personal::select(
-//            'personal.id',
-//            'personal.first_name',
-//            'personal.last_name',
-//            'personal.pers_id'
-//        )
-//            ->leftJoin('personal_times as pt', function($query)
-//            {
-//                $query->on('pt.pers_id', '=', 'personal.pers_id');
-//                $query->selectRaw('COUNT(id) as week1');
-//            })
-//            ->groupBy('personal.id')
-//            ->where('is_active', true);
+        $periodFrom = Carbon::now()->startOfWeek()->modify('-1 week')->format('Y-m-d');
+        $periodTo = Carbon::now()->format('Y-m-d');
 
+        $dates = $this->generateDateRange(Carbon::parse($periodFrom), Carbon::parse($periodTo));
 
-        $personal = Personal::select(
+        foreach ($dates as $date) {
+            $timestamp = Carbon::parse($date)->getTimestamp();
+            $select[] = "d$timestamp";
+            $sum[] = "sum(d$timestamp) as d$timestamp";
+            $if[] = "IF(date = '$date', sum, null) as d$timestamp";
+        }
+
+        $sqlPartIf = implode(',', $if);
+        $sqlPartSum = implode(',', $sum);
+
+        $allSelect = array_merge([
             'personal.id',
             'personal.first_name',
             'personal.last_name',
-            'personal.pers_id',
-            DB::raw('sum(t3.week1) as week1'),
-            DB::raw('sum(t3.week2) as week2'),
-            DB::raw('sum(t3.day1) as day1'),
-            DB::raw('sum(t3.day2) as day2'),
-            DB::raw('sum(t3.day3) as day3'),
-            DB::raw('sum(t3.day4) as day4'),
-            DB::raw('sum(t3.day5) as day5'),
-            DB::raw('sum(t3.day6) as day6'),
-            DB::raw('sum(t3.day7) as day7')
+            'personal.pers_id'
+        ], $select);
 
 
-        )
+        $personal = Personal::select($allSelect)
             ->leftJoin(DB::raw("(
-                SELECT
+                SELECT 
                     pers_id,
-                    IF(weeks = 1, sum, null) as week1,
-                    IF(weeks = 2, sum, null) as week2,
-                    IF(weeks = 3, sum, null) as day1,
-                    IF(weeks = 4, sum, null) as day2,
-                    IF(weeks = 5, sum, null) as day3,
-                    IF(weeks = 6, sum, null) as day4,
-                    IF(weeks = 7, sum, null) as day5,
-                    IF(weeks = 8, sum, null) as day6,
-                    IF(weeks = 9, sum, null) as day7
+                    $sqlPartSum  
                 FROM (
                     SELECT
-                        sum(worktime) as sum,
-                        pers_id,
-                        weeks
+                        pers_id,        
+                        $sqlPartIf
                     FROM (
                         SELECT
-                            IF(date BETWEEN '{$this->getCurrentDateWithModify('-2 week')}' AND '{$this->getCurrentDate()}', 1,
-                                IF(date BETWEEN '{$this->getCurrentDateWithModify('-1 week')}' AND '{$this->getCurrentDate()}', 2,
-                                    IF(date BETWEEN '{$this->getCurrentDateWithModify('-6 day')}' AND '{$this->getCurrentDate()}', 3,
-                                        IF(date BETWEEN '{$this->getCurrentDateWithModify('-5 day')}' AND '{$this->getCurrentDate()}', 4,
-                                            IF(date BETWEEN '{$this->getCurrentDateWithModify('-4 day')}' AND '{$this->getCurrentDate()}', 5,
-                                                IF(date BETWEEN '{$this->getCurrentDateWithModify('-3 day')}' AND '{$this->getCurrentDate()}', 6,
-                                                    IF(date BETWEEN '{$this->getCurrentDateWithModify('-2 day')}' AND '{$this->getCurrentDate()}', 7,
-                                                        IF(date BETWEEN '{$this->getCurrentDateWithModify('-1 day')}' AND '{$this->getCurrentDate()}', 8,
-                                                            IF(date = '{$this->getCurrentDate()}', 9, null)
-                                                        )
-                                                    )
-                                                )                                                
-                                            )
-                                        )
-                                    )
-                                )
-                            ) as weeks,
-                            pers_id,
-                            worktime
-                        FROM personal_times
-                    ) as pt
-                    WHERE weeks IS NOT NULL
-                    GROUP BY pt.weeks, pt.pers_id
-                ) as t2 ) as t3"), 't3.pers_id', '=', 'personal.pers_id')
+                           sum(worktime) as sum,
+                           pers_id,
+                           date
+                        FROM personal_times   
+                        WHERE date BETWEEN '{$periodFrom}' AND '{$periodTo}'
+                        GROUP BY pers_id, date
+                    ) as pt    
+                ) as st
+                group by pers_id) as at"), 'at.pers_id', '=', 'personal.pers_id')
             ->groupBy('personal.id')
             ->where('is_active', true);
 
@@ -245,4 +217,42 @@ class ProductivityController extends Controller
     {
         return Carbon::now()->format('Y-m-d');
     }
+
+    private function generateDateRange(Carbon $start_date, Carbon $end_date)
+    {
+        $dates = [];
+        for($date = $start_date; $date->lte($end_date); $date->addDay()) {
+            $dates[] = $date->format('Y-m-d');
+        }
+        return $dates;
+    }
+
+    private function getLocalesDay($nameDay)
+    {
+        $locales = [
+            'Mon' => 'Понедельник',
+            'Tue' => 'Вторник',
+            'Wed' => 'Среда',
+            'Thu' => 'Четверг',
+            'Fri' => 'Пятница',
+            'Sat' => 'Суббота',
+            'Sun' => 'Воскресенье',
+        ];
+
+        return $locales[$nameDay];
+    }
+
+    private function getDayNamesFromRange($dates)
+    {
+        $days = [];
+        foreach ($dates as $key => $date) {
+            $localeDay = date('D', strtotime($date));
+            $nameDay = $this->getLocalesDay($localeDay);
+            $key++;
+            $days ['d'.$key] = $nameDay;
+        }
+
+        return $days;
+    }
+
 }

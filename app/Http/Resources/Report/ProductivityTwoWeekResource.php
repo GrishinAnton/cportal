@@ -15,43 +15,102 @@ class ProductivityTwoWeekResource extends JsonResource
      */
     public function toArray($request)
     {
-        return [
+        $lastWeek = Carbon::now()->startOfWeek()->modify('-1 week')->format('Y-m-d');
+        $now = Carbon::now()->format('Y-m-d');
+        //dates and hours current week
+        $startThisWeek = Carbon::now()->startOfWeek()->format('Y-m-d');
+        $datesThisWeek = $this->generateDateRange(Carbon::parse($startThisWeek), Carbon::parse($now));
+        $daysThisWeek = $this->getDayNamesFromRange($datesThisWeek);
+        $daysWithKeyThisWeek = $this->getDayNamesFromRangeWithKey($datesThisWeek);
+        $thisWeekHoursSum = 0;
+
+        //dates and hours on last week
+        $datesLastWeek = $this->generateDateRange(Carbon::parse($lastWeek), Carbon::parse($startThisWeek)->subDay(1));
+        $daysLastWeek = $this->getDayNamesFromRange($datesLastWeek);
+        $daysWithKeyLastWeek = $this->getDayNamesFromRangeWithKey($datesLastWeek);
+        $hoursLastWeekSum = 0;
+
+        $personal = [
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
             'url' => route('web.personal.show', ['id' => $this->pers_id]),
-            'week2' => [
-                'hours' => $this->week1 ? round($this->week1, 2) : 0,
-                'date' => $this->getWeekMonthDay('-6 week')
-            ],
-            'week1' => [
-                'hours' => $this->week2 ? round($this->week2, 2) : 0,
-                'date' => $this->getWeekMonthDay('-5 week')
-            ],
-            'Понедельник' => [
-                'hours' => $this->week3 ? round($this->week3, 2) : 0,
-                'date' => $this->getWeekMonthDay('-4 week')
-            ],
-            'Вторник' => [
-                'hours' => $this->week4 ? round($this->week4, 2) : 0,
-                'date' => $this->getWeekMonthDay('-3 week')
-            ],
-            'Среда' => [
-                'hours' => $this->week5 ? round($this->week5, 2) : 0,
-                'date' => $this->getWeekMonthDay('-2 week')
-            ],
-            'Четверг' => [
-                'hours' => $this->week6 ? round($this->week6, 2) : 0,
-                'date' => $this->getWeekMonthDay('-1 week')
-            ],
-            'Пятница' => [
-                'hours' => $this->week6 ? round($this->week6, 2) : 0,
-                'date' => $this->getWeekMonthDay('-1 week')
-            ],
-            'Выходные' => [
-                'hours' => $this->week6 ? round($this->week6, 2) : 0,
-                'date' => $this->getWeekMonthDay('-1 week')
-            ],
         ];
+        $hoursThisWeek = [];
+        foreach ($datesLastWeek as $date) {
+
+            $hoursLastWeekSum += $this->{array_search($daysLastWeek[$date], $daysWithKeyLastWeek)};
+        }
+
+        $weekendHours = 0;
+        foreach ($datesThisWeek as $date) {
+
+            if (!in_array($daysThisWeek[$date], ['Суббота', 'Воскресенье'])) {
+                $hoursThisWeek[] = [
+                    'day' => $daysThisWeek[$date],
+                    'hours' => $this->{array_search($daysThisWeek[$date], $daysWithKeyThisWeek)},
+                ];
+            } else {
+                $weekendHours += $this->{array_search($daysThisWeek[$date], $daysWithKeyThisWeek)};
+                $hoursThisWeek[] = [
+                    'day' => 'Выходные',
+                    'hours' => $weekendHours,
+                ];
+
+            }
+
+            $thisWeekHoursSum += $this->{array_search($daysThisWeek[$date], $daysWithKeyThisWeek)};
+        }
+
+        return array_merge($hoursThisWeek, $personal, ['current_week_hours' => $thisWeekHoursSum], ['last_week_hours' => $hoursLastWeekSum]);
+    }
+
+    private function generateDateRange(Carbon $start_date, Carbon $end_date)
+    {
+        $dates = [];
+        for($date = $start_date; $date->lte($end_date); $date->addDay()) {
+            $dates[] = $date->format('Y-m-d');
+        }
+        return $dates;
+    }
+
+    private function getLocalesDay($nameDay)
+    {
+        $locales = [
+            'Mon' => 'Понедельник',
+            'Tue' => 'Вторник',
+            'Wed' => 'Среда',
+            'Thu' => 'Четверг',
+            'Fri' => 'Пятница',
+            'Sat' => 'Суббота',
+            'Sun' => 'Воскресенье',
+        ];
+
+        return $locales[$nameDay];
+    }
+
+    private function getDayNamesFromRange($dates)
+    {
+        $days = [];
+        foreach ($dates as $date) {
+            $localeDay = date('D', strtotime($date));
+            $nameDay = $this->getLocalesDay($localeDay);
+            $days [$date] = $nameDay;
+        }
+
+        return $days;
+    }
+
+    private function getDayNamesFromRangeWithKey($dates)
+    {
+        $days = [];
+        foreach ($dates as $key => $date) {
+            $localeDay = date('D', strtotime($date));
+            $nameDay = $this->getLocalesDay($localeDay);
+            $timestamp = Carbon::parse($date)->getTimestamp();
+            $days ['d'.$timestamp] = $nameDay;
+        }
+
+        return $days;
     }
 
     /**
@@ -66,5 +125,27 @@ class ProductivityTwoWeekResource extends JsonResource
             . '-' . Carbon::now()->modify($modify)->endOfWeek()->format('d.m');
 
         return $date;
+    }
+
+    /**
+     * Get current date with modify
+     *
+     * @param $modify
+     * @return string
+     */
+    private function getCurrentDateWithModify($modify)
+    {
+        return Carbon::now()->modify($modify)->format('Y-m-d');
+    }
+
+    /**
+     * Get current date with modify
+     *
+     * @param $modify
+     * @return string
+     */
+    private function getCurrentDate()
+    {
+        return Carbon::now()->format('Y-m-d');
     }
 }
