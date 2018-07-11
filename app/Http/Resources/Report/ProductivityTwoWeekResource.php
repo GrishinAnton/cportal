@@ -45,14 +45,13 @@ class ProductivityTwoWeekResource extends JsonResource
         foreach ($datesThisWeek as $date) {
 
             if (!in_array($daysThisWeek[$date], ['Суббота', 'Воскресенье'])) {
-                $hoursThisWeek[] = [
-                    'day' => $daysThisWeek[$date],
+                $hoursThisWeek[$daysThisWeek[$date]] = [
+
                     'hours' => $this->{array_search($daysThisWeek[$date], $daysWithKeyThisWeek)},
                 ];
             } else {
                 $weekendHours += $this->{array_search($daysThisWeek[$date], $daysWithKeyThisWeek)};
-                $hoursThisWeek[] = [
-                    'day' => 'Выходные',
+                $hoursThisWeek['Выходные'] = [
                     'hours' => $weekendHours,
                 ];
 
@@ -61,7 +60,12 @@ class ProductivityTwoWeekResource extends JsonResource
             $thisWeekHoursSum += $this->{array_search($daysThisWeek[$date], $daysWithKeyThisWeek)};
         }
 
-        return array_merge($hoursThisWeek, $personal, ['current_week_hours' => $thisWeekHoursSum], ['last_week_hours' => $hoursLastWeekSum]);
+        return array_merge( [
+            'first_name' => $this->first_name,
+            'last_name' => $this->last_name,
+            'url' => route('web.personal.show', ['id' => $this->pers_id]),
+        ],
+            $hoursThisWeek, ['current_week_hours' => $thisWeekHoursSum], ['last_week_hours' => $hoursLastWeekSum]);
     }
 
     private function generateDateRange(Carbon $start_date, Carbon $end_date)
