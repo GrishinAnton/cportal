@@ -30,42 +30,43 @@ class ProductivityTwoWeekResource extends JsonResource
         $daysWithKeyLastWeek = $this->getDayNamesFromRangeWithKey($datesLastWeek);
         $hoursLastWeekSum = 0;
 
-        $personal = [
-            'first_name' => $this->first_name,
-            'last_name' => $this->last_name,
-            'url' => route('web.personal.show', ['id' => $this->pers_id]),
-        ];
         $hoursThisWeek = [];
         foreach ($datesLastWeek as $date) {
-
             $hoursLastWeekSum += $this->{array_search($daysLastWeek[$date], $daysWithKeyLastWeek)};
         }
 
         $weekendHours = 0;
         foreach ($datesThisWeek as $date) {
-
             if (!in_array($daysThisWeek[$date], ['Суббота', 'Воскресенье'])) {
-                $hoursThisWeek[$daysThisWeek[$date]] = [
-
+                $hoursThisWeek[date('D', strtotime($date))] = [
                     'hours' => $this->{array_search($daysThisWeek[$date], $daysWithKeyThisWeek)},
+                    'date' => $daysThisWeek[$date],
                 ];
             } else {
                 $weekendHours += $this->{array_search($daysThisWeek[$date], $daysWithKeyThisWeek)};
-                $hoursThisWeek['Выходные'] = [
+                $hoursThisWeek['Holidays'] = [
                     'hours' => $weekendHours,
+                    'date' => 'Выходные',
                 ];
-
             }
 
             $thisWeekHoursSum += $this->{array_search($daysThisWeek[$date], $daysWithKeyThisWeek)};
         }
 
+        $currentWeekData = [
+            'hours' => $thisWeekHoursSum,
+            'date' =>  $this->getDateInterval($startThisWeek, Carbon::now()->format('Y-m-d')),
+        ];
+        $lastWeekData = [
+            'hours' => $hoursLastWeekSum,
+            'date' => $this->getDateInterval($lastWeek, Carbon::parse($lastWeek)->endOfWeek()),
+        ];
+
         return array_merge( [
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
             'url' => route('web.personal.show', ['id' => $this->pers_id]),
-        ],
-            $hoursThisWeek, ['current_week_hours' => $thisWeekHoursSum], ['last_week_hours' => $hoursLastWeekSum]);
+        ], $hoursThisWeek, ['current_week' => $currentWeekData],['last_week' => $lastWeekData]);
     }
 
     private function generateDateRange(Carbon $start_date, Carbon $end_date)
@@ -123,33 +124,11 @@ class ProductivityTwoWeekResource extends JsonResource
      * @param $modify
      * @return string
      */
-    private function getWeekMonthDay($modify)
+    private function getDateInterval($periodFrom, $periodTo)
     {
-        $date = Carbon::now()->modify($modify)->startOfWeek()->format('d.m')
-            . '-' . Carbon::now()->modify($modify)->endOfWeek()->format('d.m');
+        $date = Carbon::parse($periodFrom)->format('d.m')
+            . '-' . Carbon::parse($periodTo)->format('d.m');
 
         return $date;
-    }
-
-    /**
-     * Get current date with modify
-     *
-     * @param $modify
-     * @return string
-     */
-    private function getCurrentDateWithModify($modify)
-    {
-        return Carbon::now()->modify($modify)->format('Y-m-d');
-    }
-
-    /**
-     * Get current date with modify
-     *
-     * @param $modify
-     * @return string
-     */
-    private function getCurrentDate()
-    {
-        return Carbon::now()->format('Y-m-d');
     }
 }
