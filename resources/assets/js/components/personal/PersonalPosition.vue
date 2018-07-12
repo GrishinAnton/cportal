@@ -36,12 +36,12 @@
                 <select class="custom-select" id="teamlide" 
                     
                     v-model="load.teamlide"
-                    @change="onChangeCompany()"
+                    @change="onChangeTeamlide($event)"
                     >
                     <option 
                     :value="item.id"
                     v-for="item in load.teamlide" :key="item.id"
-                    >{{ item.name }}</option>
+                    >{{ item.firstName }} {{ item.lastName }}</option>
                 </select>
             </form>
         </div> 
@@ -113,6 +113,18 @@
             countDownChanged (dismissCountDown) {
                 this.dismissCountDown = dismissCountDown;
             },
+
+            onChangeTeamlide(e) {
+                console.log(e.target.value);
+                
+                axios.post(`/api/personal/${this.personalId}/add/personal`, {user_id: e.target.value})
+                .then(response => {
+                    console.log(response);                    
+                })
+                .catch(e=> {
+                    console.log(e)
+                })
+            }
         },
         mounted(){     
             
@@ -134,7 +146,7 @@
             axios.get(`/api/personal/groups/teamleads`)
                 .then(response => {
                     if(response.data){
-                        this.load.teamlide = response.data; 
+                        this.load.teamlide = response.data.data; 
                         console.log(this.load.teamlide);
                         
                     }                                       
