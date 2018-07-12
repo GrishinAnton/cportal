@@ -37,7 +37,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('api/personal', 'Api\Personal\PersonalController@index')->name('web.personal.index');
     Route::get('api/personal/{id}/group-company', 'Api\Personal\PersonalController@getCompanyGroupPersonal')->name('web.personal.company.group');
     Route::get('api/personal/costs', 'Api\Personal\CostController@index')->name('api.personal.costs');
-    Route::get('api/personal/{personalId}/add/personal', 'Api\Personal\PersonalController@addPersonal')->name('api.personal.addPersonal');
+    Route::post('api/personal/{personalId}/add/personal', 'Api\Personal\PersonalController@addPersonal')->name('api.personal.addPersonal');
 
 
     //Resource Personal Salary
