@@ -57,7 +57,7 @@ class Personal extends Command
         foreach ($personal as $pers) {
             Pers::updateOrCreate(
                 [
-                    'pers_id' => $pers['id']
+                    'pers_id' => $pers['id'],
                 ],
                 [
                     'avatar' => $pers['avatar_url'],
@@ -71,7 +71,7 @@ class Personal extends Command
                     'phone' => $pers['phone'],
                     'trashed_on' => $pers['trashed_on'],
                     'updated_on' => $pers['updated_on'],
-                    'url_path' => $pers['url_path']
+                    'url_path' => $pers['url_path'],
                 ]
             );
         }

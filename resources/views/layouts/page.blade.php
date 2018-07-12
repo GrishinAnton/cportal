@@ -7,7 +7,7 @@
         <header class="main-header flex flex_jc-sb">
             <!-- Logo -->
             <div class="header-logo flex">
-                <a href="/dashboard" class="header-logo__link">2UP</a>
+                <a @click.prevent="burgerToggle" href="/dashboard" class="header-logo__link">2UP</a>
             </div>
 
             <!-- Header Navbar -->

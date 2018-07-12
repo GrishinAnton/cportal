@@ -27,6 +27,7 @@ Vue.component('productivity', function (resolve) { require(['./components/produc
 Vue.component('project-show', function (resolve) { require(['./components/projects/ProjectShow'], resolve)});
 Vue.component('project', function (resolve) { require(['./components/projects/Project'], resolve)});
 Vue.component('active-collab', function (resolve) { require(['./components/activeCollab/ActiveCollab'], resolve)});
+Vue.component('widget-time', function (resolve) { require(['./components/widgets/WidgetTime'], resolve)});
 
 import Vuex from 'vuex';
 import BootstrapVue from 'bootstrap-vue';
@@ -46,5 +47,10 @@ const store = new Vuex.Store({
 
 const app = new Vue({
     el: '#app',
-    store
+    store,
+    methods: {
+        burgerToggle(){
+            this.$refs.sidebar.classList.toggle('hide-sidebar');            
+        }
+    }
 });

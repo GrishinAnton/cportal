@@ -30,6 +30,21 @@
                 </select>
             </form>
         </div> 
+        <div class="input-group mb-3 mr-4" v-if="load.teamlide.length">
+            <form method = "get">
+                <label for="teamlide">Тимлиды</label>
+                <select class="custom-select" id="teamlide" 
+                    
+                    v-model="load.teamlide"
+                    @change="onChangeCompany()"
+                    >
+                    <option 
+                    :value="item.id"
+                    v-for="item in load.teamlide" :key="item.id"
+                    >{{ item.name }}</option>
+                </select>
+            </form>
+        </div> 
         <b-alert :show="dismissCountDown"
                 dismissible
                 :variant="alertVariant"
@@ -54,7 +69,11 @@
         data: () => ({            
             input: {
                 group: '',
-                company: ''
+                company: '',
+                
+            },
+            load: {
+                teamlide: ''
             },
             dismissSecs: 5,
             dismissCountDown: 0,
@@ -95,12 +114,30 @@
                 this.dismissCountDown = dismissCountDown;
             },
         },
-        mounted(){           
-
+        mounted(){     
+            
             Api.getPersonalGroupAndCompany(this.personalId)
                 .then(response => {
-                    this.input.group = response.data.data.group.id;
-                    this.input.company = response.data.data.company.id;        
+
+                    if(response.data.data.group){
+                        this.input.group = response.data.data.group.id;
+                    }
+                    if(response.data.data.company){
+                        this.input.company = response.data.data.company.id;  
+                    }                          
+                    
+                })
+                .catch(e=> {
+                    console.log(e)
+                })
+
+            axios.get(`/api/personal/groups/teamleads`)
+                .then(response => {
+                    if(response.data){
+                        this.load.teamlide = response.data; 
+                        console.log(this.load.teamlide);
+                        
+                    }                                       
                     
                 })
                 .catch(e=> {

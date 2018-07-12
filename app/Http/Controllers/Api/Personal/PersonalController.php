@@ -62,11 +62,10 @@ class PersonalController extends Controller
     public function addPersonal($personalId, AddPersonalRequest $request)
     {
         $user = Personal::find($personalId);
-        $owner = Personal::find($request->pers_id);
-
+        $owner = Personal::find($request->user_id);
         $user->owners()->sync([
-            'owner_id'  => $owner->id,
-            'user_id'  => $user->id,
+            'owner_id'  => $owner->pers_id,
+            'user_id'  => $user->pers_id,
             'group_id'  => $owner->group_id
             ]
         );
