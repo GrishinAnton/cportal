@@ -114,9 +114,7 @@
                 this.dismissCountDown = dismissCountDown;
             },
 
-            onChangeTeamlide(e) {
-                console.log(e.target.value);
-                
+            onChangeTeamlide(e) {                
                 axios.post(`/api/personal/${this.personalId}/add/personal`, {user_id: e.target.value})
                 .then(response => {
                     console.log(response);                    
