@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Personal;
 
+use App\Http\Requests\AddPersonalRequest;
 use App\Http\Requests\PersonalFilterRequest;
 use App\Http\Resources\CompanyGroupResource;
 use App\Http\Resources\PersonalResource;
@@ -50,6 +51,27 @@ class PersonalController extends Controller
         return (new CompanyGroupResource($personal))->additional([
             'success' => true
         ]);
+    }
+
+    /**
+     * Get company and group personal
+     *
+     * @param $personalId
+     * @return CompanyGroupResource
+     */
+    public function addPersonal($personalId, AddPersonalRequest $request)
+    {
+        $user = Personal::find($personalId);
+        $owner = Personal::find($request->pers_id);
+
+        $user->owners()->sync([
+            'owner_id'  => $owner->id,
+            'user_id'  => $user->id,
+            'group_id'  => $owner->group_id
+            ]
+        );
+
+        return response()->json(['success' => true]);
     }
 
     /**
