@@ -78,24 +78,6 @@ class Personal extends Model
     }
 
 
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function users()
-    {
-        return $this->belongsToMany('App\Personal', 'user_to_user', 'owner_id', 'user_id');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function owners()
-    {
-        return $this->belongsToMany('App\Personal', 'user_to_user', 'user_id', 'owner_id');
-    }
-
-
     /**
      * Get salary
      *

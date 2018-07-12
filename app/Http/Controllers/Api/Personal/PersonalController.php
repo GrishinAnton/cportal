@@ -8,6 +8,7 @@ use App\Http\Resources\CompanyGroupResource;
 use App\Http\Resources\PersonalResource;
 use App\Http\Controllers\Controller;
 use App\Personal;
+use Carbon\Carbon;
 use DB;
 use DateTime;
 
@@ -62,13 +63,20 @@ class PersonalController extends Controller
     public function addPersonal($personalId, AddPersonalRequest $request)
     {
         $user = Personal::where('pers_id', $request->user_id)->first();
+        if (!$user) {
+            return response()->errors(make_error('not_found', 'Пользователь не найден.'), 404);
+        }
         $owner = Personal::where('pers_id', $request->owner_id)->first();
-        $user->owners()->sync([
+        if (!$owner) {
+            return response()->errors(make_error('not_found', 'Добавляемый пользователь не найден.'), 404);
+        }
+        DB::table('user_to_user')->insert([
             'owner_id'  => $owner->pers_id,
             'user_id'  => $user->pers_id,
-            'group_id'  => $owner->group_id
-            ]
-        );
+            'group_id'  => $owner->group_id,
+            'created_at'  => Carbon::now(),
+            'updated_at'  => Carbon::now()
+        ]);
 
         return response()->json(['success' => true]);
     }
