@@ -61,8 +61,8 @@ class PersonalController extends Controller
      */
     public function addPersonal($personalId, AddPersonalRequest $request)
     {
-        $user = Personal::where('pers_id', $personalId)->first();
-        $owner = Personal::where('pers_id', $request->user_id)->first();
+        $user = Personal::where('pers_id', $request->user_id)->first();
+        $owner = Personal::where('pers_id', $request->owner_id)->first();
         $user->owners()->sync([
             'owner_id'  => $owner->pers_id,
             'user_id'  => $user->pers_id,

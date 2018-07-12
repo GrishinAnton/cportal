@@ -24,7 +24,8 @@ class AddPersonalRequest extends FormRequest
     public function rules()
     {
         return [
-            'user_id' => 'required|exists:personal,id'
+            'user_id' => 'required|exists:personal,id',
+            'owner_id' => 'required|exists:personal,id'
         ];
     }
 }
