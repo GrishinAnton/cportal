@@ -53,6 +53,9 @@ Route::group(['middleware' => 'auth'], function () {
     //Resource Report Productivity
     Route::get('api/report/productivity', 'Api\Report\ProductivityController@index')->name('api.report.productivity');
 
+    //Resource Report Productivity
+    Route::get('api/report/productivity-two-week', 'Api\Report\ProductivityController@indexTwoWeek')->name('api.report.productivity-two-week');
+
     //Resource Report Summary
     Route::get('api/report/summary', 'Api\Report\SummaryController@index')->name('api.report.summary');
 
@@ -88,6 +91,9 @@ Route::group(['middleware' => 'auth'], function () {
 
     //Productivity
     Route::get('productivity', 'ProductivityController@index')->name('web.productivity');
+
+    Route::get('productivity-two-week', 'ProductivityController@indexTwoWeek')->name('web.productivity-two-week');
+
 
     //Employees
     Route::get('employees', 'EmployeesController@index')->name('web.employees');
