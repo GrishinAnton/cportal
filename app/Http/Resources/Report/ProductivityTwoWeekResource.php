@@ -39,13 +39,13 @@ class ProductivityTwoWeekResource extends JsonResource
         foreach ($datesThisWeek as $date) {
             if (!in_array($daysThisWeek[$date], ['Суббота', 'Воскресенье'])) {
                 $hoursThisWeek[date('D', strtotime($date))] = [
-                    'hours' => $this->{array_search($daysThisWeek[$date], $daysWithKeyThisWeek)},
+                    'hours' => round($this->{array_search($daysThisWeek[$date], $daysWithKeyThisWeek)},2),
                     'date' => $daysThisWeek[$date],
                 ];
             } else {
                 $weekendHours += $this->{array_search($daysThisWeek[$date], $daysWithKeyThisWeek)};
                 $hoursThisWeek['Holidays'] = [
-                    'hours' => $weekendHours,
+                    'hours' => round($weekendHours, 2),
                     'date' => 'Выходные',
                 ];
             }
@@ -54,11 +54,11 @@ class ProductivityTwoWeekResource extends JsonResource
         }
 
         $currentWeekData = [
-            'hours' => $thisWeekHoursSum,
+            'hours' => round($thisWeekHoursSum,2),
             'date' =>  $this->getDateInterval($startThisWeek, Carbon::now()->format('Y-m-d')),
         ];
         $lastWeekData = [
-            'hours' => $hoursLastWeekSum,
+            'hours' => round($hoursLastWeekSum,2),
             'date' => $this->getDateInterval($lastWeek, Carbon::parse($lastWeek)->endOfWeek()),
         ];
 
