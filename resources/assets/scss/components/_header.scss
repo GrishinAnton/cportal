@@ -14,10 +14,13 @@
 
     &__link {
         margin: auto;
+        display: block;
+        width: 100%;
+        height: 100%;
 
         color: $white;
         font-size: 26px;
-        line-height: 26px;
+        line-height: 50px;
         font-weight: 500;
         transition: $tr;
 

@@ -2,15 +2,21 @@
 
 namespace App\Http\Controllers\Api\Report;
 
+use DB;
+use App\Personal;
+use Carbon\Carbon;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PersonalFilterRequest;
 use App\Http\Resources\Report\ProductivityResource;
-use App\Personal;
-use Carbon\Carbon;
-use DB;
+use App\Http\Resources\Report\ProductivityTwoWeekResource;
 
 class ProductivityController extends Controller
 {
+
+    /**
+     * Dates
+     */
+    public $days;
     /**
      * Productivity
      *
@@ -29,6 +35,26 @@ class ProductivityController extends Controller
         }
 
         return ProductivityResource::collection($personal->paginate(75))
+            ->additional(['success' => true]);
+    }
+
+    /**
+     * Productivity two week
+     *
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
+    public function indexTwoWeek(PersonalFilterRequest $request)
+    {
+        $personal = $this->queryTwoWeekProductivity();
+        foreach ($request->all() as $key => $filter) {
+            try {
+                $personal->{$key}($filter);
+            } catch (\Exception $e) {
+                report($e);
+            }
+        }
+
+        return ProductivityTwoWeekResource::collection($personal->paginate(75))
             ->additional(['success' => true]);
     }
 
@@ -60,6 +86,7 @@ class ProductivityController extends Controller
                     IF(weeks = 4, sum, null) as week4,
                     IF(weeks = 5, sum, null) as week5,
                     IF(weeks = 6, sum, null) as week6
+                  
                 FROM (
                     SELECT
                         sum(worktime) as sum,
@@ -92,6 +119,62 @@ class ProductivityController extends Controller
     }
 
     /**
+     * Query productivity
+     *
+     * @return mixed
+     */
+    private function queryTwoWeekProductivity()
+    {
+        $periodFrom = Carbon::now()->startOfWeek()->modify('-1 week')->format('Y-m-d');
+        $periodTo = Carbon::now()->format('Y-m-d');
+
+        $dates = $this->generateDateRange(Carbon::parse($periodFrom), Carbon::parse($periodTo));
+
+        foreach ($dates as $date) {
+            $timestamp = Carbon::parse($date)->getTimestamp();
+            $select[] = "d$timestamp";
+            $sum[] = "sum(d$timestamp) as d$timestamp";
+            $if[] = "IF(date = '$date', sum, null) as d$timestamp";
+        }
+
+        $sqlPartIf = implode(',', $if);
+        $sqlPartSum = implode(',', $sum);
+
+        $allSelect = array_merge([
+            'personal.id',
+            'personal.first_name',
+            'personal.last_name',
+            'personal.pers_id'
+        ], $select);
+
+
+        $personal = Personal::select($allSelect)
+            ->leftJoin(DB::raw("(
+                SELECT 
+                    pers_id,
+                    $sqlPartSum  
+                FROM (
+                    SELECT
+                        pers_id,        
+                        $sqlPartIf
+                    FROM (
+                        SELECT
+                           sum(worktime) as sum,
+                           pers_id,
+                           date
+                        FROM personal_times   
+                        WHERE date BETWEEN '{$periodFrom}' AND '{$periodTo}'
+                        GROUP BY pers_id, date
+                    ) as pt    
+                ) as st
+                group by pers_id) as at"), 'at.pers_id', '=', 'personal.pers_id')
+            ->groupBy('personal.id')
+            ->where('is_active', true);
+
+        return $personal;
+    }
+
+    /**
      * Get start of week date
      *
      * @param $modify
@@ -112,4 +195,64 @@ class ProductivityController extends Controller
     {
         return Carbon::now()->modify($modify)->endOfWeek()->format('Y-m-d');
     }
+
+    /**
+     * Get current date with modify
+     *
+     * @param $modify
+     * @return string
+     */
+    private function getCurrentDateWithModify($modify)
+    {
+        return Carbon::now()->modify($modify)->format('Y-m-d');
+    }
+
+    /**
+     * Get current date with modify
+     *
+     * @param $modify
+     * @return string
+     */
+    private function getCurrentDate()
+    {
+        return Carbon::now()->format('Y-m-d');
+    }
+
+    private function generateDateRange(Carbon $start_date, Carbon $end_date)
+    {
+        $dates = [];
+        for($date = $start_date; $date->lte($end_date); $date->addDay()) {
+            $dates[] = $date->format('Y-m-d');
+        }
+        return $dates;
+    }
+
+    private function getLocalesDay($nameDay)
+    {
+        $locales = [
+            'Mon' => 'Понедельник',
+            'Tue' => 'Вторник',
+            'Wed' => 'Среда',
+            'Thu' => 'Четверг',
+            'Fri' => 'Пятница',
+            'Sat' => 'Суббота',
+            'Sun' => 'Воскресенье',
+        ];
+
+        return $locales[$nameDay];
+    }
+
+    private function getDayNamesFromRange($dates)
+    {
+        $days = [];
+        foreach ($dates as $key => $date) {
+            $localeDay = date('D', strtotime($date));
+            $nameDay = $this->getLocalesDay($localeDay);
+            $key++;
+            $days ['d'.$key] = $nameDay;
+        }
+
+        return $days;
+    }
+
 }
