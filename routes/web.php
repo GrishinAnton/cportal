@@ -26,6 +26,8 @@ Route::group(['middleware' => 'auth'], function () {
     //Personal groups
     Route::get('api/personal/groups', 'Api\Personal\GroupController@getGroups')->name('api.personal.groups');
     Route::post('api/personal/{personalId}/add/group', 'Api\Personal\GroupController@addGroup')->name('api.personal.add.groups');
+    Route::get('api/personal/groups/teamleads', 'Api\Personal\GroupController@teamleads')->name('api.personal.groups.teamleads');
+
 
     //Personal companies
     Route::get('api/personal/companies', 'Api\Personal\CompanyController@getCompanies')->name('api.personal.companies');
@@ -35,6 +37,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('api/personal', 'Api\Personal\PersonalController@index')->name('web.personal.index');
     Route::get('api/personal/{id}/group-company', 'Api\Personal\PersonalController@getCompanyGroupPersonal')->name('web.personal.company.group');
     Route::get('api/personal/costs', 'Api\Personal\CostController@index')->name('api.personal.costs');
+    Route::get('api/personal/{personalId}/add/personal', 'Api\Personal\PersonalController@addPersonal')->name('api.personal.addPersonal');
+
 
     //Resource Personal Salary
     Route::post('api/personal/{persId}/salary/store', 'Api\Personal\SalaryController@store')->name('api.personal.salary.store');
