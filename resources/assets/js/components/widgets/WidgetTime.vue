@@ -53,7 +53,7 @@
                 fields: {},
                 items: [] 
             },
-            requestUrl: `/api/report/productivity`
+            requestUrl: `/api/report/productivity-two-week`
         }),        
         methods: {      
             sort(a, b, key){  
@@ -61,17 +61,19 @@
 
                 return a[key].hours < b[key].hours ? -1 : (a[key].hours > b[key].hours ? 1 : 0);         
             },   
-            sortTableData(data){
+            sortTableData(data){ 
                
                 this.table.fields = {
                     index: {label: '#'},
                     firstName: {label: 'Имя Фамилия'},
-                    week1: {key: 'week1.hours', label: data[0].week1.date, sortable: true, tdClass: this.showHowWeekHours},
-                    week2: {key: 'week2.hours', label: data[0].week2.date, sortable: true, tdClass: this.showHowWeekHours},
-                    week3: {key: 'week3.hours', label: data[0].week3.date, sortable: true, tdClass: this.showHowWeekHours},
-                    week4: {key: 'week4.hours', label: data[0].week4.date, sortable: true, tdClass: this.showHowWeekHours},
-                    week5: {key: 'week5.hours', label: data[0].week5.date, sortable: true, tdClass: this.showHowWeekHours},
-                    week6: {key: 'week6.hours', label: data[0].week6.date, sortable: true, tdClass: this.showHowWeekHours},
+                    last_week: {key: 'last_week.hours', label: data[0].last_week.date, sortable: true, tdClass: this.showHowWeekHours},
+                    current_week: {key: 'current_week.hours', label: data[0].current_week.date, sortable: true, tdClass: this.showHowWeekHours},
+                    Mon: {key: 'Mon.hours', label: data[0].Mon == undefined ? '' : data[0].Mon.date, sortable: true, tdClass: this.showHowDayHours},
+                    Tue: {key: 'Tue.hours', label: data[0].Tue == undefined ? '' : data[0].Tue.date, sortable: true, tdClass: this.showHowDayHours},
+                    Wed: {key: 'Wed.hours', label: data[0].Wed == undefined ? '' : data[0].Wed.date, sortable: true, tdClass: this.showHowDayHours},
+                    Thu: {key: 'Thu.hours', label: data[0].Thu == undefined ? '' : data[0].Thu.date, sortable: true, tdClass: this.showHowDayHours},
+                    Fri: {key: 'Fri.hours', label: data[0].Fri == undefined ? '' : data[0].Fri.date, sortable: true, tdClass: this.showHowDayHours},
+                    Holidays: {key: 'Holidays.hours', label: data[0].Holidays  == undefined ? '' : data[0].Holidays.date, sortable: true, tdClass: this.showHowDayHours},
                 }
 
                 this.table.items = data
@@ -85,7 +87,28 @@
                 }
                 
                 return '';                 
-            },    
+            },  
+            showHowDayHours(value){
+                
+                if (value <= 4) {
+                    return 'table-danger';
+                } else if (value <= 6) {
+                    return 'table-warning';
+                } else if (value <= 7) {
+                    return 'table-info';
+                } else if (value > 7) {
+                    return 'table-success';
+                }
+                
+                return '';                 
+            },   
         }
     }
 </script>
+<style>
+
+.table th:empty,
+ .table td:empty {
+    display: none;
+}
+</style>

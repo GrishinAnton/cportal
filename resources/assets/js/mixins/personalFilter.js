@@ -72,6 +72,8 @@ export const personalFilter = {
 
             Api.getSomeAxiosRequest(this.requestUrl)
                 .then(response => {
+                    console.log(response, '++++');
+                                        
                     this.refreshTableData(response);
                 })
                 .catch(e => console.log(e));
