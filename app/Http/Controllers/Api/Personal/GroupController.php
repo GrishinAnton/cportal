@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api\Personal;
 
 use App\Http\Requests\GroupRequest;
 use App\Http\Resources\GroupResource;
+use App\Http\Resources\PersonalResource;
+use App\Http\Resources\PersonalShortResource;
 use App\Personal;
 use App\PersonalGroup;
 use App\Http\Controllers\Controller;
@@ -37,5 +39,24 @@ class GroupController extends Controller
         ]);
 
         return response()->json(['success' => true]);
+    }
+
+    /**
+     * Add groups
+     *
+     * @param $personalId
+     * @param GroupRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function teamleads()
+    {
+        $group = PersonalGroup::where('index','teamlid')->first();
+
+        if ($group) {
+            $personals = Personal::where('group_id', $group->id)->get();
+        }
+
+        return PersonalShortResource::collection($personals)
+            ->additional(['success' => true]);
     }
 }

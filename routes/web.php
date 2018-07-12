@@ -26,6 +26,8 @@ Route::group(['middleware' => 'auth'], function () {
     //Personal groups
     Route::get('api/personal/groups', 'Api\Personal\GroupController@getGroups')->name('api.personal.groups');
     Route::post('api/personal/{personalId}/add/group', 'Api\Personal\GroupController@addGroup')->name('api.personal.add.groups');
+    Route::get('api/personal/groups/teamleads', 'Api\Personal\GroupController@teamleads')->name('api.personal.groups.teamleads');
+
 
     //Personal companies
     Route::get('api/personal/companies', 'Api\Personal\CompanyController@getCompanies')->name('api.personal.companies');
@@ -35,6 +37,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('api/personal', 'Api\Personal\PersonalController@index')->name('web.personal.index');
     Route::get('api/personal/{id}/group-company', 'Api\Personal\PersonalController@getCompanyGroupPersonal')->name('web.personal.company.group');
     Route::get('api/personal/costs', 'Api\Personal\CostController@index')->name('api.personal.costs');
+    Route::post('api/personal/{personalId}/add/personal', 'Api\Personal\PersonalController@addPersonal')->name('api.personal.addPersonal');
+
 
     //Resource Personal Salary
     Route::post('api/personal/{persId}/salary/store', 'Api\Personal\SalaryController@store')->name('api.personal.salary.store');
@@ -57,6 +61,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('api/report/summary', 'Api\Report\SummaryController@index')->name('api.report.summary');
 
 
+    Route::get('api/report/projects/managers', 'Api\Report\Project\ManagerController@index')->name('api.report.managers.index');
     Route::get('api/report/projects/statuses', 'Api\Report\Project\StatusController@index')->name('api.report.project.statuses.show');
     Route::get('api/report/projects/{id}/hours-spent', 'Api\Report\Project\TimeController@show')->name('api.report.projects.show');
     Route::get('api/report/projects/{id}/fot', 'Api\Report\Project\FotController@show')->name('api.report.projects.show');
@@ -99,4 +104,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('activecollab/tasks', 'ActiveCollab\ApiController@tasks')->name('web.activecollab.tasks');
     Route::get('activecollab/time-records', 'ActiveCollab\ApiController@timeRecords')->name('web.activecollab.time-records');
     Route::get('activecollab/time-records/all', 'ActiveCollab\ApiController@timeRecordsAll')->name('web.activecollab.time-records.all');
+
+    Route::get('api/send-email/personal-times', 'Email\PersonalTimeController@send')->name('api.send-email.personal-times');
 });
