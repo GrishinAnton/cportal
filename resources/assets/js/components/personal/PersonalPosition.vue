@@ -2,7 +2,7 @@
     <div class="flex">
 
         <div class="input-group mb-3 mr-4" v-if="load.groups.length">
-            <form method = "get">
+            <form>
                 <label for="group">Группы</label>
                 <select  class="custom-select" id="group"                   
                     v-model="input.group"
@@ -16,7 +16,7 @@
             </form>
         </div>
         <div class="input-group mb-3 mr-4" v-if="load.companies.length">
-            <form method = "get">
+            <form>
                 <label for="company">Компании</label>
                 <select class="custom-select" id="company" 
                     
@@ -31,11 +31,11 @@
             </form>
         </div> 
         <div class="input-group mb-3 mr-4" v-if="load.teamlide.length">
-            <form method = "get">
+            <form>
                 <label for="teamlide">Тимлиды</label>
                 <select class="custom-select" id="teamlide" 
                     
-                    v-model="load.teamlide"
+                    
                     @change="onChangeTeamlide($event)"
                     >
                     <option 
@@ -114,14 +114,20 @@
                 this.dismissCountDown = dismissCountDown;
             },
 
-            onChangeTeamlide(e) {                
-                axios.post(`/api/personal/${this.personalId}/add/personal`, {user_id: e.target.value})
-                .then(response => {
-                    console.log(response);                    
-                })
-                .catch(e=> {
-                    console.log(e)
-                })
+            onChangeTeamlide(e) {        
+                var params = {
+                    user_id: Number(e.target.value),
+                    owner_id: this.personalId
+                }        
+                axios.post(`/api/personal/${this.personalId}/add/personal`, params)
+                    .then(response => {
+                        console.log(response);       
+                        console.log(this.load.teamlide);
+                                     
+                    })
+                    .catch(e=> {
+                        console.log(e)
+                    })
             }
         },
         mounted(){     
