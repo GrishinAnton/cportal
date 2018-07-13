@@ -111,7 +111,7 @@ class TeamleadController extends Controller
     {
         $teamlead = Personal::where('pers_id', $personalId)->first();
         if ($request->action == 'change') {
-            $users = $teamlead->users()->get();
+            $users = $teamlead->teamleadPersonals()->get();
             foreach ($users as $user) {
                 $user->update([
                     'teamlead_id' => $request->new_teamlead_id
