@@ -89,6 +89,7 @@ class SalaryController extends Controller
                 'fix' => $request->fix,
                 'salary' => $request->salary,
                 'close_hours' => $request->closeHours,
+                'teamlead_bonus' => $request->teamlead_bonus,
                 'salary_hours' => $request->salaryHours,
                 'penalty_hours' => $request->penaltyHours,
             ]);

@@ -217,7 +217,7 @@
                 closeHours: this.changeData.closeHours || this.staticData.closeHours,
                 penaltyHours: this.changeData.penaltyTime || this.staticData.penaltyTime,
                 fix: this.changeData.fixSalary,
-                fix: this.changeData.fixSalary,
+                teamlead_bonus: this.changeData.teamLid,
                 date: `${this.date}-${dayForBack}`
             })
             .then(response => {
@@ -278,6 +278,7 @@
                     var data = response.data.data;
                 
                     this.changeData.fixSalary = data.fix;
+                    this.changeData.teamLid = data.teamlead_bonus;
                     this.changeData.coef = data.coefficient;
                     this.staticData.salaryHour = data.salaryHours;
                     this.changeData.closeHours = data.closeHours;
