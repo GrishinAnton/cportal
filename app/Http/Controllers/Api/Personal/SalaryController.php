@@ -62,6 +62,7 @@ class SalaryController extends Controller
         Salary::create([
             'pers_id' => $persId,
             'coefficient' => $request->coefficient,
+            'teamlead_bonus' => $request->teamlead_bonus,
             'fix' => $request->fix,
             'salary' => $request->salary,
             'close_hours' => $request->closeHours,
