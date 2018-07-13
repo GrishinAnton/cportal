@@ -129,7 +129,7 @@ class TeamleadController extends Controller
                     'teamlead_id' => null
                 ]);
             }
-            //$teamlead->delete();
+            $teamlead->update(['is_active' => false]);
         }
 
         return response()->json(['success' => true]);
