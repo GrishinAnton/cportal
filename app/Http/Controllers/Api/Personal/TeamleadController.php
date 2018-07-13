@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api\Personal;
 
 use App\Http\Requests\ChangeTeamleadRequest;
+use App\Http\Resources\TeamleadPersonalsResource;
+use Carbon\Carbon;
 use DB;
 use App\Http\Requests\AddPersonalRequest;
 use Mockery\Exception;
@@ -23,17 +25,24 @@ class TeamleadController extends Controller
      */
     public function users($personalId)
     {
-        $user = Personal::where('pers_id', $personalId)
-            ->where('is_active', true)
-            ->first();
+        $user = Personal::with(['teamleadPersonals' => function ($query) {
+                $query->with(['times' => function ($q) {
+                    $q->whereBetween('date', [Carbon::now()->startOfMonth()->format('Y-m-d'), Carbon::now()->format('Y-m-d')]);
+                }]);
+            }
+        ])->where('pers_id', $personalId)
+                ->where('is_active', true)
+                ->first();
+
+       // dump($user->teamleadPersonals);
+
 
         if (!$user) {
             abort(404);
         }
+        $users = $user->teamleadPersonals;
 
-        $users = $user->teamleadPersonals();
-
-        return PersonalShortResource::collection($users->paginate(75))
+        return TeamleadPersonalsResource::collection($users)
             ->additional(['success' => true]);
     }
 
