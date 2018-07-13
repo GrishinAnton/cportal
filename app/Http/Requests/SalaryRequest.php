@@ -2,9 +2,7 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-
-class SalaryRequest extends FormRequest
+class SalaryRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.
