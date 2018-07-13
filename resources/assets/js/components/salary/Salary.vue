@@ -61,7 +61,7 @@
                     <div class="form-item form-item_bold mr-5">
                         <label for="teamlid">Тимлидские</label>
                         <div class="flex">
-                            <input type="text" v-model="changeData.teamLid" class="form-control mr-1" placeholder="Тимлидские" id="teamlid">
+                            <input type="text" v-model.number="changeData.teamLid" @input="onChangeSalaryHour()" class="form-control mr-1" placeholder="Тимлидские" id="teamlid">
                         </div> 
                     </div> 
                 </div>
@@ -182,7 +182,7 @@
     }),
     methods: {
         onChangeSalaryHour(){
-            this.staticData.salary = this.changeData.salaryHour * ((this.changeData.closeHours || this.staticData.closeHours) - (this.changeData.penaltyTime || this.staticData.penaltyTime))    
+            this.staticData.salary = this.changeData.salaryHour * ((this.changeData.closeHours || this.staticData.closeHours) - (this.changeData.penaltyTime || this.staticData.penaltyTime)) + this.changeData.teamLid    
             this.flagHours = true; 
         },
         onChangeSalary(){
@@ -216,6 +216,7 @@
                 salaryHours: this.flagHours ? this.changeData.salaryHour : this.staticData.salaryHour,
                 closeHours: this.changeData.closeHours || this.staticData.closeHours,
                 penaltyHours: this.changeData.penaltyTime || this.staticData.penaltyTime,
+                fix: this.changeData.fixSalary,
                 fix: this.changeData.fixSalary,
                 date: `${this.date}-${dayForBack}`
             })
