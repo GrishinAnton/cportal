@@ -52,12 +52,23 @@
                 @dismiss-count-down="countDownChanged">
                 <p>Данные обновлены. Закроюсь через {{dismissCountDown}} сукунд.</p>                 
         </b-alert>
-        <b-modal ref="myModalRef" hide-footer title="Смена тимлида">
+        <b-modal ref="myModalRef" hide-footer class="teamlide-modal" title="Смена тимлида">
             <div class="d-block text-center">
                 <h5>Сотрудники привязанные к тимлиду:</h5>
             </div>
             <div class="d-block text-center">
                 <h5>Сотрудников переводим тимлиду:</h5>
+                <div class="input-group mb-3 mt-3" v-if="load.teamlide.length">
+                    <form>
+                        <select class="custom-select" id="teamlide" 
+                            >
+                            <option 
+                            :value="item.id"
+                            v-for="item in load.teamlide" :key="item.id"
+                            >{{ item.firstName }} {{ item.lastName }}</option>
+                        </select>
+                    </form>
+                </div> 
             </div>
             <div class="d-block text-center">
                 <h5>Новый тимлид:</h5>
@@ -89,12 +100,13 @@
             },
             dismissSecs: 5,
             dismissCountDown: 0,
-            alertVariant: ''
+            alertVariant: '',
+            teamlide: false
 
         }),
         methods: {
             onChangeGroup(){         
-                if(this.input.group === 6){
+                if(this.input.group !== 6 &&  this.teamlide){
                     this.onChangeTeamlideGroup()
                     
                 } else {
@@ -158,6 +170,9 @@
 
                     if(response.data.data.group){
                         this.input.group = response.data.data.group.id;
+                        if(response.data.data.group.id === 6){
+                            this.teamlide = true
+                        }
                     }
                     if(response.data.data.company){
                         this.input.company = response.data.data.company.id;  
@@ -193,3 +208,9 @@
 </script>
 
 
+<style>
+
+.teamlide-modal .input-group {
+    justify-content: center;
+}
+</style>
