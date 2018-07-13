@@ -15,6 +15,7 @@ class Salary extends Model
         'fix',
         'salary',
         'close_hours',
+        'teamlead_bonus',
         'salary_hours',
         'penalty_hours',
         'date'
