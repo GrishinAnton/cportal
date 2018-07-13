@@ -46,7 +46,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     //Resource Personal Salary
     Route::post('api/personal/{persId}/salary/store', 'Api\Personal\SalaryController@store')->name('api.personal.salary.store');
-    Route::get('api/personal/salary/{salaryId}/update', 'Api\Personal\SalaryController@update')->name('api.personal.salary.update');
+    Route::post('api/personal/salary/{salaryId}/update', 'Api\Personal\SalaryController@update')->name('api.personal.salary.update');
     Route::get('api/personal/{persId}/salary', 'Api\Personal\SalaryController@show')->name('api.personal.salary.show');
 
     //Resource Personal Project Costs
