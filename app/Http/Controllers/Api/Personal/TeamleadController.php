@@ -23,7 +23,9 @@ class TeamleadController extends Controller
      */
     public function users($personalId)
     {
-        $user = Personal::where('pers_id', $personalId)->first();
+        $user = Personal::where('pers_id', $personalId)
+            ->where('is_active', true)
+            ->first();
 
         if (!$user) {
             abort(404);
@@ -33,6 +35,29 @@ class TeamleadController extends Controller
 
         return PersonalShortResource::collection($users->paginate(75))
             ->additional(['success' => true]);
+    }
+
+    /**
+     * Get users with this teamlead
+     *
+     * @param $personalId
+     * @return CompanyGroupResource
+     */
+    public function teamlead($personalId)
+    {
+        $user = Personal::where('pers_id', $personalId)
+            ->where('is_active', true)
+            ->first();
+
+        if (!$user) {
+            abort(404);
+        }
+
+        $teamlead = $user->teamlead()->first();
+
+        return (new PersonalShortResource($teamlead))->additional([
+            'success' => true
+        ]);
     }
 
     /**
@@ -47,7 +72,9 @@ class TeamleadController extends Controller
         $group = PersonalGroup::where('index','teamlid')->first();
 
         if ($group) {
-            $personals = Personal::where('group_id', $group->id)->get();
+            $personals = Personal::where('group_id', $group->id)
+                ->where('is_active', true)
+                ->get();
         }
 
         return PersonalShortResource::collection($personals)
@@ -64,14 +91,9 @@ class TeamleadController extends Controller
     public function addPersonal($personalId, AddPersonalRequest $request)
     {
         $user = Personal::where('pers_id', $personalId)->first();
-        if (!$user) {
-            return response()->errors(make_error('not_found', 'Пользователь не найден.'), 404);
-        }
-        $owner = Personal::where('pers_id', $request->teamlead_id)->first();
-        if (!$owner) {
-            return response()->errors(make_error('not_found', 'Добавляемый пользователь не найден.'), 404);
-        }
 
+        $owner = Personal::where('pers_id', $request->teamlead_id)->first();
+        
         $user->update([
             'teamlead_id' => $owner->pers_id
         ]);
