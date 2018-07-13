@@ -25,6 +25,8 @@ class Personal extends Model
         'class',
         'created_on',
         'email',
+        'group_id',
+        'teamlead_id',
         'first_name',
         'is_archived',
         'is_trashed',
@@ -78,24 +80,6 @@ class Personal extends Model
     }
 
 
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function users()
-    {
-        return $this->belongsToMany('App\Personal', 'user_to_user', 'owner_id', 'user_id');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function owners()
-    {
-        return $this->belongsToMany('App\Personal', 'user_to_user', 'user_id', 'owner_id');
-    }
-
-
     /**
      * Get salary
      *
@@ -114,6 +98,27 @@ class Personal extends Model
     public function costs()
     {
         return $this->hasMany('App\ProjectCost', 'pers_id', 'pers_id');
+    }
+
+    /**
+     * Get costs
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function teamleadPersonals()
+    {
+        return $this->hasMany('App\Personal', 'teamlead_id' );
+    }
+
+
+    /**
+     * Get costs
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function teamlead()
+    {
+        return $this->belongsTo('App\Personal', 'teamlead_id');
     }
 
     /**
