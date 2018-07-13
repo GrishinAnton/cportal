@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Personal;
 use App\Http\Requests\ChangeTeamleadRequest;
 use DB;
 use App\Http\Requests\AddPersonalRequest;
+use Faker\Provider\zh_TW\Person;
 use Mockery\Exception;
 use App\Http\Resources\PersonalShortResource;
 use App\Http\Resources\CompanyGroupResource;

@@ -1,121 +1,70 @@
-<table  align="center" cellspacing="0" cellpadding="0" style="width:100%; max-width:600px; border:0;">
+<table  align="center" cellspacing="0" cellpadding="0" border="0" style="width:100%; max-width:600px; border:0;">
     <tr>
-        <td style="width: 100%;padding-top:20px;padding-bottom:20px;text-align:center;"><img style="max-width: 130px;" src="{{ asset('images/logotype.png') }}"></td>        
+        <td style="width: 100%;padding-top:20px;padding-bottom:20px;text-align:center;"><img style="max-width: 130px;" src="{{ asset('images/logotype.png') }}"></td>
     </tr>
-     <tr>
-        <td style="width: 100%;padding-top:0px;padding-bottom:20px;text-align:center;font-family: Arial, Helvetica, sans-serif;font-size:20px; line-height:20px; color:#222222;">Данные по сотрудникам</td>        
+    <tr>
+        <td style="width: 100%;padding-top:0px;padding-bottom:20px;text-align:center;font-family: Arial, Helvetica, sans-serif;font-size:20px; line-height:20px; color:#222222;">Привет, {{ $firstName }} {{ $lastName }}</td>
     </tr>
-    <tr style="text-align: center;width: 300px; border: 1px solid grey;padding-top:15px;padding-bottom:15px;font-family: Arial, Helvetica, sans-serif;font-size:16px; line-height:16px; color:#222222;">
-        <td >
-            <div style="display:inline-block;min-width: 200px;border: 1px solid grey;padding-left: 10px;padding-right: 10px;padding-top:15px;padding-bottom:15px;margin-bottom: 15px;">
-                <ul style="list-style-type: none;padding:0;margin:0;">
-                    <li style="display: block;">
-                        <div style="display: inline-block;border-bottom: 1px solid grey;">
-                            <span>Иванов</span>
-                            <span> - 40ч.</span>
-                        </div>
-                        
-                    </li>                
-                    <li style="display: block;">
-                        <div style="display: inline-block;border-bottom: 1px solid grey;">
-                            <span>Иванов</span>
-                            <span> - 40ч.</span>
-                        </div>
-                    </li> 
-                </ul>                
-            </div>            
-        </td>  
+    <tr>
+        <td style="width: 100%;padding-top:15px;padding-bottom:15px;text-align:center;font-family: Arial, Helvetica, sans-serif;font-size:16px; line-height:16px; color:#222222;"> Данные в часах по дням за последнюю неделю</td>
     </tr>
 
-    <tr>
-        <td style="width: 100%;padding-top:15px;padding-bottom:20px;text-align:center;font-family: Arial, Helvetica, sans-serif;font-size:20px; line-height:20px; color:#222222;">Иванов</td>        
-    </tr>
-
+    @foreach ($week as $day)
         <tr style="text-align:center;">
             <td>
-                <span>Пн (10.06)</span>
+                <span>{{ day_of_week($day->date) }} ({{ format_date('d.m', $day->date) }})</span>
                 <span> - </span>
-                <span>8ч</span>
-            </td>        
+                <span>{{ $day->worktime }} ч</span>
+            </td>
         </tr>
-         
-        <tr style="text-align:center;">
-            <td>
-                <span>Пн (10.06)</span>
-                <span> - </span>
-                <span>8ч</span>
-            </td>        
-        </tr> 
-        <tr style="text-align:center;">
-            <td>
-                <span>Пн (10.06)</span>
-                <span> - </span>
-                <span>8ч</span>
-            </td>        
-        </tr> 
+    @endforeach
 
- 
     <tr>
-        <td style="width: 100%;padding-top:15px;padding-bottom:15px;text-align:center;font-family: Arial, Helvetica, sans-serif;font-size:16px; line-height:16px; color:#222222;">Данные за последние недели месяца</td>        
-    </tr>
-    <tr style="text-align:center;">
-        <td>
-            <span>10.06 - 17.06</span>
-            <span> - </span>
-            <span>25ч.</span>
-        </td>        
-    </tr> 
-    <tr style="text-align:center;">
-        <td>
-            <span>10.06 - 17.06</span>
-            <span> - </span>
-            <span>25ч.</span>
-        </td>        
-    </tr>  
-
-     <tr>
-        <td style="width: 100%;padding-top:15px;padding-bottom:20px;text-align:center;font-family: Arial, Helvetica, sans-serif;font-size:20px; line-height:20px; color:#222222;">Петров</td>        
+        <td style="width: 100%;padding-top:15px;padding-bottom:15px;text-align:center;font-family: Arial, Helvetica, sans-serif;font-size:16px; line-height:16px; color:#222222;">Данные за последние недели месяца</td>
     </tr>
 
+
+    @foreach ($weeks->getOriginal() as $key => $time)
         <tr style="text-align:center;">
             <td>
-                <span>Пн (10.06)</span>
+                <span>{{ $key  }}</span>
                 <span> - </span>
-                <span>8ч</span>
-            </td>        
+                <span>{{ $time }}ч.</span>
+            </td>
         </tr>
-         
-        <tr style="text-align:center;">
-            <td>
-                <span>Пн (10.06)</span>
-                <span> - </span>
-                <span>8ч</span>
-            </td>        
-        </tr> 
-        <tr style="text-align:center;">
-            <td>
-                <span>Пн (10.06)</span>
-                <span> - </span>
-                <span>8ч</span>
-            </td>        
-        </tr> 
+    @endforeach
 
- 
     <tr>
-        <td style="width: 100%;padding-top:15px;padding-bottom:15px;text-align:center;font-family: Arial, Helvetica, sans-serif;font-size:16px; line-height:16px; color:#222222;">Данные за последние недели месяца</td>        
+        <td style="width: 100%;padding-top:15px;padding-bottom:15px;text-align:center;font-family: Arial, Helvetica, sans-serif;font-size:16px; line-height:16px; color:#222222;">Данные за последние три месяца</td>
     </tr>
-    <tr style="text-align:center;">
-        <td>
-            <span>10.06 - 17.06</span>
-            <span> - </span>
-            <span>25ч.</span>
-        </td>        
-    </tr> 
-    <tr style="text-align:center;">
-        <td>
-            <span>10.06 - 17.06</span>
-            <span> - </span>
-            <span>25ч.</span>
-        </td>        
-    </tr>  
+
+    @foreach ($months->getOriginal() as $key => $time)
+        <tr style="text-align:center;">
+            <td>
+                <span>{{ month_ru($key) }}</span>
+                <span>{{ $time }} ч.</span>
+            </td>
+        </tr>
+    @endforeach
+
+    @foreach ($months->getOriginal() as $key => $time)
+        <tr style="text-align:center;">
+            <td>
+                <span>{{ month_ru($key) }}</span>
+                <span>{{ $time }} ч.</span>
+            </td>
+        </tr>
+    @endforeach
 </table>
+
+
+@foreach ($teamleadUsers as $key => $user)
+    <table  align="center" cellspacing="0" cellpadding="0" border="0" style="width:100%; max-width:600px; border:0;">
+        <tr>
+            <th style="width: 100%;padding-top:20px;padding-bottom:20px;text-align:center;"><img style="max-width: 130px;" src="{{ $user['first_name'] }}"></th>
+        </tr>
+        <tr>
+            <th style="width: 100%;padding-top:0px;padding-bottom:20px;text-align:center;font-family: Arial, Helvetica, sans-serif;font-size:20px; line-height:20px; color:#222222;"> {{ $user['last_name'] }}</th>
+        </tr>
+    </table>
+@endforeach
