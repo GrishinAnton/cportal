@@ -34,9 +34,6 @@ class TeamleadController extends Controller
                 ->where('is_active', true)
                 ->first();
 
-       // dump($user->teamleadPersonals);
-
-
         if (!$user) {
             abort(404);
         }

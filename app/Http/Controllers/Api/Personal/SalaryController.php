@@ -32,7 +32,7 @@ class SalaryController extends Controller
     {
         $date = explode('-', $request->date);
 
-        $salary = Salary::select('id', 'coefficient', 'fix', 'salary', 'close_hours', 'salary_hours', 'penalty_hours')
+        $salary = Salary::select('id','teamlead_bonus', 'coefficient', 'fix', 'salary', 'close_hours', 'salary_hours', 'penalty_hours')
             ->where('pers_id', $persId)
             ->whereYear('date', $date[self::DATE_YEAR])
             ->whereMonth('date', $date[self::DATE_MONTH])
