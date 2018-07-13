@@ -35,8 +35,8 @@
                 <label for="teamlide">Тимлиды</label>
                 <select class="custom-select" id="teamlide" 
                     
-                    
-                    @change="onChangeTeamlide($event)"
+                    v-model="input.teamlide"
+                    @change="onChangeTeamlide()"
                     >
                     <option 
                     :value="item.id"
@@ -52,6 +52,18 @@
                 @dismiss-count-down="countDownChanged">
                 <p>Данные обновлены. Закроюсь через {{dismissCountDown}} сукунд.</p>                 
         </b-alert>
+        <b-modal ref="myModalRef" hide-footer title="Смена тимлида">
+            <div class="d-block text-center">
+                <h5>Сотрудники привязанные к тимлиду:</h5>
+            </div>
+            <div class="d-block text-center">
+                <h5>Сотрудников переводим тимлиду:</h5>
+            </div>
+            <div class="d-block text-center">
+                <h5>Новый тимлид:</h5>
+            </div>
+            <b-btn class="mt-3" variant="outline-danger" block>Close Me</b-btn>
+        </b-modal>
     </div>           
 
 </template>
@@ -70,7 +82,7 @@
             input: {
                 group: '',
                 company: '',
-                
+                teamlide: ''                
             },
             load: {
                 teamlide: ''
@@ -81,9 +93,12 @@
 
         }),
         methods: {
-            onChangeGroup(){                
-                  
-                Api.postPersonalGroup(this.personalId, {groupId: this.input.group})
+            onChangeGroup(){         
+                if(this.input.group === 6){
+                    this.onChangeTeamlideGroup()
+                    
+                } else {
+                    Api.postPersonalGroup(this.personalId, {groupId: this.input.group})
                     .then(response => {
 
                         if(response.data.success){
@@ -94,6 +109,14 @@
                     .catch(e => {
                         console.log(e)
                     })
+                }               
+                  
+                
+            },
+            onChangeTeamlideGroup(){
+                console.log("+++++++");
+                this.$refs.myModalRef.show()
+                
             },
             onChangeCompany(){    
 
@@ -114,16 +137,14 @@
                 this.dismissCountDown = dismissCountDown;
             },
 
-            onChangeTeamlide(e) {        
+            onChangeTeamlide() {        
+                
                 var params = {
-                    user_id: Number(e.target.value),
-                    owner_id: this.personalId
+                    teamlead_id: this.input.teamlide
                 }        
                 axios.post(`/api/personal/${this.personalId}/add/personal`, params)
                     .then(response => {
-                        console.log(response);       
-                        console.log(this.load.teamlide);
-                                     
+                        console.log(response);        
                     })
                     .catch(e=> {
                         console.log(e)
@@ -151,10 +172,18 @@
                 .then(response => {
                     if(response.data){
                         this.load.teamlide = response.data.data; 
-                        console.log(this.load.teamlide);
+                        console.log(this.load.teamlide, 'teamlide');
                         
                     }                                       
                     
+                })
+                .catch(e=> {
+                    console.log(e)
+                })
+
+            axios.get(`/api/personal/${this.personalId}/users`)
+                .then(response => {
+                    console.log(response, 'users')
                 })
                 .catch(e=> {
                     console.log(e)
