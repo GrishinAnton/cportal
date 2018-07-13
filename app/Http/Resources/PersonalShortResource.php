@@ -17,7 +17,7 @@ class PersonalShortResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->id,
+            'id' => $this->pers_id,
             'firstName' => $this->first_name,
             'lastName' => $this->last_name,
             'email' => $this->email,
