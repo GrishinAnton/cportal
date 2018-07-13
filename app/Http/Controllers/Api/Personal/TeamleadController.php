@@ -55,9 +55,9 @@ class TeamleadController extends Controller
 
         $teamlead = $user->teamlead()->first();
 
-        return (new PersonalShortResource($teamlead))->additional([
+        return !is_null ($teamlead) ?(new PersonalShortResource($teamlead))->additional([
             'success' => true
-        ]);
+        ]) : null;
     }
 
     /**
@@ -93,7 +93,7 @@ class TeamleadController extends Controller
         $user = Personal::where('pers_id', $personalId)->first();
 
         $owner = Personal::where('pers_id', $request->teamlead_id)->first();
-        
+
         $user->update([
             'teamlead_id' => $owner->pers_id
         ]);
