@@ -18,7 +18,7 @@ class TaskByHubController extends Controller
      * @param PersonalFilterRequest $request
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function load(PersonalFilterRequest $request)
+    public function busy(PersonalFilterRequest $request)
     {
         $personal = $this->personal();
 
