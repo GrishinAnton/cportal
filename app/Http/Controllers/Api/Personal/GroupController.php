@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api\Personal;
 
 use App\Http\Requests\GroupRequest;
 use App\Http\Resources\GroupResource;
+use App\Http\Resources\PersonalResource;
+use App\Http\Resources\PersonalShortResource;
 use App\Personal;
 use App\PersonalGroup;
 use App\Http\Controllers\Controller;

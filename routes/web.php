@@ -36,6 +36,12 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('api/personal/{id}/group-company', 'Api\Personal\PersonalController@getCompanyGroupPersonal')->name('web.personal.company.group');
     Route::get('api/personal/costs', 'Api\Personal\CostController@index')->name('api.personal.costs');
 
+    //teamleads
+    Route::get('api/personal/groups/teamleads', 'Api\Personal\TeamleadController@teamleads')->name('api.personal.groups.teamleads');
+    Route::post('api/personal/{personalId}/add/personal', 'Api\Personal\TeamleadController@addPersonal')->name('api.personal.addPersonal');
+    Route::get('api/personal/{personalId}/users', 'Api\Personal\TeamleadController@users')->name('api.personal.users');
+    Route::post('api/personal/{personalId}/reassigned', 'Api\Personal\TeamleadController@reassigned')->name('api.personal.reassigned');
+
     //Resource Personal Salary
     Route::post('api/personal/{persId}/salary/store', 'Api\Personal\SalaryController@store')->name('api.personal.salary.store');
     Route::post('api/personal/salary/{salaryId}/update', 'Api\Personal\SalaryController@update')->name('api.personal.salary.update');
@@ -53,10 +59,14 @@ Route::group(['middleware' => 'auth'], function () {
     //Resource Report Productivity
     Route::get('api/report/productivity', 'Api\Report\ProductivityController@index')->name('api.report.productivity');
 
+    //Resource Report Productivity
+    Route::get('api/report/productivity-two-week', 'Api\Report\ProductivityController@indexTwoWeek')->name('api.report.productivity-two-week');
+
     //Resource Report Summary
     Route::get('api/report/summary', 'Api\Report\SummaryController@index')->name('api.report.summary');
 
 
+    Route::get('api/report/projects/managers', 'Api\Report\Project\ManagerController@index')->name('api.report.managers.index');
     Route::get('api/report/projects/statuses', 'Api\Report\Project\StatusController@index')->name('api.report.project.statuses.show');
     Route::get('api/report/projects/{id}/hours-spent', 'Api\Report\Project\TimeController@show')->name('api.report.projects.show');
     Route::get('api/report/projects/{id}/fot', 'Api\Report\Project\FotController@show')->name('api.report.projects.show');
@@ -65,6 +75,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('api/report/projects', 'Api\Report\Project\ProjectController@index')->name('api.report.project.index');
 
     Route::post('api/report/projects/{id}', 'Api\Report\Project\ProjectController@update')->name('api.report.project.update');
+
+    Route::get('api/report/widget-time', 'Api\Report\WidgetController@index')->name('api.report.widget.index');
 
     //----------------------------------------------------------------------------------------------------------------//
 
@@ -86,6 +98,9 @@ Route::group(['middleware' => 'auth'], function () {
     //Productivity
     Route::get('productivity', 'ProductivityController@index')->name('web.productivity');
 
+    Route::get('productivity-two-week', 'ProductivityController@indexTwoWeek')->name('web.productivity-two-week');
+
+
     //Employees
     Route::get('employees', 'EmployeesController@index')->name('web.employees');
 
@@ -101,4 +116,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('activecollab/time-records/all', 'ActiveCollab\ApiController@timeRecordsAll')->name('web.activecollab.time-records.all');
 
     Route::get('api/send-email/personal-times', 'Email\PersonalTimeController@send')->name('api.send-email.personal-times');
+
+    Route::get('report/widget-time', 'Report\WidgetController@index')->name('web.report.widget.index');
 });
