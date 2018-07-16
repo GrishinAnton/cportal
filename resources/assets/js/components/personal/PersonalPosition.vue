@@ -266,11 +266,14 @@
                 })
        
             if(localStorage.getItem('activeGroup') || localStorage.getItem('activeCompanies')){
-              
+
+                var group = localStorage.getItem('activeGroup') !== null ? localStorage.getItem('activeGroup').split(',') : []
+                var companies = localStorage.getItem('activeCompanies') !== null ? localStorage.getItem('activeCompanies').split(',') : []                
+
                 Api.getSomeAxiosRequest(this.requestUrl, {
                     params: {
-                        group: localStorage.getItem('activeGroup').split(','),
-                        company: localStorage.getItem('activeCompanies').split(',')
+                        group: group,
+                        company: companies
                     }
                 })
                 .then(response => {   
