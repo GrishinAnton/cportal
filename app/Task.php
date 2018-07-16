@@ -15,6 +15,7 @@ class Task extends Model
         'completed_on',
         'is_completed',
         'project_id',
+        'task_list',
         'created_on',
         'assignee_id',
         'task_id',
