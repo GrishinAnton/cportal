@@ -57,14 +57,22 @@
     @endforeach
 </table>
 
+<table  align="center" cellspacing="0" cellpadding="0" border="0" style="width:100%; max-width:600px; border:0;">
+    <tbody>
+        <tr>
+            <td>Имя сотрудника</td>
+            <td>Неделя</td>
+            <td>Месяц</td>
+        </tr>
 
-@foreach ($teamleadUsers as $key => $user)
-    <table  align="center" cellspacing="0" cellpadding="0" border="0" style="width:100%; max-width:600px; border:0;">
+    @foreach ($teamleadUsers as $key => $user)
         <tr>
-            <th style="width: 100%;padding-top:20px;padding-bottom:20px;text-align:center;"><img style="max-width: 130px;" src="{{ $user['first_name'] }}"></th>
+            <td style="width: 55%;">{{$user['first_name'] . ' ' . $user['last_name']}}</td>
+            <td>{{$user['week']}}</td>
+            <td>{{$user['month']}}</td>
         </tr>
-        <tr>
-            <th style="width: 100%;padding-top:0px;padding-bottom:20px;text-align:center;font-family: Arial, Helvetica, sans-serif;font-size:20px; line-height:20px; color:#222222;"> {{ $user['last_name'] }}</th>
-        </tr>
-    </table>
-@endforeach
+    @endforeach
+    </tbody>
+
+</table>
+

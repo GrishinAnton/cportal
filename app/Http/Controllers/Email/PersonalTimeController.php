@@ -50,18 +50,29 @@ class PersonalTimeController extends Controller
             $teamleadPersonals = $personal->teamleadPersonals()->get();
 
             foreach ($teamleadPersonals as $user) {
+                $weekHoursSum = 0;
+                $monthHoursSum = 0;
+                $weekHours = $this->personalRepository->getHoursWeek($user->pers_id)->toArray();
+                $monthHours = $this->personalRepository->getHoursMonth($user->pers_id)->toArray();
+                foreach ($weekHours as $item) {
+                   $weekHoursSum += $item['worktime'];
+                }
+
+                foreach ($monthHours as $item) {
+                    $monthHoursSum += $item['worktime'];
+                }
                 $teamleadPersonalsInfo[$user->pers_id] = [
                     'first_name' => $user->first_name,
                     'last_name' => $user->last_name,
-                    'week' => $this->personalRepository->getHoursWeek($user->pers_id),
-                    'month' => $this->personalRepository->getHoursMonth($user->pers_id),
+                    'week' => $weekHoursSum,
+                    'month' => $monthHoursSum,
                 ];
             }
 
             if ($personal->group_id != $teamleadGroup->id) {
-//                Mail::to($personal->email)
-//                    ->send((new ClosedTime($week, $weeks, $months, $personal))
-//                        ->onQueue('emails'));
+                Mail::to($personal->email)
+                    ->send((new ClosedTime($week, $weeks, $months, $personal))
+                        ->onQueue('emails'));
             } else {
                 Mail::to($personal->email)
                     ->send((new ClosingTimeTeamlid($week, $weeks, $months, $personal, $teamleadPersonalsInfo))
