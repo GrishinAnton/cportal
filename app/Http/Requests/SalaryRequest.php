@@ -24,6 +24,7 @@ class SalaryRequest extends Request
             'fix' => 'required|boolean',
             'salary' => 'required',
             'date' => 'required|date_format:Y-m-d',
+            'teamlead_bonus' => 'sometimes|nullable|integer',
         ];
     }
 }
