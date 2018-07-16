@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Api\Personal;
 
 use App\Http\Requests\ChangeTeamleadRequest;
+use App\Http\Resources\TeamleadPersonalsResource;
+use Carbon\Carbon;
 use DB;
 use App\Http\Requests\AddPersonalRequest;
-use Faker\Provider\zh_TW\Person;
-use Mockery\Exception;
 use App\Http\Resources\PersonalShortResource;
 use App\Http\Resources\CompanyGroupResource;
 use App\Http\Controllers\Controller;
@@ -24,16 +24,45 @@ class TeamleadController extends Controller
      */
     public function users($personalId)
     {
-        $user = Personal::where('pers_id', $personalId)->first();
+        $user = Personal::with(['teamleadPersonals' => function ($query) {
+                $query->with(['times' => function ($q) {
+                    $q->whereBetween('date', [Carbon::now()->startOfMonth()->format('Y-m-d'), Carbon::now()->format('Y-m-d')]);
+                }]);
+            }
+        ])->where('pers_id', $personalId)
+                ->where('is_active', true)
+                ->first();
+
+        if (!$user) {
+            abort(404);
+        }
+        $users = $user->teamleadPersonals;
+
+        return TeamleadPersonalsResource::collection($users)
+            ->additional(['success' => true]);
+    }
+
+    /**
+     * Get users with this teamlead
+     *
+     * @param $personalId
+     * @return CompanyGroupResource
+     */
+    public function teamlead($personalId)
+    {
+        $user = Personal::where('pers_id', $personalId)
+            ->where('is_active', true)
+            ->first();
 
         if (!$user) {
             abort(404);
         }
 
-        $users = $user->teamleadPersonals();
+        $teamlead = $user->teamlead()->first();
 
-        return PersonalShortResource::collection($users->paginate(75))
-            ->additional(['success' => true]);
+        return !is_null ($teamlead) ?(new PersonalShortResource($teamlead))->additional([
+            'success' => true
+        ]) : null;
     }
 
     /**
@@ -48,7 +77,9 @@ class TeamleadController extends Controller
         $group = PersonalGroup::where('index','teamlid')->first();
 
         if ($group) {
-            $personals = Personal::where('group_id', $group->id)->get();
+            $personals = Personal::where('group_id', $group->id)
+                ->where('is_active', true)
+                ->get();
         }
 
         return PersonalShortResource::collection($personals)
@@ -65,13 +96,8 @@ class TeamleadController extends Controller
     public function addPersonal($personalId, AddPersonalRequest $request)
     {
         $user = Personal::where('pers_id', $personalId)->first();
-        if (!$user) {
-            return response()->errors(make_error('not_found', 'Пользователь не найден.'), 404);
-        }
+
         $owner = Personal::where('pers_id', $request->teamlead_id)->first();
-        if (!$owner) {
-            return response()->errors(make_error('not_found', 'Добавляемый пользователь не найден.'), 404);
-        }
 
         $user->update([
             'teamlead_id' => $owner->pers_id
@@ -90,7 +116,7 @@ class TeamleadController extends Controller
     {
         $teamlead = Personal::where('pers_id', $personalId)->first();
         if ($request->action == 'change') {
-            $users = $teamlead->users()->get();
+            $users = $teamlead->teamleadPersonals()->get();
             foreach ($users as $user) {
                 $user->update([
                     'teamlead_id' => $request->new_teamlead_id
@@ -108,7 +134,7 @@ class TeamleadController extends Controller
                     'teamlead_id' => null
                 ]);
             }
-            //$teamlead->delete();
+            $teamlead->update(['is_active' => false]);
         }
 
         return response()->json(['success' => true]);
