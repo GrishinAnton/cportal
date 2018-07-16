@@ -65,6 +65,19 @@ class PersonalController extends Controller
     }
 
     /**
+     * Show busy
+     *
+     * @param $id
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function busy(Request $request)
+    {
+
+        return view('busy.busy');
+    }
+
+    /**
      * Activate, Deactivate personal
      *
      * @param $pers_id

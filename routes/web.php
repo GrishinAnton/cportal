@@ -22,7 +22,8 @@ Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail'
 Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
 Route::post('password/reset', 'Auth\ResetPasswordController@reset');
 
-Route::get('busy', 'Api\Personal\TaskByHubController@busy')->name('busy');
+Route::get('api/busy', 'Api\Personal\TaskByHubController@busy')->name('api.busy');
+Route::get('busy', 'PersonalController@busy')->name('busy');
 
 
 Route::group(['middleware' => 'auth'], function () {
