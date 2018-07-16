@@ -19,6 +19,7 @@ class SalaryResource extends JsonResource
             'coefficient' => $this->coefficient,
             'fix' => $this->fix,
             'salary' => $this->salary,
+            'teamlead_bonus' => $this->teamlead_bonus,
             'closeHours' => $this->close_hours,
             'salaryHours' => $this->salary_hours,
             'penaltyHours' => $this->penalty_hours,

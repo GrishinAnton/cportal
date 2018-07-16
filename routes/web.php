@@ -40,7 +40,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('api/personal/groups/teamleads', 'Api\Personal\TeamleadController@teamleads')->name('api.personal.groups.teamleads');
     Route::post('api/personal/{personalId}/add/personal', 'Api\Personal\TeamleadController@addPersonal')->name('api.personal.addPersonal');
     Route::get('api/personal/{personalId}/users', 'Api\Personal\TeamleadController@users')->name('api.personal.users');
+    Route::get('api/personal/{personalId}/teamlead', 'Api\Personal\TeamleadController@teamlead')->name('api.personal.teamlead');
     Route::post('api/personal/{personalId}/reassigned', 'Api\Personal\TeamleadController@reassigned')->name('api.personal.reassigned');
+
 
     //Resource Personal Salary
     Route::post('api/personal/{persId}/salary/store', 'Api\Personal\SalaryController@store')->name('api.personal.salary.store');

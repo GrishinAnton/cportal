@@ -61,7 +61,7 @@
                     <div class="form-item form-item_bold mr-5">
                         <label for="teamlid">Тимлидские</label>
                         <div class="flex">
-                            <input type="text" v-model="changeData.teamLid" class="form-control mr-1" placeholder="Тимлидские" id="teamlid">
+                            <input type="text" v-model.number="changeData.teamLid" @input="onChangeSalaryHour()" class="form-control mr-1" placeholder="Тимлидские" id="teamlid">
                         </div> 
                     </div> 
                 </div>
@@ -77,6 +77,31 @@
                 </b-alert>
             </div>
         </div>
+
+        <div class="box" v-if="load.users.length">
+            <div class="box-header">
+                <h3 class="box-title">
+                    Банда
+                </h3>
+            </div>
+            <div class="box-body">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Бандит</th>
+                            <th>Отработанное время</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(item, index) in load.users" :key="index">
+                            <td>{{ item.firstName }} {{ item.lastName }}</td>
+                            <td>{{ item.hours }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
         <div class="box" v-if="noCosts">
             <div class="box-header">
                 <h3 class="box-title">
@@ -178,11 +203,14 @@
         dismissCountDown: 0,
         costsProjectAlertCountDown: 0,
         alertVariant: '',
-        alertMessage: ''
+        alertMessage: '',
+        load: {
+            users: ''
+        }
     }),
     methods: {
         onChangeSalaryHour(){
-            this.staticData.salary = this.changeData.salaryHour * ((this.changeData.closeHours || this.staticData.closeHours) - (this.changeData.penaltyTime || this.staticData.penaltyTime))    
+            this.staticData.salary = this.changeData.salaryHour * ((this.changeData.closeHours || this.staticData.closeHours) - (this.changeData.penaltyTime || this.staticData.penaltyTime)) + this.changeData.teamLid    
             this.flagHours = true; 
         },
         onChangeSalary(){
@@ -217,6 +245,7 @@
                 closeHours: this.changeData.closeHours || this.staticData.closeHours,
                 penaltyHours: this.changeData.penaltyTime || this.staticData.penaltyTime,
                 fix: this.changeData.fixSalary,
+                teamlead_bonus: this.changeData.teamLid,
                 date: `${this.date}-${dayForBack}`
             })
             .then(response => {
@@ -277,6 +306,7 @@
                     var data = response.data.data;
                 
                     this.changeData.fixSalary = data.fix;
+                    this.changeData.teamLid = data.teamlead_bonus;
                     this.changeData.coef = data.coefficient;
                     this.staticData.salaryHour = data.salaryHours;
                     this.changeData.closeHours = data.closeHours;
@@ -326,6 +356,11 @@
             this.costsProject.costsMonth = response.data.data
         })
         .catch(e => console.log(e));
+    },
+    mounted() {
+        this.$watch(() => this.$store.getters['personal/teamLeadUsers'], () => {                
+            this.load.users = this.$store.getters['personal/teamLeadUsers']                
+        })  
     }
  }   
 </script>  

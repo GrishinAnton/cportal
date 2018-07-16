@@ -17,6 +17,11 @@ const Api = {
     postPersonalGroup: (id, group) => axios.post(`/api/personal/${id}/add/group`, group),
     postPersonalCompany: (id, company) => axios.post(`/api/personal/${id}/add/company`, company),
     getPersonalGroupAndCompany: (id) => axios.get(`/api/personal/${id}/group-company`),
+    postOnSaveTeamlead: (id, params) => axios.post(`/api/personal/${id}/reassigned`, params),
+    postOnChangeTeamLead: (id, params) => axios.post(`/api/personal/${id}/add/personal`, params),
+    getTeamleadsGroup: () => axios.get(`/api/personal/groups/teamleads`),
+    getPersonalTeamlead: (id) => axios.get(`/api/personal/${id}/teamlead`),
+    getTeamleadUsers: (id) => axios.get(`/api/personal/${id}/users`),
     //Costs
     getReportCosts: (params) => axios.get(`/api/report/costs`, params),
     postReportCosts: (url, obj) => axios.post(url, obj),
