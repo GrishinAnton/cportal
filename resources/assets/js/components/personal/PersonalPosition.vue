@@ -45,6 +45,20 @@
                 </select>
             </form>
         </div> 
+        <div class="input-group mb-3 mr-4" v-if="load.personal.length">
+            <form>
+                <label for="personal">Перейти на страницу другого сотрудника</label>
+                <select class="custom-select" id="personal" 
+                    v-model="input.personal"
+                    @change="onChangePersonal()"
+                    >
+                    <option 
+                    :value="item.url"
+                    v-for="item in load.personal" :key="item.url"
+                    >{{ item.firstName }} {{ item.lastName }}</option>
+                </select>
+            </form>
+        </div> 
         <b-alert :show="dismissCountDown"
                 dismissible
                 :variant="alertVariant"
@@ -53,15 +67,19 @@
                 <p>Данные обновлены. Закроюсь через {{dismissCountDown}} сукунд.</p>                 
         </b-alert>
         <b-modal ref="myModalRef" hide-footer class="teamlide-modal" title="Смена тимлида">
-            <div class="d-block text-center">
+            <div class="d-block text-center" v-if="load.users.length">
                 <h5>Сотрудники привязанные к тимлиду:</h5>
+                <b-list-group class="mb-3 mt-3">
+                    <b-list-group-item  v-for="item in load.users" :key="item.id">{{ item.firstName }} {{ item.lastName }}</b-list-group-item>
+                </b-list-group>
             </div>
-            <div class="d-block text-center">
+            <div class="d-block text-center" v-if="load.users.length">
                 <h5>Сотрудников переводим тимлиду:</h5>
-                <div class="input-group mb-3 mt-3" v-if="load.teamlide.length">
+                <div class="input-group mb-3 mt-3">
                     <form>
                         <select class="custom-select" id="teamlide" 
-                            >
+                            v-model="input.teamlide"
+                            >                            
                             <option 
                             :value="item.id"
                             v-for="item in load.teamlide" :key="item.id"
@@ -71,9 +89,21 @@
                 </div> 
             </div>
             <div class="d-block text-center">
-                <h5>Новый тимлид:</h5>
+                <h5>Новая группа:</h5>
+                <div class="input-group mb-3 mt-3" v-if="load.groups.length">
+                    <form>
+                        <select  class="custom-select" id="group"                   
+                            v-model="input.group"
+                            >
+                            <option 
+                            :value="item.id"
+                            v-for="item in load.groups" :key="item.id"
+                            >{{ item.name }}</option>
+                        </select>
+                    </form>
+                </div>
             </div>
-            <b-btn class="mt-3" variant="outline-danger" block>Close Me</b-btn>
+            <b-btn class="mt-3" variant="outline-success" block @click="onSaveNewTeamlide">Сохранить</b-btn>
         </b-modal>
     </div>           
 
@@ -93,22 +123,26 @@
             input: {
                 group: '',
                 company: '',
-                teamlide: ''                
+                teamlide: '',
+                personal: ''             
             },
             load: {
-                teamlide: ''
+                teamlide: '',
+                users: '',
+                personal: ''
             },
             dismissSecs: 5,
             dismissCountDown: 0,
             alertVariant: '',
-            teamlide: false
+            teamlide: false,
+            requestUrl: `/api/personal`
 
         }),
         methods: {
-            onChangeGroup(){         
-                if(this.input.group !== 6 &&  this.teamlide){
+            onChangeGroup(){       
+                  
+                if(this.input.group !== 6 &&  this.teamlide && this.load.users.length){
                     this.onChangeTeamlideGroup()
-                    
                 } else {
                     Api.postPersonalGroup(this.personalId, {groupId: this.input.group})
                     .then(response => {
@@ -126,8 +160,30 @@
                 
             },
             onChangeTeamlideGroup(){
-                console.log("+++++++");
                 this.$refs.myModalRef.show()
+                
+            },
+            onSaveNewTeamlide(){
+                 var params = {
+                    action: 'change',
+                    group_id: this.input.group,
+                    new_teamlead_id: this.input.teamlide,
+                }
+
+                Api.postOnSaveTeamlead(this.personalId, params)
+                    .then(response => {
+                        this.input.teamlide = '';
+                        if(response.data.success){
+                            this.alertVariant = 'success';
+                            this.dismissCountDown = 5;
+                            this.teamlide = false
+                            this.$refs.myModalRef.hide()
+                        }                        
+                    })
+                    .catch(e=> {
+                        console.log(e)
+                    })
+                
                 
             },
             onChangeCompany(){    
@@ -153,14 +209,20 @@
                 
                 var params = {
                     teamlead_id: this.input.teamlide
-                }        
-                axios.post(`/api/personal/${this.personalId}/add/personal`, params)
-                    .then(response => {
-                        console.log(response);        
+                } 
+                Api.postOnChangeTeamLead(this.personalId, params)
+                    .then(response => {                        
+                        if(response.data.success){
+                            this.alertVariant = 'success';
+                            this.dismissCountDown = 5;
+                        }      
                     })
                     .catch(e=> {
                         console.log(e)
                     })
+            },
+            onChangePersonal(){               
+                window.location.href = this.input.personal
             }
         },
         mounted(){     
@@ -183,26 +245,48 @@
                     console.log(e)
                 })
 
-            axios.get(`/api/personal/groups/teamleads`)
+            Api.getTeamleadsGroup()
                 .then(response => {
                     if(response.data){
-                        this.load.teamlide = response.data.data; 
-                        console.log(this.load.teamlide, 'teamlide');
-                        
-                    }                                       
-                    
+                        this.load.teamlide = response.data.data;
+                    } 
                 })
                 .catch(e=> {
                     console.log(e)
-                })
+                })            
 
-            axios.get(`/api/personal/${this.personalId}/users`)
+            Api.getPersonalTeamlead(this.personalId)
                 .then(response => {
-                    console.log(response, 'users')
+                    if(response.data.data){
+                        this.input.teamlide = response.data.data.id;
+                    } 
                 })
                 .catch(e=> {
                     console.log(e)
                 })
+       
+            if(localStorage.getItem('activeGroup') || localStorage.getItem('activeCompanies')){
+
+                var group = localStorage.getItem('activeGroup') !== null ? localStorage.getItem('activeGroup').split(',') : []
+                var companies = localStorage.getItem('activeCompanies') !== null ? localStorage.getItem('activeCompanies').split(',') : []                
+
+                Api.getSomeAxiosRequest(this.requestUrl, {
+                    params: {
+                        group: group,
+                        company: companies
+                    }
+                })
+                .then(response => {   
+                    this.load.personal = response.data.data;
+                })
+                .catch(e => console.log(e));
+            }
+
+
+            this.$store.dispatch('personal/loadUsers', this.personalId);
+            this.$watch(() => this.$store.getters['personal/teamLeadUsers'], () => {                
+                this.load.users = this.$store.getters['personal/teamLeadUsers']                
+            });
         }
     }
 </script>
@@ -212,5 +296,9 @@
 
 .teamlide-modal .input-group {
     justify-content: center;
+}
+
+.teamlide-modal .list-group {
+    align-items: center;
 }
 </style>
