@@ -77,6 +77,31 @@
                 </b-alert>
             </div>
         </div>
+
+        <div class="box" v-if="load.users.length">
+            <div class="box-header">
+                <h3 class="box-title">
+                    Банда
+                </h3>
+            </div>
+            <div class="box-body">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Бандит</th>
+                            <th>Отработанное время</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(item, index) in load.users" :key="index">
+                            <td>{{ item.firstName }} {{ item.lastName }}</td>
+                            <td>{{ item.hours }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
         <div class="box" v-if="noCosts">
             <div class="box-header">
                 <h3 class="box-title">
@@ -178,7 +203,10 @@
         dismissCountDown: 0,
         costsProjectAlertCountDown: 0,
         alertVariant: '',
-        alertMessage: ''
+        alertMessage: '',
+        load: {
+            users: ''
+        }
     }),
     methods: {
         onChangeSalaryHour(){
@@ -328,6 +356,11 @@
             this.costsProject.costsMonth = response.data.data
         })
         .catch(e => console.log(e));
+    },
+    mounted() {
+        this.$watch(() => this.$store.getters['personal/teamLeadUsers'], () => {                
+            this.load.users = this.$store.getters['personal/teamLeadUsers']                
+        })  
     }
  }   
 </script>  

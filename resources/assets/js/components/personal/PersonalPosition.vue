@@ -45,6 +45,20 @@
                 </select>
             </form>
         </div> 
+        <div class="input-group mb-3 mr-4" v-if="load.personal.length">
+            <form>
+                <label for="personal">Перейти на страницу другого сотрудника</label>
+                <select class="custom-select" id="personal" 
+                    v-model="input.personal"
+                    @change="onChangePersonal()"
+                    >
+                    <option 
+                    :value="item.url"
+                    v-for="item in load.personal" :key="item.url"
+                    >{{ item.firstName }} {{ item.lastName }}</option>
+                </select>
+            </form>
+        </div> 
         <b-alert :show="dismissCountDown"
                 dismissible
                 :variant="alertVariant"
@@ -109,16 +123,19 @@
             input: {
                 group: '',
                 company: '',
-                teamlide: ''                
+                teamlide: '',
+                personal: ''             
             },
             load: {
                 teamlide: '',
-                users: ''
+                users: '',
+                personal: ''
             },
             dismissSecs: 5,
             dismissCountDown: 0,
             alertVariant: '',
-            teamlide: false
+            teamlide: false,
+            requestUrl: `/api/personal`
 
         }),
         methods: {
@@ -146,13 +163,14 @@
                 this.$refs.myModalRef.show()
                 
             },
-             onSaveNewTeamlide(){
+            onSaveNewTeamlide(){
                  var params = {
                     action: 'change',
                     group_id: this.input.group,
                     new_teamlead_id: this.input.teamlide,
                 }
-                axios.post(`/api/personal/${this.personalId}/reassigned`, params)
+
+                Api.postOnSaveTeamlead(this.personalId, params)
                     .then(response => {
                         this.input.teamlide = '';
                         if(response.data.success){
@@ -191,8 +209,8 @@
                 
                 var params = {
                     teamlead_id: this.input.teamlide
-                }        
-                axios.post(`/api/personal/${this.personalId}/add/personal`, params)
+                } 
+                Api.postOnChangeTeamLead(this.personalId, params)
                     .then(response => {                        
                         if(response.data.success){
                             this.alertVariant = 'success';
@@ -202,6 +220,9 @@
                     .catch(e=> {
                         console.log(e)
                     })
+            },
+            onChangePersonal(){               
+                window.location.href = this.input.personal
             }
         },
         mounted(){     
@@ -224,7 +245,7 @@
                     console.log(e)
                 })
 
-            axios.get(`/api/personal/groups/teamleads`)
+            Api.getTeamleadsGroup()
                 .then(response => {
                     if(response.data){
                         this.load.teamlide = response.data.data;
@@ -232,17 +253,9 @@
                 })
                 .catch(e=> {
                     console.log(e)
-                })
+                })            
 
-            axios.get(`/api/personal/${this.personalId}/users`)
-                .then(response => {
-                    this.load.users = response.data.data;
-                })
-                .catch(e=> {
-                    console.log(e)
-                })
-
-            axios.get(`/api/personal/${this.personalId}/teamlead`)
+            Api.getPersonalTeamlead(this.personalId)
                 .then(response => {
                     if(response.data.data){
                         this.input.teamlide = response.data.data.id;
@@ -251,6 +264,26 @@
                 .catch(e=> {
                     console.log(e)
                 })
+       
+            if(localStorage.getItem('activeGroup') || localStorage.getItem('activeCompanies')){
+              
+                Api.getSomeAxiosRequest(this.requestUrl, {
+                    params: {
+                        group: localStorage.getItem('activeGroup').split(','),
+                        company: localStorage.getItem('activeCompanies').split(',')
+                    }
+                })
+                .then(response => {   
+                    this.load.personal = response.data.data;
+                })
+                .catch(e => console.log(e));
+            }
+
+
+            this.$store.dispatch('personal/loadUsers', this.personalId);
+            this.$watch(() => this.$store.getters['personal/teamLeadUsers'], () => {                
+                this.load.users = this.$store.getters['personal/teamLeadUsers']                
+            });
         }
     }
 </script>
