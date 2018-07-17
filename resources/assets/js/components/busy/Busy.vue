@@ -5,6 +5,22 @@
                 Загрузка
             </h3>
         </div>
+        <div class="box-header with-border">
+            <div class="input-group mr-4" v-if="data.dates.length">
+                <form>
+                    <label for="company">Дата</label>
+                    <select class="custom-select" id="company" 
+                        
+                        v-model="data.currentDate"
+                        >
+                        <option 
+                        :value="item.id"
+                        v-for="item in data.dates" :key="item.id"
+                        >{{ item.month }}</option>
+                    </select>
+                </form>
+            </div> 
+        </div>
         <div class="box-body">      
             <div id="chart1"></div>
         </div>
@@ -17,6 +33,12 @@
 
 export default {
     data: () => ({
+        dataTable: '',
+        data: {
+            currentDate: '',
+            dates: ''
+        }
+        
     }),
     methods: {
         drawChart() {
@@ -61,8 +83,13 @@ export default {
             }
         })
         .then(response => {
-            console.log(response, '111');
-            
+            this.dataTable = response.data.data
+            this.data.dates = response.data.dates
+            this.data.currentDate = response.data.dates[0].month
+
+            console.log(this.dataTable, 'data');
+            console.log(this.data.dates, 'dates');
+            console.log(this.data.currentDate, 'dates2');
         })
         .catch( e => console.log(e))
     }
