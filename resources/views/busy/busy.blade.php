@@ -2,7 +2,9 @@
 
 @section('content_header')
     <h1 class="h1">Загрузка</h1>
-    <busy />
+    <section class="content">
+        <busy />
+    </section>    
 @stop
 
 @section('content')
