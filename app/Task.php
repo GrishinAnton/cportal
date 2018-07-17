@@ -27,10 +27,14 @@ class Task extends Model
     {
         return $this->hasMany('App\PersonalTime', 'task_id', 'task_id');
     }
-    
 
     public function projects()
     {
         return $this->belongsTo('App\Project', 'project_id', 'project_id');
+    }
+
+    public function personal()
+    {
+        return $this->belongsTo('App\Personal', 'assignee_id');
     }
 }

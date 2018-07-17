@@ -14,7 +14,7 @@ class PersonalTime extends Model
         'timerecord_id'
     ];
 
-    public function tasks()
+    public function task()
     {
         return $this->belongsTo('App\Task', 'task_id', 'task_id');
     }
