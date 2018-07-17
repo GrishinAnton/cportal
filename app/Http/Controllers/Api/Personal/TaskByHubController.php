@@ -43,63 +43,69 @@ class TaskByHubController extends Controller
     {
         $personalBusy = [];
         $personalBusyUsers = [];
-
-        $periodFrom = Carbon::createFromFormat('Y-m-d', $request->year.'-'.$request->month.'-01')->format('Y-m-d');
+        $dayCount = 1;
+        $now = Carbon::now();
+        if ($now->format('m') == $request->month) {
+            $periodFrom = Carbon::now()->format('Y-m-d');
+        } else {
+            $periodFrom = Carbon::createFromFormat('Y-m-d', $request->year.'-'.$request->month.'-01')->format('Y-m-d');
+        }
         $periodTo = Carbon::createFromFormat('Y-m', $request->year.'-'.$request->month)->endOfMonth()->format('Y-m-d');
         $dateRange = $this->generateDateRange(Carbon::parse($periodFrom), Carbon::parse($periodTo));
 
         $personals = Personal::select(['pers_id', 'first_name', 'last_name'])
             ->where('is_active', true)
-            ->with(['personalTasks' => function ($query) use ($periodFrom, $periodTo) {
-                $query->with(['times' => function ($q) {
+            ->with(['personalTasks' => function ($query) use ($periodFrom, $periodTo)  {
+                $query->with(['times' => function ($q) use ($periodFrom, $periodTo) {
                     $q->select(['task_id', 'date', 'worktime']);
+                    $q->whereBetween('date',[Carbon::parse($periodFrom), Carbon::parse($periodTo)]);
                 }]);
                 $query->select(['assignee_id', 'task_id','name', 'estimated_time', 'created_at', 'task_list']);
                 $query->whereIn('task_list', ['In progress', 'Sprint']);
                 $query->where('is_completed', false);
-                $query->whereBetween('created_on',[Carbon::parse($periodFrom)->getTimestamp(), Carbon::parse($periodTo)->getTimestamp()]);
             }])
             ->get();
 
         foreach ($dateRange as $date) {
             foreach ($personals as $key => $personal) {
-                $taskKey = 1;
-                $personalBusyTasks = [];
-
-                foreach ($personal->personalTasks as $task) {
+                    $taskKey = 1;
+                    $personalBusyTasks = [];
+                    foreach ($personal->personalTasks as $task) {
                         $workTime = collect($task->times)
                             ->where('date', $date)
                             ->pluck('worktime')
                             ->toArray();
 
-                        $dateStart =  collect($task->times)
+                        $dateStart = collect($task->times)
                             ->pluck('date')
                             ->toArray();
-                    
+
                         $personalBusyTasks[$taskKey] = [
-                            'name'                   => $task->name,
-                            'task_list'              => $task->task_list,
-                            'estimated_time'         => $task->estimated_time,
-                            'worktime'               => array_sum($workTime),
-                            'different'              => ($workTime) != 0 ? ($task->estimated_time - array_sum($workTime)) : $task->estimated_time - 7,
-                            'date_start'             => !empty($dateStart) ? $dateStart[0] : null,
+                            'name' => $task->name,
+                            'task_list' => $task->task_list,
+                            'estimated_time' => $task->estimated_time,
+                            'worktime' => array_sum($workTime),
+                            'different' => !empty($workTime) ? ($task->estimated_time - array_sum($workTime)) : $task->estimated_time - (7 * $dayCount),
+                            'date_start' => !empty($dateStart) ? $dateStart[0] : null,
                         ];
-                    $taskKey++;
+                        $taskKey++;
                     }
 
-                $personalBusyUsers[$key] = [
-                    'first_name'        => $personal->first_name,
-                    'last_name'         => $personal->last_name,
-                    'tasks'             => $personalBusyTasks,
-                ];
+                    $personalBusyUsers[$key] = [
+                        'first_name' => $personal->first_name,
+                        'last_name' => $personal->last_name,
+                        'tasks' => $personalBusyTasks,
+                    ];
 
-            }
+                }
 
-            $personalBusy[] = [
+                $personalBusy[] = [
                     'users' => $personalBusyUsers,
                     'date' => $date,
                 ];
-        }
+
+                $dayCount++;
+            }
 
         return $personalBusy;
     }
