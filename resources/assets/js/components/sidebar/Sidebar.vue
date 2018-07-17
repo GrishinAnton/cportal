@@ -90,6 +90,12 @@
                     name: "ActiveCollab",
                     href: '/activecollab',
                     id: 5,
+                },
+                {
+                    icon: "fa fa-fw fa-file",
+                    name: "Загрузка",
+                    href: '/busy',
+                    id: 6,
                 }
             ]
         }),

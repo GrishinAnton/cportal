@@ -28,6 +28,7 @@ Vue.component('project-show', function (resolve) { require(['./components/projec
 Vue.component('project', function (resolve) { require(['./components/projects/Project'], resolve)});
 Vue.component('active-collab', function (resolve) { require(['./components/activeCollab/ActiveCollab'], resolve)});
 Vue.component('widget-time', function (resolve) { require(['./components/widgets/WidgetTime'], resolve)});
+Vue.component('busy', function (resolve) { require(['./components/busy/Busy'], resolve)});
 
 import Vuex from 'vuex';
 import BootstrapVue from 'bootstrap-vue';
