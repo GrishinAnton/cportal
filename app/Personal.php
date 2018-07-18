@@ -110,7 +110,15 @@ class Personal extends Model
         return $this->hasMany('App\Personal', 'teamlead_id' );
     }
 
-
+    /**
+     * Get costs
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function personalTasks()
+    {
+        return $this->hasMany('App\Task', 'assignee_id');
+    }
     /**
      * Get costs
      *
@@ -120,6 +128,7 @@ class Personal extends Model
     {
         return $this->belongsTo('App\Personal', 'teamlead_id');
     }
+
 
     /**
      * Get personal group

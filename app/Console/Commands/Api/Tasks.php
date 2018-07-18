@@ -66,6 +66,7 @@ class Tasks extends Command
                     'type' => $task['type'],
                     'permalink' => $task['permalink'],
                     'name' => $task['name'],
+                    'task_list' => $task['task_list'],
                     'completed_on' => $task['completed_on'],
                     'is_completed' => isset($task['completed_on']) ? true : false,
                     'project_id' => $task['project_id'],

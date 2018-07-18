@@ -15,6 +15,7 @@ class Task extends Model
         'completed_on',
         'is_completed',
         'project_id',
+        'task_list',
         'created_on',
         'assignee_id',
         'task_id',
@@ -26,10 +27,14 @@ class Task extends Model
     {
         return $this->hasMany('App\PersonalTime', 'task_id', 'task_id');
     }
-    
 
     public function projects()
     {
         return $this->belongsTo('App\Project', 'project_id', 'project_id');
+    }
+
+    public function personal()
+    {
+        return $this->belongsTo('App\Personal', 'assignee_id');
     }
 }
