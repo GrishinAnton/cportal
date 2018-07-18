@@ -80,7 +80,7 @@ class TaskByHubController extends Controller
                             'task_list' => $task->task_list,
                             'estimated_time' => $task->estimated_time,
                             'worktime' => array_sum($workTime),
-                            'different' => !empty($workTime) ? ($task->estimated_time - array_sum($workTime)) : $task->estimated_time - 7,
+                            'different' => !empty($workTime) ? ($task->estimated_time - array_sum($workTime)) : $task->estimated_time,
                         ];
                         $taskKey++;
                     }
