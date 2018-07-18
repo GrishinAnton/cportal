@@ -38,6 +38,7 @@
                     v-model="input.teamlide"
                     @change="onChangeTeamlide()"
                     >
+                    <option value="0"></option>
                     <option 
                     :value="item.id"
                     v-for="item in load.teamlide" :key="item.id"
@@ -205,11 +206,16 @@
                 this.dismissCountDown = dismissCountDown;
             },
 
-            onChangeTeamlide() {        
+            onChangeTeamlide() {   
+
+                var params = null
                 
-                var params = {
-                    teamlead_id: this.input.teamlide
-                } 
+                if(this.input.teamlide !== '0'){
+                    params = {
+                        teamlead_id: this.input.teamlide
+                    } 
+                }
+                
                 Api.postOnChangeTeamLead(this.personalId, params)
                     .then(response => {                        
                         if(response.data.success){

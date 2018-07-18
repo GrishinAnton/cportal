@@ -9,13 +9,12 @@
             <div class="input-group mr-4" v-if="data.dates.length">
                 <form>
                     <label for="company">Дата</label>
-                    <select class="custom-select" id="company" 
-                        
+                    <select class="custom-select" id="company"
                         v-model="data.currentDate"
                         >
                         <option 
-                        :value="item.id"
-                        v-for="item in data.dates" :key="item.id"
+                            :value="item.month"
+                            v-for="item in data.dates" :key="item.id"
                         >{{ item.month }}</option>
                     </select>
                 </form>
@@ -35,7 +34,7 @@ export default {
     data: () => ({
         dataTable: '',
         data: {
-            currentDate: '',
+            currentDate: `0${new Date().getMonth() + 1}`.slice(-2),
             dates: ''
         }
         
@@ -52,19 +51,45 @@ export default {
             dataTable.addColumn({ type: 'date', id: 'Start' });
             dataTable.addColumn({ type: 'date', id: 'End' });
 
+            var array = []
+            for(var item of this.dataTable){
+
+                var arr = [];
+
+                for(var task of item.tasks) {
+                  
+                    arr.push(`${item.firstName} ${item.lastName}`)
+                    arr.push(task.name)
+                    arr.push(new Date())
+
+                    if(task.different){
+                        arr.push(new Date())
+                    }
+
+                }
+                console.log(arr, 'arr');                
+                
+                array.push(arr)
+                console.log(array, 'array');
+            }
+
             dataTable.addRows([
-                [ 'George Washington', 'President1', new Date(2018, 7, 16), new Date(2018, 7, 17) ],
-                [ 'George Washington', 'President2', new Date(2018, 7, 17), new Date(2018, 7, 19) ],
-                [ 'George Washington', 'President3', new Date(2018, 7, 21), new Date(2018, 7, 22) ],
-                [ 'Vice President', 'John Adams', new Date(2018, 7, 16), new Date(2018, 7, 17)],
-                [ 'Vice President', 'Thomas Jefferson', new Date(2018, 7, 18), new Date(2018, 7, 20)],
-                [ 'Secretary of State', 'Thomas Jefferson', new Date(2018, 7, 16), new Date(2018, 7, 19)],
-                [ 'Secretary of State', 'Edmund Randolph', new Date(2018, 7, 22), new Date(2018, 7, 28)],
+                [ 'George Washington', 'President1', new Date(2018, 6, 16), new Date(2018, 6, 17) ],
+                [ 'George Washington', 'President2', new Date(2018, 6, 17), new Date(2018, 6, 19) ],
+                [ 'George Washington', 'President3', new Date(2018, 6, 21), new Date(2018, 6, 22) ],
+                [ 'Vice President', 'John Adams', new Date(2018, 6, 16), new Date(2018, 6, 17)],
+                [ 'Vice President', 'Thomas Jefferson', new Date(2018, 6, 18), new Date(2018, 6, 20)],
+                [ 'Secretary of State', 'Thomas Jefferson', new Date(2018, 6, 16), new Date(2018, 6, 19)],
+                [ 'Secretary of State', 'Edmund Randolph', new Date(2018, 6, 22), new Date(2018, 7, 28)],
             ]);
 
             var options = {
                 hAxis: {
                     format: 'd/M/yy',
+                    // viewWindow: {
+                    //     min: new Date(2018, 6, 1),
+                    //     max: new Date(2018, 6, 15)
+                    // }
                 }            
             };
 
@@ -83,13 +108,9 @@ export default {
             }
         })
         .then(response => {
-            this.dataTable = response.data.data
-            this.data.dates = response.data.dates
-            this.data.currentDate = response.data.dates[0].month
-
-            console.log(this.dataTable, 'data');
-            console.log(this.data.dates, 'dates');
-            console.log(this.data.currentDate, 'dates2');
+            this.dataTable = response.data.data;
+            this.data.dates = response.data.dates; 
+            
         })
         .catch( e => console.log(e))
     }
