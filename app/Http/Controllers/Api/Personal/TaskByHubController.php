@@ -65,8 +65,9 @@ class TaskByHubController extends Controller
             ->get();
 
             foreach ($personals as $key => $personal) {
-                    $taskKey = 1;
-                    $personalBusyTasks = [];
+                $taskKey = 1;
+                $personalBusyTasks = [];
+                if (count($personal->personalTasks) > 0) {
                     foreach ($personal->personalTasks as $task) {
                         $workTime = collect($task->times)
                             ->where('date', Carbon::now()->format('Y-m-d'))
@@ -74,6 +75,7 @@ class TaskByHubController extends Controller
                             ->toArray();
 
                         $personalBusyTasks[$taskKey] = [
+                            'task_id' => $task->task_id,
                             'name' => $task->name,
                             'task_list' => $task->task_list,
                             'estimated_time' => $task->estimated_time,
@@ -84,12 +86,14 @@ class TaskByHubController extends Controller
                     }
 
                     $personalBusyUsers[$key] = [
+                        'pers_id' => $personal->pers_id,
                         'first_name' => $personal->first_name,
                         'last_name' => $personal->last_name,
                         'tasks' => $personalBusyTasks,
                     ];
 
                 }
+            }
 
         return $personalBusyUsers;
     }
