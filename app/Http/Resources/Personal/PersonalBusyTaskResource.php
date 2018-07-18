@@ -17,6 +17,7 @@ class PersonalBusyTaskResource extends JsonResource
     public function toArray($request)
     {
         return [
+            'task_id'           =>  $this->resource['task_id'],
             'name'              =>  $this->resource['name'],
             'estimated_time'    =>  $this->resource['estimated_time'],
             'task_list'         =>  $this->resource['task_list'],

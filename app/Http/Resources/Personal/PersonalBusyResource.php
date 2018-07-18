@@ -17,6 +17,7 @@ class PersonalBusyResource extends JsonResource
     public function toArray($request)
     {
         return [
+            'personal_id'   => isset($this->resource['pers_id']) ? $this->resource['pers_id'] : null,
             'firstName'     => isset($this->resource['first_name']) ? $this->resource['first_name'] : null,
             'lastName'      => isset($this->resource['last_name']) ? $this->resource['last_name'] : null,
             'tasks'         => isset($this->resource['tasks']) ? PersonalBusyTaskResource::collection(collect($this->resource['tasks'])) : null,
