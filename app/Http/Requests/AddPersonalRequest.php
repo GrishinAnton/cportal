@@ -24,7 +24,7 @@ class AddPersonalRequest extends FormRequest
     public function rules()
     {
         return [
-            'teamlead_id' => 'required|exists:personal,pers_id'
+            'teamlead_id' => 'sometimes|nullable|exists:personal,pers_id'
         ];
     }
 }

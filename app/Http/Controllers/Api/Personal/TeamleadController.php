@@ -99,10 +99,15 @@ class TeamleadController extends Controller
         $user = Personal::where('pers_id', $personalId)->first();
 
         $owner = Personal::where('pers_id', $request->teamlead_id)->first();
-
-        $user->update([
-            'teamlead_id' => $owner->pers_id
-        ]);
+        if ($owner) {
+            $user->update([
+                'teamlead_id' => $owner->pers_id
+            ]);
+        } else {
+            $user->update([
+                'teamlead_id' => null,
+            ]);
+        }
 
         return response()->json(['success' => true]);
     }
