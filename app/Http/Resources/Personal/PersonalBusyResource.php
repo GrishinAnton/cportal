@@ -2,7 +2,9 @@
 
 namespace App\Http\Resources\Personal;
 
+use App\PersonalTime;
 use Illuminate\Http\Resources\Json\JsonResource;
+use DateTime;
 
 class PersonalBusyResource extends JsonResource
 {
@@ -15,8 +17,9 @@ class PersonalBusyResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'date'     => isset($this->resource['date']) ? $this->resource['date'] : null,
-            'users'    => isset($this->resource['users']) ? PersonalBusyNameResource::collection(collect($this->resource['users'])) : null,
+            'firstName'     => isset($this->resource['first_name']) ? $this->resource['first_name'] : null,
+            'lastName'      => isset($this->resource['last_name']) ? $this->resource['last_name'] : null,
+            'tasks'         => isset($this->resource['tasks']) ? PersonalBusyTaskResource::collection(collect($this->resource['tasks'])) : null,
         ];
     }
 }
