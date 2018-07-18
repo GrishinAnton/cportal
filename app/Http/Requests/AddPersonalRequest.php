@@ -22,7 +22,7 @@ class AddPersonalRequest extends Request
     public function rules()
     {
         return [
-            'teamlead_id' => 'required|exists:personal,pers_id'
+            'teamlead_id' => 'sometimes|nullable|exists:personal,pers_id'
         ];
     }
 }
