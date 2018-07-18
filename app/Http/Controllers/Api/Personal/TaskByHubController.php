@@ -41,9 +41,7 @@ class TaskByHubController extends Controller
      */
     private function personal(PersonalBusyRequest $request)
     {
-        $personalBusy = [];
         $personalBusyUsers = [];
-        $dayCount = 1;
         $now = Carbon::now();
         if ($now->format('m') == $request->month) {
             $periodFrom = Carbon::now()->format('Y-m-d');
@@ -51,7 +49,6 @@ class TaskByHubController extends Controller
             $periodFrom = Carbon::createFromFormat('Y-m-d', $request->year.'-'.$request->month.'-01')->format('Y-m-d');
         }
         $periodTo = Carbon::createFromFormat('Y-m', $request->year.'-'.$request->month)->endOfMonth()->format('Y-m-d');
-        $dateRange = $this->generateDateRange(Carbon::parse($periodFrom), Carbon::parse($periodTo));
 
         $personals = Personal::select(['pers_id', 'first_name', 'last_name'])
             ->where('is_active', true)
@@ -62,22 +59,18 @@ class TaskByHubController extends Controller
                 }]);
                 $query->select(['assignee_id', 'task_id','name', 'estimated_time', 'created_at', 'task_list']);
                 $query->whereIn('task_list', ['In progress', 'Sprint']);
+                $query->where('estimated_time','!=', 0);
                 $query->where('is_completed', false);
             }])
             ->get();
 
-        foreach ($dateRange as $date) {
             foreach ($personals as $key => $personal) {
                     $taskKey = 1;
                     $personalBusyTasks = [];
                     foreach ($personal->personalTasks as $task) {
                         $workTime = collect($task->times)
-                            ->where('date', $date)
+                            ->where('date', Carbon::now()->format('Y-m-d'))
                             ->pluck('worktime')
-                            ->toArray();
-
-                        $dateStart = collect($task->times)
-                            ->pluck('date')
                             ->toArray();
 
                         $personalBusyTasks[$taskKey] = [
@@ -85,8 +78,7 @@ class TaskByHubController extends Controller
                             'task_list' => $task->task_list,
                             'estimated_time' => $task->estimated_time,
                             'worktime' => array_sum($workTime),
-                            'different' => !empty($workTime) ? ($task->estimated_time - array_sum($workTime)) : $task->estimated_time - (7 * $dayCount),
-                            'date_start' => !empty($dateStart) ? $dateStart[0] : null,
+                            'different' => !empty($workTime) ? ($task->estimated_time - array_sum($workTime)) : $task->estimated_time - 7,
                         ];
                         $taskKey++;
                     }
@@ -99,15 +91,7 @@ class TaskByHubController extends Controller
 
                 }
 
-                $personalBusy[] = [
-                    'users' => $personalBusyUsers,
-                    'date' => $date,
-                ];
-
-                $dayCount++;
-            }
-
-        return $personalBusy;
+        return $personalBusyUsers;
     }
 
     private function getMonthsFromEstimate()

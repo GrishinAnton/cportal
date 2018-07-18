@@ -22,7 +22,6 @@ class PersonalBusyTaskResource extends JsonResource
             'task_list'         =>  $this->resource['task_list'],
             'worktime'          =>  $this->resource['worktime'],
             'different'         =>  $this->resource['different'],
-            'date_start'        =>  $this->resource['date_start'],
         ];
     }
 }
