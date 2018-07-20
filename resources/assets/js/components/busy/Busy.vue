@@ -29,6 +29,7 @@
 
 <script>
     import {GoogleCharts} from 'google-charts';
+    import moment from 'moment';
 
 export default {
     data: () => ({
@@ -36,7 +37,9 @@ export default {
         data: {
             currentDate: `0${new Date().getMonth() + 1}`.slice(-2),
             dates: ''
-        }
+        },
+        startDay: 10,
+        endDay: 17
         
     }),
     methods: {
@@ -51,41 +54,77 @@ export default {
             dataTable.addColumn({ type: 'date', id: 'Start' });
             dataTable.addColumn({ type: 'date', id: 'End' });
 
-            var array = []
-            for(var item of this.dataTable){
+            //Первый этам найти все таски пользователя со статусом in progress
+            //Оценка - estimated_time
+            //Остаток времени - different
+            //Если есть остаток времени, значит оценка уже не важн. Если его нет, значит ориентируемся на оценку
 
-                var arr = [];
+            
+            for (var item of this.dataTable) {                
 
-                for(var task of item.tasks) {
-                  
-                    arr.push(`${item.firstName} ${item.lastName}`)
-                    arr.push(task.name)
-                    arr.push(new Date())
+                for (var task of item.tasks) {
 
-                    if(task.different){
-                        arr.push(new Date())
-                    }
+                    if (task.task_list === 'In progress') {
 
+                        var currentTime = new Date();
+                        var currentDate = new Date();
+
+                        if (task.different) {
+                            var dayHourEnd = this.endDay - moment().hour()
+                            // console.log(dayHourEnd, 'dayEnd');
+                            // console.log(task.different, 'taskDiffererbnt');
+                            
+                            
+                            if (dayHourEnd > task.different) {
+                                console.log("+++");                                
+                            } else {
+                                // console.log(task.different, 'start');
+                                
+                                task.different = task.different - dayHourEnd
+                                currentTime.setHours(currentTime.getHours() + task.different)
+                                dataTable.addRows([[`${item.firstName} ${item.lastName}`, task.name, new Date(), new Date(currentTime)]])
+                                // console.log(task.different, 'end');
+
+
+                                for(;task.different >= dayHourEnd;){
+
+                                    currentDate.setDate(currentDate.getDate() + 1)
+                                    var currentStartTime = currentDate.setHours(10)                                    
+                                    var currentEndTime = currentDate.setHours(10 + task.different)
+                                    
+
+                                    dataTable.addRows([[`${item.firstName} ${item.lastName}`, task.name, new Date(currentStartTime), new Date(currentEndTime)]])
+                                    task.different = task.different - dayHourEnd
+                                }                               
+
+                                
+                            }
+
+                            // currentTime.setHours(currentTime.getHours() + task.different)
+
+                            // console.log(moment.duration(task.different, "hours").humanize());
+                            // var dddd = Date.parse(moment().format("YYYY, M, D, h"))
+                            // console.log(dddd);
+
+                            // dataTable.addRows([[`${item.firstName} ${item.lastName}`, task.name, new Date(), new Date(currentTime)]])
+                        }                        
+                    }                    
                 }
-                console.log(arr, 'arr');                
-                
-                array.push(arr)
-                console.log(array, 'array');
-            }
+            }            
 
-            dataTable.addRows([
-                [ 'George Washington', 'President1', new Date(2018, 6, 16), new Date(2018, 6, 17) ],
-                [ 'George Washington', 'President2', new Date(2018, 6, 17), new Date(2018, 6, 19) ],
-                [ 'George Washington', 'President3', new Date(2018, 6, 21), new Date(2018, 6, 22) ],
-                [ 'Vice President', 'John Adams', new Date(2018, 6, 16), new Date(2018, 6, 17)],
-                [ 'Vice President', 'Thomas Jefferson', new Date(2018, 6, 18), new Date(2018, 6, 20)],
-                [ 'Secretary of State', 'Thomas Jefferson', new Date(2018, 6, 16), new Date(2018, 6, 19)],
-                [ 'Secretary of State', 'Edmund Randolph', new Date(2018, 6, 22), new Date(2018, 7, 28)],
-            ]);
+            // dataTable.addRows([
+            //     
+            //     [ 'George Washington', 'President2', new Date(2018, 6, 17), new Date(2018, 6, 19) ],
+            //     [ 'George Washington', 'President3', new Date(2018, 6, 21), new Date(2018, 6, 22) ],
+            //     [ 'Vice President', 'John Adams', new Date(2018, 6, 16), new Date(2018, 6, 17)],
+            //     [ 'Vice President', 'Thomas Jefferson', new Date(2018, 6, 18), new Date(2018, 6, 20)],
+            //     [ 'Secretary of State', 'Thomas Jefferson', new Date(2018, 6, 16), new Date(2018, 6, 19)],
+            //     [ 'Secretary of State', 'Edmund Randolph', new Date(2018, 6, 22), new Date(2018, 7, 28)],
+            // ]);
 
             var options = {
                 hAxis: {
-                    format: 'd/M/yy',
+                    // format: 'd/M/yy',
                     // viewWindow: {
                     //     min: new Date(2018, 6, 1),
                     //     max: new Date(2018, 6, 15)
