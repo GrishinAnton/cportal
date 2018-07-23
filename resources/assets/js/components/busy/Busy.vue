@@ -21,124 +21,106 @@
             </div> 
         </div>
         <div class="box-body">      
-            <div id="chart1"></div>
+            <div class="table-busy">
+                <div class="table-busy-row">
+                    <div class="table-busy-header" v-for="(item, index) in dataTableHeader" :key="index">{{ item }}</div>
+                </div>
+                <div class="table-busy-row" v-for="(items, index) in dateTableBody" :key="index">
+                    <div class="table-busy-cell" v-for="(item, index) in items" :key="index"><p>{{ item }}</p></div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
 
 
 <script>
-    import {GoogleCharts} from 'google-charts';
     import moment from 'moment';
 
 export default {
     data: () => ({
         dataTable: '',
+        dataTableHeader: [],
+        dateTableBody: [],
         data: {
             currentDate: `0${new Date().getMonth() + 1}`.slice(-2),
             dates: ''
         },
         startDay: 10,
-        endDay: 17
+        endDay: 17,
+        dayWork: 7
         
     }),
     methods: {
-        drawChart() {
+        drawTableHeader() {
+            var dayInMounth = moment().daysInMonth()
+            var currentDay = moment().get('date');
+            var roundDay = dayInMounth - currentDay;
 
-            var container = document.getElementById('chart1');
-            var chart = new google.visualization.Timeline(container);
-            var dataTable = new google.visualization.DataTable();
+            this.dataTableHeader.push('ФИО');
 
-            dataTable.addColumn({ type: 'string', id: 'Name' });
-            dataTable.addColumn({ type: 'string', id: 'Task' });
-            dataTable.addColumn({ type: 'date', id: 'Start' });
-            dataTable.addColumn({ type: 'date', id: 'End' });
-
-            //Первый этам найти все таски пользователя со статусом in progress
-            //Оценка - estimated_time
-            //Остаток времени - different
-            //Если есть остаток времени, значит оценка уже не важн. Если его нет, значит ориентируемся на оценку
-
+            for (var i = currentDay; i <= dayInMounth; i++) {
+                this.dataTableHeader.push(moment().set('date', i).format("DD/MM"))
+            }
             
-            for (var item of this.dataTable) {                
+        },
+        drawChart() {
+            console.log('тетя мотя');    
+            var dayHourEnd = this.endDay - moment().hour();
+
+            for (var item of this.dataTable) { 
+                var arr = []
+                var time; //Переменная для подсчета либо оценочного времени, либо остатка вермени
+                var arrTasks = [];// Тут собираеп все таски одого пользователя
+                var arrTask = [];// тут собираем таски в течении одного дня пользователя   
+
+
+                item.tasks.sort(this.sortTasks) //сортируем таски, чтобы In Progress всегда были первыми тасками.  
+                
+                console.log(item,'item');
 
                 for (var task of item.tasks) {
 
-                    if (task.task_list === 'In progress') {
+                    var arrName = `${item.firstName} ${item.lastName}`;
+                    
+                    if (task.different) {                          
+                        time = task.different
+                    }
+                    time = task.estimated_time;                    
 
-                        var currentTime = new Date();
-                        var currentDate = new Date();
+                    arrTasks.push(`${task.name} - ${time}`);
 
-                        if (task.different) {
-                            var dayHourEnd = this.endDay - moment().hour()
-                            // console.log(dayHourEnd, 'dayEnd');
-                            // console.log(task.different, 'taskDiffererbnt');
-                            
-                            
-                            if (dayHourEnd > task.different) {
-                                console.log("+++");                                
-                            } else {
-                                // console.log(task.different, 'start');
-                                
-                                task.different = task.different - dayHourEnd
-                                currentTime.setHours(currentTime.getHours() + task.different)
-                                dataTable.addRows([[`${item.firstName} ${item.lastName}`, task.name, new Date(), new Date(currentTime)]])
-                                // console.log(task.different, 'end');
+                    if (time > dayHourEnd) {
+                        // console.log(time, 'top');
+                        time = time - dayHourEnd;                        
+                    } else {
+                        // console.log(time, 'bottom');
+                        time = time;
+                    }
 
-
-                                for(;task.different >= dayHourEnd;){
-
-                                    currentDate.setDate(currentDate.getDate() + 1)
-                                    var currentStartTime = currentDate.setHours(10)                                    
-                                    var currentEndTime = currentDate.setHours(10 + task.different)
-                                    
-
-                                    dataTable.addRows([[`${item.firstName} ${item.lastName}`, task.name, new Date(currentStartTime), new Date(currentEndTime)]])
-                                    task.different = task.different - dayHourEnd
-                                }                               
-
-                                
-                            }
-
-                            // currentTime.setHours(currentTime.getHours() + task.different)
-
-                            // console.log(moment.duration(task.different, "hours").humanize());
-                            // var dddd = Date.parse(moment().format("YYYY, M, D, h"))
-                            // console.log(dddd);
-
-                            // dataTable.addRows([[`${item.firstName} ${item.lastName}`, task.name, new Date(), new Date(currentTime)]])
-                        }                        
-                    }                    
+                    for (;time > 0;) {
+                        arrTasks.push(`${task.name} - ${time > this.dayWork ? this.dayWork : time}`);
+                        time = time - this.dayWork;
+                    }                                        
                 }
-            }            
+                
+                // arrTasks.push(arrTask)
+                arr.push(arrName, arrTasks);                
+                this.dateTableBody.push(arr);
 
-            // dataTable.addRows([
-            //     
-            //     [ 'George Washington', 'President2', new Date(2018, 6, 17), new Date(2018, 6, 19) ],
-            //     [ 'George Washington', 'President3', new Date(2018, 6, 21), new Date(2018, 6, 22) ],
-            //     [ 'Vice President', 'John Adams', new Date(2018, 6, 16), new Date(2018, 6, 17)],
-            //     [ 'Vice President', 'Thomas Jefferson', new Date(2018, 6, 18), new Date(2018, 6, 20)],
-            //     [ 'Secretary of State', 'Thomas Jefferson', new Date(2018, 6, 16), new Date(2018, 6, 19)],
-            //     [ 'Secretary of State', 'Edmund Randolph', new Date(2018, 6, 22), new Date(2018, 7, 28)],
-            // ]);
-
-            var options = {
-                hAxis: {
-                    // format: 'd/M/yy',
-                    // viewWindow: {
-                    //     min: new Date(2018, 6, 1),
-                    //     max: new Date(2018, 6, 15)
-                    // }
-                }            
-            };
-
-            chart.draw(dataTable, options);
-        }
+                console.log(this.dateTableBody);
+            }
+        },
+        sortTasks(a,b){            
+            if (a.task_list === 'In progress') {                
+                return 1
+            } 
+            if (b.task_list === 'In progress') {
+                return 1
+            }
+        }    
     },
     mounted(){
-        GoogleCharts.load(this.drawChart, {
-            'packages': ['timeline'],
-        }); 
 
         axios.get('/api/busy', {
             params: {
@@ -148,10 +130,42 @@ export default {
         })
         .then(response => {
             this.dataTable = response.data.data;
-            this.data.dates = response.data.dates; 
-            
+            this.data.dates = response.data.dates;
+
+            this.drawTableHeader()
+            this.drawChart()            
         })
         .catch( e => console.log(e))
     }
 }
 </script>
+
+
+<style>
+
+.box-body {
+    overflow-x: auto;
+}
+
+.table-busy {
+    display: table;
+    border-collapse: collapse;
+
+}
+
+.table-busy-row {
+    display: table-row;
+    
+}
+
+.table-busy-header,
+.table-busy-cell {
+    display: table-cell;
+    border: 1px solid #000;
+}
+
+.table-busy-header p {
+    white-space: nowrap;
+    word-break: break-all;
+}
+</style>
