@@ -34,6 +34,12 @@
 </template>
 
 
+[1,2,3,4,5,67,7]
+
+
+[1,[2,22],[3,33],4,5,67,7]
+'<p>22</p> <p>22</p>'
+
 <script>
     import moment from 'moment';
 
@@ -48,14 +54,15 @@ export default {
         },
         startDay: 10,
         endDay: 17,
-        dayWork: 7
+        dayWork: 7,
+        roundDay: ''
         
     }),
     methods: {
         drawTableHeader() {
             var dayInMounth = moment().daysInMonth()
             var currentDay = moment().get('date');
-            var roundDay = dayInMounth - currentDay;
+            this.roundDay = dayInMounth - currentDay;
 
             this.dataTableHeader.push('ФИО');
 
@@ -73,13 +80,18 @@ export default {
                 var time; //Переменная для подсчета либо оценочного времени, либо остатка вермени
                 var arrTasks = [];// Тут собираеп все таски одого пользователя
                 var arrTask = [];// тут собираем таски в течении одного дня пользователя   
-
+                
+                var day = [];
+                var dayCounter = 1;
 
                 item.tasks.sort(this.sortTasks) //сортируем таски, чтобы In Progress всегда были первыми тасками.  
                 
-                console.log(item,'item');
+                // console.log(item,'item');
 
                 for (var task of item.tasks) {
+                    console.log(arrTasks);
+                    console.log(time, 'time');
+                    
 
                     var arrName = `${item.firstName} ${item.lastName}`;
                     
@@ -88,7 +100,6 @@ export default {
                     }
                     time = task.estimated_time;                    
 
-                    arrTasks.push(`${task.name} - ${time}`);
 
                     if (time > dayHourEnd) {
                         // console.log(time, 'top');
@@ -98,9 +109,11 @@ export default {
                         time = time;
                     }
 
+                    arrTasks.push(`${task.name} - ${time}`);
+
                     for (;time > 0;) {
-                        arrTasks.push(`${task.name} - ${time > this.dayWork ? this.dayWork : time}`);
                         time = time - this.dayWork;
+                        arrTasks.push(`${task.name} - ${time}`);
                     }                                        
                 }
                 
@@ -108,16 +121,18 @@ export default {
                 arr.push(arrName, arrTasks);                
                 this.dateTableBody.push(arr);
 
-                console.log(this.dateTableBody);
+                // console.log(this.dateTableBody);
             }
         },
         sortTasks(a,b){            
-            if (a.task_list === 'In progress') {                
+            if (a.task_list === 'In progress' && b.task_list === 'In progress') {                
+                return 0
+            } else if (b.task_list === 'In progress') {
                 return 1
-            } 
-            if (b.task_list === 'In progress') {
-                return 1
+            } else if (a.task_list === 'In progress') {
+                return -1
             }
+            return 0
         }    
     },
     mounted(){
