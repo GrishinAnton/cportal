@@ -78,44 +78,40 @@ export default {
             for (var item of this.dataTable) { 
                 var arr = []
                 var time; //Переменная для подсчета либо оценочного времени, либо остатка вермени
+                var endTimeDay; //Остаток времени в дне
                 var arrTasks = [];// Тут собираеп все таски одого пользователя
-                var arrTask = [];// тут собираем таски в течении одного дня пользователя   
-                
-                var day = [];
+                var taskDay = [];// тут собираем таски в течении одного дня пользователя   
                 var dayCounter = 1;
 
                 item.tasks.sort(this.sortTasks) //сортируем таски, чтобы In Progress всегда были первыми тасками.  
                 
                 // console.log(item,'item');
 
-                for (var task of item.tasks) {
-                    console.log(arrTasks);
-                    console.log(time, 'time');
-                    
+                var remaining = dayHourEnd;
+                var arrDays = [];
+                var day = [];
+                function parseFromDay(task, time) {
+                    if (remaining <= 0) {
+                        remaining = 7;
+                        arrDays.push(day);
+                        day = [];
+                    }
+                    var timeAtDay = Math.min(time, remaining);
+                    remaining -= timeAtDay;
+                    day.push(`${task.name} - ${timeAtDay}`);
+                    if (time - timeAtDay > 0) {
+                        parseFromDay(task, time - timeAtDay);
+                    }
+                }
 
+                for (var task of item.tasks) {
                     var arrName = `${item.firstName} ${item.lastName}`;
                     
-                    if (task.different) {                          
-                        time = task.different
-                    }
-                    time = task.estimated_time;                    
-
-
-                    if (time > dayHourEnd) {
-                        // console.log(time, 'top');
-                        time = time - dayHourEnd;                        
-                    } else {
-                        // console.log(time, 'bottom');
-                        time = time;
-                    }
-
-                    arrTasks.push(`${task.name} - ${time}`);
-
-                    for (;time > 0;) {
-                        time = time - this.dayWork;
-                        arrTasks.push(`${task.name} - ${time}`);
-                    }                                        
+                    time = task.different ? task.different : task.estimated_time
+                    parseFromDay.call(this, task, time);                   
                 }
+                arrDays.push(day);
+                console.log(arrDays);
                 
                 // arrTasks.push(arrTask)
                 arr.push(arrName, arrTasks);                
