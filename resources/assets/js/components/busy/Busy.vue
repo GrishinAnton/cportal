@@ -90,6 +90,7 @@ export default {
                 var remaining = dayHourEnd;
                 var arrDays = [];
                 var day = [];
+                
                 function parseFromDay(task, time) {
                     if (remaining <= 0) {
                         remaining = 7;
@@ -97,8 +98,11 @@ export default {
                         day = [];
                     }
                     var timeAtDay = Math.min(time, remaining);
+
                     remaining -= timeAtDay;
+
                     day.push(`${task.name} - ${timeAtDay}`);
+
                     if (time - timeAtDay > 0) {
                         parseFromDay(task, time - timeAtDay);
                     }
@@ -108,16 +112,12 @@ export default {
                     var arrName = `${item.firstName} ${item.lastName}`;
                     
                     time = task.different ? task.different : task.estimated_time
-                    parseFromDay.call(this, task, time);                   
+                    parseFromDay(task, time);                   
                 }
-                arrDays.push(day);
-                console.log(arrDays);
                 
-                // arrTasks.push(arrTask)
+                arrDays.push(day);
                 arr.push(arrName, arrTasks);                
                 this.dateTableBody.push(arr);
-
-                // console.log(this.dateTableBody);
             }
         },
         sortTasks(a,b){            
