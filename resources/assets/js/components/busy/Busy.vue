@@ -79,9 +79,6 @@ export default {
                 var arr = []
                 var time; //Переменная для подсчета либо оценочного времени, либо остатка вермени
                 var endTimeDay; //Остаток времени в дне
-                var arrTasks = [];// Тут собираеп все таски одого пользователя
-                var taskDay = [];// тут собираем таски в течении одного дня пользователя   
-                var dayCounter = 1;
 
                 item.tasks.sort(this.sortTasks) //сортируем таски, чтобы In Progress всегда были первыми тасками.  
                 
@@ -92,15 +89,15 @@ export default {
                 var day = [];
                 
                 function parseFromDay(task, time) {
+
                     if (remaining <= 0) {
                         remaining = 7;
                         arrDays.push(day);
                         day = [];
                     }
+
                     var timeAtDay = Math.min(time, remaining);
-
                     remaining -= timeAtDay;
-
                     day.push(`${task.name} - ${timeAtDay}`);
 
                     if (time - timeAtDay > 0) {
@@ -109,14 +106,14 @@ export default {
                 }
 
                 for (var task of item.tasks) {
-                    var arrName = `${item.firstName} ${item.lastName}`;
-                    
-                    time = task.different ? task.different : task.estimated_time
+                    var arrName = `${item.firstName} ${item.lastName}`;                    
+                    time = task.different ? task.different : task.estimated_time;
+
                     parseFromDay(task, time);                   
                 }
-                
+
                 arrDays.push(day);
-                arr.push(arrName, arrTasks);                
+                arr.push(arrName, arrDays);                
                 this.dateTableBody.push(arr);
             }
         },
